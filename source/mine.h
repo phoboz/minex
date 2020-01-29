@@ -8,10 +8,8 @@
 struct mine
 {
 	struct object obj;
-	signed char world_pos[2];
-	unsigned int obj_angle;
 	unsigned int world_angle;
-	signed char obj_vlist[MINE_MAX_VECTORS*3 + 1];
+	unsigned int old_world_angle;
 	signed char world_vlist[MINE_MAX_VECTORS*3 + 1];
 };
 
@@ -24,7 +22,6 @@ void init_mine(
 	signed int x,
 	signed int h,
 	signed int w,
-	unsigned int obj_angle,
 	unsigned int world_angle,
 	unsigned int scale,
 	const signed char *shape

@@ -16,7 +16,6 @@ void init_mine(
 	signed int x,
 	signed int h,
 	signed int w,
-	unsigned int obj_angle,
 	unsigned int world_angle,
 	unsigned int scale,
 	const signed char *shape
@@ -25,13 +24,10 @@ void init_mine(
 	take_object(&mine->obj, &mine_free_list);
 	init_object(&mine->obj, y, x, h, w, scale, shape, &mine_list);
 
-	mine->obj_angle	= obj_angle;
-	mine->world_angle	= world_angle;
-
-	Rot_VL_Mode(mine->obj_angle, (signed int *) mine->obj.shape, mine->obj_vlist);
-
-	Rot_VL_ab(world_angle, 0, mine->obj.pos, mine->world_pos);
-	Rot_VL_Mode(world_angle, (signed int*) mine->obj_vlist, &mine->world_vlist);
+	mine->world_angle		= world_angle;
+	mine->old_world_angle	= world_angle;
+	Rot_VL_ab(world_angle, 0, mine->obj.pos, mine->obj.world_pos);
+	Rot_VL_Mode(world_angle, (signed int*) mine->obj.shape, &mine->world_vlist);
 }
 
 void deinit_mine(
@@ -50,10 +46,11 @@ void move_mines(void)
 	mine = (struct mine *) mine_list;
 	while (mine != 0)
 	{
-		Rot_VL_Mode(mine->obj_angle, (signed int *) mine->obj.shape, mine->obj_vlist);
-
-		Rot_VL_ab(mine->world_angle, 0, mine->obj.pos, mine->world_pos);
-		Rot_VL_Mode(mine->world_angle, (signed int *) mine->obj_vlist, mine->world_vlist);
+		if (mine->world_angle != mine->old_world_angle)
+		{
+			Rot_VL_ab(mine->world_angle, 0, mine->obj.pos, mine->obj.world_pos);
+			Rot_VL_Mode(mine->world_angle, (signed int *) mine->obj.shape, mine->world_vlist);
+		}
 	
 		if (/*remove*/0)
 		{
@@ -81,7 +78,7 @@ void draw_mines(void)
 		Moveto_d(0, 0);
 
 		dp_VIA_t1_cnt_lo = OBJECT_MOVE_SCALE;
-		Moveto_d(mine->world_pos[0], mine->world_pos[1]);
+		Moveto_d(mine->obj.world_pos[0], mine->obj.world_pos[1]);
 		dp_VIA_t1_cnt_lo = mine->obj.scale;
 		Draw_VLp(mine->world_vlist);
 		mine = (struct mine *) mine->obj.next;

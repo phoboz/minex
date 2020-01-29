@@ -15,13 +15,15 @@
 
 #include <vectrex.h>
 #include "mine.h"
+#include "ship.h"
 
 #define MAX_MINES		10
+#define MAX_SHIPS		2
 
-#define SCALE 		120
+#define SCALE 		80
 #define DRAW_SCALE		0x10
 
-const signed char shape[]=
+const signed char tri_shape[]=
 {
     -1,          0,  1*SCALE/2,
     -1, -1*SCALE/2, -1*SCALE/2,
@@ -30,8 +32,19 @@ const signed char shape[]=
      1
 };
 
+static const signed char butterfly_shape[]=
+{
+    -1, -1*SCALE/2,  1*SCALE,
+    -1,  1*SCALE  ,        0,
+    -1, -1*SCALE/2, -1*SCALE,
+    -1,  1*SCALE/2, -1*SCALE,
+    -1, -1*SCALE  ,        0,
+    -1,  1*SCALE/2,  1*SCALE,
+     1
+};
 
 struct mine mines[MAX_MINES];
+struct ship ships[MAX_SHIPS];
 
 void init_game(void)
 {
@@ -57,18 +70,20 @@ int main(void)
 {
 	init_game();
 
-	init_mine(&mines[0], 0, 0, SCALE, SCALE, 0, 0, DRAW_SCALE, shape);
-	init_mine(&mines[1], 80, 0, SCALE, SCALE, 0, 0, DRAW_SCALE, shape);
-	init_mine(&mines[2], 0, 80, SCALE, SCALE, 240, 0, DRAW_SCALE, shape);
+	init_ship(&ships[0], 0, 0, SCALE, SCALE, 0, 0, DRAW_SCALE, butterfly_shape);
+	init_mine(&mines[0], 80, 0, SCALE, SCALE, 0, DRAW_SCALE, tri_shape);
+	init_ship(&ships[1], 0, 80, SCALE, SCALE, 240, 0, DRAW_SCALE, butterfly_shape);
 
 	while(1)
 	{
-		if (++mines[1].world_angle > 254) mines[1].world_angle = 0;
-		if (++mines[2].world_angle > 254) mines[2].world_angle = 0;
-		if (++mines[2].obj_angle > 254) mines[2].obj_angle = 0;
+		if (++mines[0].world_angle == 255) mines[0].world_angle = 0;
+		if (++ships[1].obj_angle == 255) ships[1].obj_angle = 0;
+		if (++ships[1].world_angle == 255) ships[1].world_angle = 0;
 		move_mines();
+		move_ships();
 		Wait_Recal();
 		draw_mines();
+		draw_ships();
 	};
 	
 	// if return value is <= 0, then a warm reset will be performed,
