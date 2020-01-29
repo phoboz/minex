@@ -14,13 +14,15 @@
 // ---------------------------------------------------------------------------
 
 #include <vectrex.h>
+#include "controller.h"
+#include "player.h"
 #include "mine.h"
 #include "ship.h"
 
 #define MAX_MINES		10
 #define MAX_SHIPS		2
 
-#define SCALE 		80
+#define SCALE 		100
 #define DRAW_SCALE		0x10
 
 const signed char tri_shape[]=
@@ -34,15 +36,16 @@ const signed char tri_shape[]=
 
 static const signed char butterfly_shape[]=
 {
-    -1, -1*SCALE/2,  1*SCALE,
-    -1,  1*SCALE  ,        0,
-    -1, -1*SCALE/2, -1*SCALE,
-    -1,  1*SCALE/2, -1*SCALE,
-    -1, -1*SCALE  ,        0,
-    -1,  1*SCALE/2,  1*SCALE,
+    -1, -1*SCALE/4,  1*SCALE/2,
+    -1,  1*SCALE/2  ,        0,
+    -1, -1*SCALE/4, -1*SCALE/2,
+    -1,  1*SCALE/4, -1*SCALE/2,
+    -1, -1*SCALE/2  ,        0,
+    -1,  1*SCALE/4,  1*SCALE/2,
      1
 };
 
+struct player player;
 struct mine mines[MAX_MINES];
 struct ship ships[MAX_SHIPS];
 
@@ -68,20 +71,31 @@ void init_game(void)
 
 int main(void)
 {
+	enable_controller_1_x();
+	enable_controller_1_y();
+	disable_controller_2_x();
+	disable_controller_2_y();
+
 	init_game();
 
-	init_ship(&ships[0], 0, 0, SCALE, SCALE, 0, 0, DRAW_SCALE, butterfly_shape);
+	init_player(&player, 0, 0, SCALE, SCALE, 0, DRAW_SCALE, tri_shape);
+
+	//init_ship(&ships[0], 0, 0, SCALE, SCALE, 0, 0, DRAW_SCALE, butterfly_shape);
 	init_mine(&mines[0], 80, 0, SCALE, SCALE, 0, DRAW_SCALE, tri_shape);
 	init_ship(&ships[1], 0, 80, SCALE, SCALE, 240, 0, DRAW_SCALE, butterfly_shape);
 
 	while(1)
 	{
-		if (++mines[0].world_angle == 255) mines[0].world_angle = 0;
+		move_player(&player);
+		//if (++mines[0].world_angle == 255) mines[0].world_angle = 0;
 		if (++ships[1].obj_angle == 255) ships[1].obj_angle = 0;
-		if (++ships[1].world_angle == 255) ships[1].world_angle = 0;
+		//if (++ships[1].world_angle == 255) ships[1].world_angle = 0;
+		mines[0].world_angle = player.angle;
+		ships[1].world_angle = player.angle;
 		move_mines();
 		move_ships();
 		Wait_Recal();
+		draw_player(&player);
 		draw_mines();
 		draw_ships();
 	};
