@@ -7,6 +7,8 @@ struct player
 {
 	struct object obj;
 	unsigned int angle;
+	signed int speed;
+	signed int up_vec[2];
 };
 
 void init_player(

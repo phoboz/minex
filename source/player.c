@@ -8,6 +8,11 @@
 
 // ---------------------------------------------------------------------------
 
+static const signed char player_up_vec[]=
+{
+	1,	0
+};
+
 void init_player(
 	struct player *player,
 	signed int y,
@@ -20,7 +25,9 @@ void init_player(
 	)
 {
 	init_object(&player->obj, y, x, h, w, scale, shape, 0);
-	player->angle = angle;
+
+	player->angle	= angle;
+	player->speed	= 0;
 }
 
 void move_player(
@@ -36,6 +43,8 @@ void move_player(
 		{
 			player->angle = 255;
 		}
+
+		Rot_VL_ab(player->angle, 0, (signed int *) player_up_vec, player->up_vec);
 	}
 	else if (joystick_1_right())
 	{
@@ -43,6 +52,23 @@ void move_player(
 		{
 			player->angle = 0;
 		}
+
+		Rot_VL_ab(player->angle, 0, (signed int *) player_up_vec, player->up_vec);
+	}
+
+	if (button_1_3_held())
+	{
+		player->speed = 1;
+	}
+	else
+	{
+		player->speed = 0;
+	}
+
+	if (player->speed)
+	{
+		player->obj.pos[0] += player->up_vec[0] * player->speed;
+		player->obj.pos[1] += player->up_vec[1] * player->speed;
 	}
 }
 

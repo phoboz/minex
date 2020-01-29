@@ -46,7 +46,7 @@ void move_mines(void)
 	mine = (struct mine *) mine_list;
 	while (mine != 0)
 	{
-		if (mine->world_angle != mine->old_world_angle)
+		//if (mine->world_angle != mine->old_world_angle)
 		{
 			Rot_VL_ab(mine->world_angle, 0, mine->obj.pos, mine->obj.world_pos);
 			Rot_VL_Mode(mine->world_angle, (signed int *) mine->obj.shape, mine->world_vlist);
@@ -74,13 +74,18 @@ void draw_mines(void)
 	mine = (struct mine *) mine_list;
 	while (mine != 0)
 	{
-		Reset0Ref();
-		Moveto_d(0, 0);
+		if (mine->obj.pos[0] >= OBJECT_MIN_Y && mine->obj.pos[0] <= OBJECT_MAX_Y &&
+		    mine->obj.pos[1] >= OBJECT_MIN_X && mine->obj.pos[1] <= OBJECT_MAX_X)
+		{
+			Reset0Ref();
+			Moveto_d(0, 0);
 
-		dp_VIA_t1_cnt_lo = OBJECT_MOVE_SCALE;
-		Moveto_d(mine->obj.world_pos[0], mine->obj.world_pos[1]);
-		dp_VIA_t1_cnt_lo = mine->obj.scale;
-		Draw_VLp(mine->world_vlist);
+			dp_VIA_t1_cnt_lo = OBJECT_MOVE_SCALE;
+			Moveto_d(mine->obj.world_pos[0], mine->obj.world_pos[1]);
+			dp_VIA_t1_cnt_lo = mine->obj.scale;
+			Draw_VLp(mine->world_vlist);
+		}
+
 		mine = (struct mine *) mine->obj.next;
 	}
 }

@@ -25,7 +25,16 @@
 #define SCALE 		100
 #define DRAW_SCALE		0x10
 
-const signed char tri_shape[]=
+const signed char player_shape[]=
+{
+    -1,          0,  1*SCALE/2,
+    -1,  1*SCALE/2, -1*SCALE/2,
+    -1, -1*SCALE/2, -1*SCALE/2,
+    -1,          0,  1*SCALE/2,
+     1
+};
+
+const signed char mine_shape[]=
 {
     -1,          0,  1*SCALE/2,
     -1, -1*SCALE/2, -1*SCALE/2,
@@ -78,20 +87,29 @@ int main(void)
 
 	init_game();
 
-	init_player(&player, 0, 0, SCALE, SCALE, 0, DRAW_SCALE, tri_shape);
+	init_player(&player, 0, 0, SCALE, SCALE, 0, DRAW_SCALE, player_shape);
 
-	//init_ship(&ships[0], 0, 0, SCALE, SCALE, 0, 0, DRAW_SCALE, butterfly_shape);
-	init_mine(&mines[0], 80, 0, SCALE, SCALE, 0, DRAW_SCALE, tri_shape);
-	init_ship(&ships[1], 0, 80, SCALE, SCALE, 240, 0, DRAW_SCALE, butterfly_shape);
+	init_mine(&mines[0], 80, 0, SCALE, SCALE, 0, DRAW_SCALE, mine_shape);
+	init_mine(&mines[1], 50, 50, SCALE, SCALE, 0, DRAW_SCALE, mine_shape);
+	init_ship(&ships[0], 0, 80, SCALE, SCALE, 240, 0, DRAW_SCALE, butterfly_shape);
 
 	while(1)
 	{
 		move_player(&player);
-		//if (++mines[0].world_angle == 255) mines[0].world_angle = 0;
-		if (++ships[1].obj_angle == 255) ships[1].obj_angle = 0;
-		//if (++ships[1].world_angle == 255) ships[1].world_angle = 0;
+
 		mines[0].world_angle = player.angle;
-		ships[1].world_angle = player.angle;
+		mines[0].obj.pos[0] = 80-player.obj.pos[0];
+		mines[0].obj.pos[1] = player.obj.pos[1];
+
+		mines[1].world_angle = player.angle;
+		mines[1].obj.pos[0] = 50-player.obj.pos[0];
+		mines[1].obj.pos[1] = 50+player.obj.pos[1];
+
+		if (++ships[0].obj_angle == 255) ships[0].obj_angle = 0;
+		ships[0].world_angle = player.angle;
+		ships[0].obj.pos[0] = -player.obj.pos[0];
+		ships[0].obj.pos[1] = 80+player.obj.pos[1];
+
 		move_mines();
 		move_ships();
 		Wait_Recal();

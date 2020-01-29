@@ -54,13 +54,13 @@ void move_ships(void)
 	while (ship != 0)
 	{
 		prev_update = 0;
-		if (ship->obj_angle != ship->old_obj_angle)
+		//if (ship->obj_angle != ship->old_obj_angle)
 		{
 			Rot_VL_Mode(ship->obj_angle, (signed int *) ship->obj.shape, ship->obj_vlist);
 			prev_update = 1;
 		}
 
-		if (prev_update || ship->world_angle != ship->old_world_angle)
+		//if (prev_update || ship->world_angle != ship->old_world_angle)
 		{
 			Rot_VL_ab(ship->world_angle, 0, ship->obj.pos, ship->obj.world_pos);
 			Rot_VL_Mode(ship->world_angle, (signed int *) ship->obj_vlist, ship->world_vlist);
@@ -88,13 +88,18 @@ void draw_ships(void)
 	ship = (struct ship *) ship_list;
 	while (ship != 0)
 	{
-		Reset0Ref();
-		Moveto_d(0, 0);
+		if (ship->obj.pos[0] >= OBJECT_MIN_Y && ship->obj.pos[0] <= OBJECT_MAX_Y &&
+		    ship->obj.pos[1] >= OBJECT_MIN_X && ship->obj.pos[1] <= OBJECT_MAX_X)
+		{
+			Reset0Ref();
+			Moveto_d(0, 0);
 
-		dp_VIA_t1_cnt_lo = OBJECT_MOVE_SCALE;
-		Moveto_d(ship->obj.world_pos[0], ship->obj.world_pos[1]);
-		dp_VIA_t1_cnt_lo = ship->obj.scale;
-		Draw_VLp(ship->world_vlist);
+			dp_VIA_t1_cnt_lo = OBJECT_MOVE_SCALE;
+			Moveto_d(ship->obj.world_pos[0], ship->obj.world_pos[1]);
+			dp_VIA_t1_cnt_lo = ship->obj.scale;
+			Draw_VLp(ship->world_vlist);
+		}
+
 		ship = (struct ship *) ship->obj.next;
 	}
 }
