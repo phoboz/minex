@@ -14,6 +14,34 @@
 // ---------------------------------------------------------------------------
 
 #include <vectrex.h>
+#include "mine.h"
+
+#define MAX_MINES		2
+
+#define SCALE 		40
+#define DRAW_SCALE		0x40
+
+const signed char shape[]=
+{
+    -1,          0,  1*SCALE/2,
+    -1, -1*SCALE/2, -1*SCALE/2,
+    -1,  1*SCALE/2, -1*SCALE/2,
+    -1,          0,  1*SCALE/2,
+     1
+};
+
+
+struct mine mines[MAX_MINES];
+
+void init_game(void)
+{
+	unsigned int i;
+
+	for (i = 0; i < MAX_MINES; i++)
+	{
+		deinit_object(&mines[i].obj, &mine_list);
+	}
+}
 
 // ---------------------------------------------------------------------------
 // cold reset: the vectrex logo is shown, all ram data is cleared
@@ -27,10 +55,20 @@
 
 int main(void)
 {
+	init_game();
+
+	init_mine(&mines[0], 0, 0, SCALE, SCALE, 0, 0, DRAW_SCALE, shape);
+	init_mine(&mines[1], 80, 0, SCALE, SCALE, 0, 0, DRAW_SCALE, shape);
+	init_mine(&mines[2], 0, 80, SCALE, SCALE, 240, 0, DRAW_SCALE, shape);
+
 	while(1)
 	{
+		if (++mines[1].world_angle > 254) mines[1].world_angle = 0;
+		if (++mines[2].world_angle > 254) mines[2].world_angle = 0;
+		if (++mines[2].obj_angle > 254) mines[2].obj_angle = 0;
+		move_mines();
 		Wait_Recal();
-		Print_Str_d(0, -70, "HELLO WORLD\x80");
+		draw_mines();
 	};
 	
 	// if return value is <= 0, then a warm reset will be performed,
