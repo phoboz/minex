@@ -6,7 +6,7 @@
 struct object
 {
 	unsigned int active;
-	signed int y, x;
+	signed int pos[2];
 	signed int h, w;
 	signed int h_2, w_2;
 	unsigned int scale;
@@ -41,17 +41,6 @@ void deinit_object(
 	struct object **head
 	);
 
-void rotate_position_object(
-	struct object *obj,
-	unsigned int angle,
-	signed char *dest
-	);
-
-void translate_object(
-	struct object *obj,
-	signed char *dest
-	);
-
 __INLINE unsigned int check_object(
 	struct object *obj1,
 	signed int dy,
@@ -66,15 +55,15 @@ __INLINE unsigned int check_object(
 
 	if (obj1->active && obj2->active)
 	{
-		obj1_y1 = obj1->y + dy - obj1->h_2;
-		obj1_x1 = obj1->x + dx - obj1->w_2;
-		obj1_y2 = obj1->y + dy + obj1->h_2;
-		obj1_x2 = obj1->x + dx + obj1->w_2;
+		obj1_y1 = obj1->pos[0] + dy - obj1->h_2;
+		obj1_x1 = obj1->pos[1] + dx - obj1->w_2;
+		obj1_y2 = obj1->pos[0] + dy + obj1->h_2;
+		obj1_x2 = obj1->pos[1] + dx + obj1->w_2;
 
-		obj2_y1 = obj2->y - obj2->h_2;
-		obj2_x1 = obj2->x - obj2->w_2;
-		obj2_y2 = obj2->y + obj2->h_2;
-		obj2_x2 = obj2->x + obj2->w_2;
+		obj2_y1 = obj2->pos[0] - obj2->h_2;
+		obj2_x1 = obj2->pos[1] - obj2->w_2;
+		obj2_y2 = obj2->pos[0] + obj2->h_2;
+		obj2_x2 = obj2->pos[1] + obj2->w_2;
 
 		if (obj1_y1 < obj2_y2 && obj1_y2 > obj2_y1 && obj1_x1 < obj2_x2 && obj1_x2 > obj2_x1)
 		{
@@ -97,15 +86,15 @@ __INLINE unsigned int hit_object(
 
 	if (obj1->active && obj2->active)
 	{
-		obj1_y1 = obj1->y - obj1->h_2;
-		obj1_x1 = obj1->x - obj1->w_2;
-		obj1_y2 = obj1->y + obj1->h_2;
-		obj1_x2 = obj1->x + obj1->w_2;
+		obj1_y1 = obj1->pos[0] - obj1->h_2;
+		obj1_x1 = obj1->pos[1] - obj1->w_2;
+		obj1_y2 = obj1->pos[0] + obj1->h_2;
+		obj1_x2 = obj1->pos[1] + obj1->w_2;
 
-		obj2_y1 = obj2->y - obj2->h_2;
-		obj2_x1 = obj2->x - obj2->w_2;
-		obj2_y2 = obj2->y + obj2->h_2;
-		obj2_x2 = obj2->x + obj2->w_2;
+		obj2_y1 = obj2->pos[0] - obj2->h_2;
+		obj2_x1 = obj2->pos[1] - obj2->w_2;
+		obj2_y2 = obj2->pos[0] + obj2->h_2;
+		obj2_x2 = obj2->pos[1] + obj2->w_2;
 
 		if (obj1_y1 < obj2_y2 && obj1_y2 > obj2_y1 && obj1_x1 < obj2_x2 && obj1_x2 > obj2_x1)
 		{

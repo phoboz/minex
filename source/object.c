@@ -71,8 +71,9 @@ void init_object(
 {
 	obj->active = 1;
 
-	obj->y = y;
-	obj->x = x;
+	obj->pos[0] = y;
+	obj->pos[1] = x;
+
 	obj->h = h;
 	obj->w = w;
 	obj->h_2 = h >> 1;
@@ -128,49 +129,6 @@ void deinit_object(
 	}
 
 	obj->active = 0;
-}
-
-void rotate_position_object(
-	struct object *obj,
-	unsigned int angle,
-	signed char *dest
-	)
-{
-	static signed char v[2];
-
-	v[0] = obj->y;
-	v[1] = obj->x;
-
-	Rot_VL_ab(angle, 0, v, dest);
-}
-
-void translate_object(
-	struct object *obj,
-	signed char *dest
-	)
-{
-	const signed char *p_src = obj->shape;
-	signed char *p_dest = dest;
-
-	while (1)
-	{
-		*p_dest = *p_src;
-		if (*p_src == 0x01)
-		{
-			break;
-		}
-
-		p_dest++;
-		p_src++;
-
-		*p_dest = (*p_src) + obj->y;
-		p_dest++;
-		p_src++;
-
-		*p_dest = (*p_src) + obj->x;
-		p_dest++;
-		p_src++;
-	}
 }
 
 // ***************************************************************************

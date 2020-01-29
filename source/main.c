@@ -16,10 +16,10 @@
 #include <vectrex.h>
 #include "mine.h"
 
-#define MAX_MINES		2
+#define MAX_MINES		10
 
-#define SCALE 		40
-#define DRAW_SCALE		0x40
+#define SCALE 		120
+#define DRAW_SCALE		0x10
 
 const signed char shape[]=
 {
