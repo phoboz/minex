@@ -3,6 +3,7 @@
 // ***************************************************************************
 
 #include <vectrex.h>
+#include "player.h"
 #include "mine.h"
 
 // ---------------------------------------------------------------------------
@@ -22,12 +23,19 @@ void init_mine(
 	)
 {
 	take_object(&mine->obj, &mine_free_list);
-	init_object(&mine->obj, y, x, h, w, scale, shape, &mine_list);
+	init_object(&mine->obj, y, x, h, w, &mine_list);
+	mine->scale = scale;
+	mine->shape = shape;
 
-	mine->world_angle		= world_angle;
-	mine->old_world_angle	= world_angle;
+	mine->obj_pos[0]	= y;
+	mine->obj_pos[1]	= x;
+
+	mine->velocity[0]	= 0;
+	mine->velocity[1]	= 0;
+
+	mine->world_angle = world_angle;
 	Rot_VL_ab(world_angle, 0, mine->obj.pos, mine->obj.world_pos);
-	Rot_VL_Mode(world_angle, (signed int*) mine->obj.shape, &mine->world_vlist);
+	Rot_VL_Mode(world_angle, (signed int*) shape, &mine->world_vlist);
 }
 
 void deinit_mine(
@@ -38,18 +46,35 @@ void deinit_mine(
 	give_object(&mine->obj, &mine_free_list);
 }
 
-void move_mines(void)
+void move_mines(
+	struct player *player
+	)
 {
+	unsigned int update_view;
+
 	struct mine *mine;
 	struct mine *rem = 0;
 
 	mine = (struct mine *) mine_list;
 	while (mine != 0)
 	{
-		//if (mine->world_angle != mine->old_world_angle)
+		update_view = 0;
+
+		if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
 		{
+			mine->obj_pos[0] += mine->velocity[0];
+			mine->obj_pos[1] += mine->velocity[1];
+			update_view = 1;
+		}
+
+		if (update_view || player->update_view)
+		{
+			mine->world_angle = player->angle;
+			mine->obj.pos[0] = mine->obj_pos[0] - player->obj.pos[0];
+			mine->obj.pos[1] = mine->obj_pos[1] + player->obj.pos[1];
+
 			Rot_VL_ab(mine->world_angle, 0, mine->obj.pos, mine->obj.world_pos);
-			Rot_VL_Mode(mine->world_angle, (signed int *) mine->obj.shape, mine->world_vlist);
+			Rot_VL_Mode(mine->world_angle, (signed int *) mine->shape, mine->world_vlist);
 		}
 	
 		if (/*remove*/0)
@@ -79,10 +104,10 @@ void draw_mines(void)
 		{
 			Reset0Ref();
 			Moveto_d(0, 0);
-
 			dp_VIA_t1_cnt_lo = OBJECT_MOVE_SCALE;
 			Moveto_d(mine->obj.world_pos[0], mine->obj.world_pos[1]);
-			dp_VIA_t1_cnt_lo = mine->obj.scale;
+
+			dp_VIA_t1_cnt_lo = mine->scale;
 			Draw_VLp(mine->world_vlist);
 		}
 

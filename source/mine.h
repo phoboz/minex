@@ -5,11 +5,16 @@
 
 #define MINE_MAX_VECTORS	8
 
+struct player;
+
 struct mine
 {
 	struct object obj;
+	signed int obj_pos[2];
+	signed int velocity[2];
 	unsigned int world_angle;
-	unsigned int old_world_angle;
+	unsigned int scale;
+	const signed char *shape;
 	signed char world_vlist[MINE_MAX_VECTORS*3 + 1];
 };
 
@@ -31,8 +36,10 @@ void deinit_mine(
 	struct mine *mine
 	);
 
-void move_mines(void);
-void draw_mines(void);
+void move_mines(
+	struct player *player
+	);
 
+void draw_mines(void);
 
 #endif

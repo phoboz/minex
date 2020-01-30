@@ -64,8 +64,6 @@ void init_object(
 	signed int x,
 	signed int h,
 	signed int w,
-	unsigned int scale,
-	const signed char *shape,
 	struct object **head
 	)
 {
@@ -74,13 +72,8 @@ void init_object(
 	obj->pos[0] = y;
 	obj->pos[1] = x;
 
-	obj->h = h;
-	obj->w = w;
 	obj->h_2 = h >> 1;
 	obj->w_2 = w >> 1;
-
-	obj->scale = scale;
-	obj->shape = shape;
 
 	// Add object to list
 	if (head)

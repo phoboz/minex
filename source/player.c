@@ -4,6 +4,7 @@
 
 #include <vectrex.h>
 #include "controller.h"
+#include "bullet.h"
 #include "player.h"
 
 // ---------------------------------------------------------------------------
@@ -24,16 +25,41 @@ void init_player(
 	const signed char *shape
 	)
 {
-	init_object(&player->obj, y, x, h, w, scale, shape, 0);
+	init_object(&player->obj, y, x, h, w, 0);
+	player->shape = shape;
+	player->scale = scale;
 
 	player->angle	= angle;
 	player->speed	= 0;
+
+	Rot_VL_ab(angle, 0, (signed int *) player_up_vec, player->up_vec);
+}
+
+extern struct bullet bullets[];
+static struct bullet* get_bullet(void)
+{
+	struct bullet *bullet = 0;
+	unsigned int i;
+
+	for (i = 0; i < 5; i++)
+	{
+		if (!bullets[i].obj.active)
+		{
+			bullet = &bullets[i];
+		}
+	}
+
+	return bullet;
 }
 
 void move_player(
 	struct player *player
 	)
 {
+	struct bullet *bullet;
+
+	player->update_view = 0;
+
 	check_joysticks();
 	check_buttons();
 
@@ -45,6 +71,7 @@ void move_player(
 		}
 
 		Rot_VL_ab(player->angle, 0, (signed int *) player_up_vec, player->up_vec);
+		player->update_view = 1;
 	}
 	else if (joystick_1_right())
 	{
@@ -54,11 +81,21 @@ void move_player(
 		}
 
 		Rot_VL_ab(player->angle, 0, (signed int *) player_up_vec, player->up_vec);
+		player->update_view = 1;
+	}
+
+	if (button_1_4_pressed())
+	{
+		bullet = get_bullet();
+		if (bullet)
+		{
+			init_bullet(bullet, player->obj.pos[0] + player->obj.h_2, -player->obj.pos[1], 2, 2, 1, player->up_vec, player->angle);
+		}
 	}
 
 	if (button_1_3_held())
 	{
-		player->speed = 1;
+		player->speed = 2;
 	}
 	else
 	{
@@ -69,6 +106,7 @@ void move_player(
 	{
 		player->obj.pos[0] += player->up_vec[0] * player->speed;
 		player->obj.pos[1] += player->up_vec[1] * player->speed;
+		player->update_view = 1;
 	}
 }
 
@@ -78,9 +116,8 @@ void draw_player(
 {
 	Reset0Ref();
 	Moveto_d(0, 0);
-
-	dp_VIA_t1_cnt_lo = player->obj.scale;
-	Draw_VLp((signed int *) player->obj.shape);
+	dp_VIA_t1_cnt_lo = player->scale;
+	Draw_VLp((signed int *) player->shape);
 }
 
 // ***************************************************************************

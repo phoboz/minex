@@ -18,14 +18,16 @@
 #include "player.h"
 #include "mine.h"
 #include "ship.h"
+#include "bullet.h"
 
 #define MAX_MINES		10
 #define MAX_SHIPS		2
+#define MAX_BULLETS	5
 
 #define SCALE 		100
 #define DRAW_SCALE		0x10
 
-const signed char player_shape[]=
+const signed char ship_shape[]=
 {
     -1,          0,  1*SCALE/2,
     -1,  1*SCALE/2, -1*SCALE/2,
@@ -34,16 +36,7 @@ const signed char player_shape[]=
      1
 };
 
-const signed char mine_shape[]=
-{
-    -1,          0,  1*SCALE/2,
-    -1, -1*SCALE/2, -1*SCALE/2,
-    -1,  1*SCALE/2, -1*SCALE/2,
-    -1,          0,  1*SCALE/2,
-     1
-};
-
-static const signed char butterfly_shape[]=
+static const signed char mine_shape[]=
 {
     -1, -1*SCALE/4,  1*SCALE/2,
     -1,  1*SCALE/2  ,        0,
@@ -57,6 +50,7 @@ static const signed char butterfly_shape[]=
 struct player player;
 struct mine mines[MAX_MINES];
 struct ship ships[MAX_SHIPS];
+struct bullet bullets[MAX_BULLETS];
 
 void init_game(void)
 {
@@ -65,6 +59,16 @@ void init_game(void)
 	for (i = 0; i < MAX_MINES; i++)
 	{
 		deinit_object(&mines[i].obj, &mine_list);
+	}
+
+	for (i = 0; i < MAX_SHIPS; i++)
+	{
+		deinit_object(&ships[i].obj, &ship_list);
+	}
+
+	for (i = 0; i < MAX_BULLETS; i++)
+	{
+		deinit_object(&bullets[i].obj, &bullet_list);
 	}
 }
 
@@ -87,35 +91,33 @@ int main(void)
 
 	init_game();
 
-	init_player(&player, 0, 0, SCALE, SCALE, 0, DRAW_SCALE, player_shape);
+	init_player(&player, 0, 0, SCALE/4, SCALE/4, 0, DRAW_SCALE, ship_shape);
 
-	init_mine(&mines[0], 80, 0, SCALE, SCALE, 0, DRAW_SCALE, mine_shape);
-	init_mine(&mines[1], 50, 50, SCALE, SCALE, 0, DRAW_SCALE, mine_shape);
-	init_ship(&ships[0], 0, 80, SCALE, SCALE, 240, 0, DRAW_SCALE, butterfly_shape);
+	init_mine(&mines[0], 80, 0, SCALE/4, SCALE/4, 0, DRAW_SCALE, mine_shape);
+	init_mine(&mines[1], 0, -80, SCALE/4, SCALE/4, 0, DRAW_SCALE, mine_shape);
+	init_mine(&mines[2], 50, 50, SCALE/4, SCALE/4, 0, DRAW_SCALE, mine_shape);
+	init_ship(&ships[0], 0, 80, SCALE/4, SCALE/4, 0, 0, DRAW_SCALE, ship_shape);
+
+mines[0].velocity[0] = -1;
+mines[1].velocity[1] = 1;
+mines[2].velocity[0] = mines[2].velocity[1] = 1;
+ships[0].speed = 3;
 
 	while(1)
 	{
 		move_player(&player);
 
-		mines[0].world_angle = player.angle;
-		mines[0].obj.pos[0] = 80-player.obj.pos[0];
-		mines[0].obj.pos[1] = player.obj.pos[1];
-
-		mines[1].world_angle = player.angle;
-		mines[1].obj.pos[0] = 50-player.obj.pos[0];
-		mines[1].obj.pos[1] = 50+player.obj.pos[1];
-
 		if (++ships[0].obj_angle == 255) ships[0].obj_angle = 0;
-		ships[0].world_angle = player.angle;
-		ships[0].obj.pos[0] = -player.obj.pos[0];
-		ships[0].obj.pos[1] = 80+player.obj.pos[1];
 
-		move_mines();
-		move_ships();
+		move_mines(&player);
+		move_ships(&player);
+		move_bullets(&player);
+
 		Wait_Recal();
 		draw_player(&player);
 		draw_mines();
 		draw_ships();
+		draw_bullets();
 	};
 	
 	// if return value is <= 0, then a warm reset will be performed,

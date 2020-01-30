@@ -6,9 +6,12 @@
 struct player
 {
 	struct object obj;
+	unsigned int update_view;
 	unsigned int angle;
 	signed int speed;
 	signed int up_vec[2];
+	unsigned int scale;
+	const signed char *shape;
 };
 
 void init_player(
