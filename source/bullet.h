@@ -24,7 +24,6 @@ void init_bullet(
 	signed int h,
 	signed int w,
 	signed int speed,
-	signed int *velocity,
 	unsigned int world_angle
 	);
 

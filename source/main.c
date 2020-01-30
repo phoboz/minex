@@ -107,7 +107,7 @@ ships[0].speed = 3;
 	{
 		move_player(&player);
 
-		if (++ships[0].obj_angle == 255) ships[0].obj_angle = 0;
+		if (++ships[0].obj_angle == 64) ships[0].obj_angle = 0;
 
 		move_mines(&player);
 		move_ships(&player);

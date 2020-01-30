@@ -67,7 +67,7 @@ void move_player(
 	{
 		if (--player->angle == 0)
 		{
-			player->angle = 255;
+			player->angle = 64;
 		}
 
 		Rot_VL_ab(player->angle, 0, (signed int *) player_up_vec, player->up_vec);
@@ -75,7 +75,7 @@ void move_player(
 	}
 	else if (joystick_1_right())
 	{
-		if (++player->angle == 255)
+		if (++player->angle == 64)
 		{
 			player->angle = 0;
 		}
@@ -89,7 +89,7 @@ void move_player(
 		bullet = get_bullet();
 		if (bullet)
 		{
-			init_bullet(bullet, player->obj.pos[0] + player->obj.h_2, -player->obj.pos[1], 2, 2, 1, player->up_vec, player->angle);
+			init_bullet(bullet, player->obj.pos[0], -player->obj.pos[1], 2, 2, 3, player->angle);
 		}
 	}
 

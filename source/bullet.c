@@ -23,7 +23,6 @@ void init_bullet(
 	signed int h,
 	signed int w,
 	signed int speed,
-	signed int *velocity,
 	unsigned int world_angle
 	)
 {
@@ -33,14 +32,16 @@ void init_bullet(
 	bullet->obj_pos[0]	= y;
 	bullet->obj_pos[1]	= x;
 
-	bullet->speed = speed;
-	bullet->velocity[0] = velocity[0];
-	bullet->velocity[1] = velocity[1];
-	//redundant
-	Rot_VL_ab(world_angle, 0, (signed int *) bullet_up_vec, bullet->velocity);
-
 	bullet->world_angle = world_angle;
 	Rot_VL_ab(world_angle, 0, bullet->obj.pos, bullet->obj.world_pos);
+
+	bullet->speed = speed;
+#if 1
+	bullet->velocity[0] = bullet_up_vec[0];
+	bullet->velocity[1] = bullet_up_vec[1];
+#else
+	Rot_VL_ab(world_angle, 0, (signed int *) bullet_up_vec, bullet->velocity);
+#endif
 }
 
 void deinit_bullet(
@@ -78,7 +79,7 @@ void move_bullets(
 			bullet->obj.pos[0] = bullet->obj_pos[0] - player->obj.pos[0];
 			bullet->obj.pos[1] = bullet->obj_pos[1] + player->obj.pos[1];
 
-			Rot_VL_ab(bullet->world_angle, 0, bullet->obj.pos, bullet->obj.world_pos);
+			Rot_VL_ab(0/*bullet->world_angle*/, 0, bullet->obj.pos, bullet->obj.world_pos);
 		}
 	
 		if (!(bullet->obj.pos[0] >= OBJECT_MIN_Y && bullet->obj.pos[0] <= OBJECT_MAX_Y &&
