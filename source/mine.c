@@ -4,6 +4,7 @@
 
 #include <vectrex.h>
 #include "player.h"
+#include "random.h"
 #include "mine.h"
 
 // ---------------------------------------------------------------------------
@@ -17,6 +18,8 @@ void init_mine(
 	signed int x,
 	signed int h,
 	signed int w,
+	unsigned int type,
+	unsigned int treshold,
 	unsigned int world_angle,
 	unsigned int scale,
 	const signed char *shape
@@ -32,6 +35,12 @@ void init_mine(
 
 	mine->velocity[0]	= 0;
 	mine->velocity[1]	= 0;
+
+	mine->type		= type;
+	mine->state		= MINE_STATE_IDLE;
+	mine->lo_counter	= 0;
+	mine->hi_counter	= 0;
+	mine->treshold	= treshold;
 
 	mine->world_angle = world_angle;
 	Rot_VL_ab(world_angle, 0, mine->obj.pos, mine->obj.world_pos);
@@ -60,11 +69,32 @@ void move_mines(
 	{
 		update_view = 0;
 
-		if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
+		if (++mine->lo_counter == MINE_LO_COUNTER_TRESHOLD)
 		{
-			mine->obj_pos[0] += mine->velocity[0];
-			mine->obj_pos[1] += mine->velocity[1];
-			update_view = 1;
+			mine->lo_counter = 0;
+
+			if (++mine->hi_counter == mine->treshold)
+			{
+				mine->hi_counter = 0;
+
+				if (mine->state == MINE_STATE_IDLE)
+				{
+					mine->state = MINE_STATE_ACTIVE;
+					if (mine->type == MINE_TYPE_DIRECTIONAL)
+					{
+						mine->velocity[0] = 5 - (signed int) (random() % 10U);
+						mine->velocity[1] = 5 - (signed int) (random() % 10U);
+					}
+					update_view = 1;
+				}
+			}
+
+			if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
+			{
+				mine->obj_pos[0] += mine->velocity[0];
+				mine->obj_pos[1] += mine->velocity[1];
+				update_view = 1;
+			}
 		}
 
 		if (update_view || player->update_view)
@@ -74,7 +104,11 @@ void move_mines(
 			mine->obj.pos[1] = mine->obj_pos[1] + player->obj.pos[1];
 
 			Rot_VL_ab(mine->world_angle, 0, mine->obj.pos, mine->obj.world_pos);
-			Rot_VL_Mode(mine->world_angle, (signed int *) mine->shape, mine->world_vlist);
+
+			if (mine->state == MINE_STATE_ACTIVE)
+			{
+				Rot_VL_Mode(mine->world_angle, (signed int *) mine->shape, mine->world_vlist);
+			}
 		}
 	
 		if (/*remove*/0)
@@ -107,8 +141,15 @@ void draw_mines(void)
 			dp_VIA_t1_cnt_lo = OBJECT_MOVE_SCALE;
 			Moveto_d(mine->obj.world_pos[0], mine->obj.world_pos[1]);
 
-			dp_VIA_t1_cnt_lo = mine->scale;
-			Draw_VLp(mine->world_vlist);
+			if (mine->state == MINE_STATE_IDLE)
+			{
+				Dot_here();
+			}
+			else if (mine->state == MINE_STATE_ACTIVE)
+			{
+				dp_VIA_t1_cnt_lo = mine->scale;
+				Draw_VLp(mine->world_vlist);
+			}
 		}
 
 		mine = (struct mine *) mine->obj.next;

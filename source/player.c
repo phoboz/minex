@@ -35,6 +35,7 @@ void init_player(
 	Rot_VL_ab(angle, 0, (signed int *) player_up_vec, player->up_vec);
 }
 
+#if 0
 extern struct bullet bullets[];
 static struct bullet* get_bullet(void)
 {
@@ -51,6 +52,7 @@ static struct bullet* get_bullet(void)
 
 	return bullet;
 }
+#endif
 
 void move_player(
 	struct player *player
@@ -86,10 +88,11 @@ void move_player(
 
 	if (button_1_4_pressed())
 	{
-		bullet = get_bullet();
+		//bullet = get_bullet();
+		bullet = (struct bullet *) bullet_free_list;
 		if (bullet)
 		{
-			init_bullet(bullet, player->obj.pos[0], -player->obj.pos[1], 2, 2, 3, player->angle);
+			init_bullet(bullet, player->obj.pos[0], -player->obj.pos[1], 2, 2, 3, player->up_vec, player->angle);
 		}
 	}
 

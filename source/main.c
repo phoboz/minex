@@ -19,6 +19,7 @@
 #include "mine.h"
 #include "ship.h"
 #include "bullet.h"
+#include "random.h"
 
 #define MAX_MINES		10
 #define MAX_SHIPS		2
@@ -58,17 +59,33 @@ void init_game(void)
 
 	for (i = 0; i < MAX_MINES; i++)
 	{
-		deinit_object(&mines[i].obj, &mine_list);
+		deinit_mine(&mines[i]);
+	}
+
+	for (i = 0; i < MAX_MINES; i++)
+	{
+		init_mine(
+			&mines[i],
+			(signed int) random() % 127 - 64,
+			(signed int) random() % 127 - 64,
+			SCALE/4,
+			SCALE/4,
+			MINE_TYPE_DIRECTIONAL,
+			15U + (random() % 30U) * 8U,
+			0,
+			DRAW_SCALE,
+			mine_shape
+			);
 	}
 
 	for (i = 0; i < MAX_SHIPS; i++)
 	{
-		deinit_object(&ships[i].obj, &ship_list);
+		deinit_ship(&ships[i]);
 	}
 
 	for (i = 0; i < MAX_BULLETS; i++)
 	{
-		deinit_object(&bullets[i].obj, &bullet_list);
+		deinit_bullet(&bullets[i]);
 	}
 }
 
@@ -93,14 +110,16 @@ int main(void)
 
 	init_player(&player, 0, 0, SCALE/4, SCALE/4, 0, DRAW_SCALE, ship_shape);
 
-	init_mine(&mines[0], 80, 0, SCALE/4, SCALE/4, 0, DRAW_SCALE, mine_shape);
-	init_mine(&mines[1], 0, -80, SCALE/4, SCALE/4, 0, DRAW_SCALE, mine_shape);
-	init_mine(&mines[2], 50, 50, SCALE/4, SCALE/4, 0, DRAW_SCALE, mine_shape);
+	//init_mine(&mines[0], 80, 0, SCALE/4, SCALE/4, 0, DRAW_SCALE, mine_shape);
+	//init_mine(&mines[1], 0, -80, SCALE/4, SCALE/4, 0, DRAW_SCALE, mine_shape);
+	//init_mine(&mines[2], 50, 50, SCALE/4, SCALE/4, 0, DRAW_SCALE, mine_shape);
 	init_ship(&ships[0], 0, 80, SCALE/4, SCALE/4, 0, 0, DRAW_SCALE, ship_shape);
 
+#if 0
 mines[0].velocity[0] = -1;
 mines[1].velocity[1] = 1;
 mines[2].velocity[0] = mines[2].velocity[1] = 1;
+#endif
 ships[0].speed = 3;
 
 	while(1)

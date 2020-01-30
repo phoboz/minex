@@ -23,6 +23,7 @@ void init_bullet(
 	signed int h,
 	signed int w,
 	signed int speed,
+	signed int velocity[2],
 	unsigned int world_angle
 	)
 {
@@ -37,6 +38,7 @@ void init_bullet(
 
 	bullet->speed = speed;
 #if 1
+velocity=velocity;
 	bullet->velocity[0] = bullet_up_vec[0];
 	bullet->velocity[1] = bullet_up_vec[1];
 #else
