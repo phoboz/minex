@@ -21,31 +21,46 @@
 #include "bullet.h"
 #include "random.h"
 
-#define MAX_MINES		12
+#define MAX_MINES		10
 #define MAX_SHIPS		2
 #define MAX_BULLETS	3
 
-#define SCALE 		100
+#define SCALE 		24
 #define DRAW_SCALE		0x10
 
-const signed char ship_shape[]=
-{
-    -1,          0,  1*SCALE/2,
-    -1,  1*SCALE/2, -1*SCALE/2,
-    -1, -1*SCALE/2, -1*SCALE/2,
-    -1,          0,  1*SCALE/2,
-     1
+#define BLOW_UP SCALE
+
+const signed char mine_1[]=
+{	(signed char) 0xFF, -0x02*BLOW_UP, +0x04*BLOW_UP,  // pattern, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP, +0x04*BLOW_UP,  // pattern, y, x
+	(signed char) 0xFF, -0x04*BLOW_UP, -0x02*BLOW_UP,  // pattern, y, x
+	(signed char) 0xFF, -0x04*BLOW_UP, +0x02*BLOW_UP,  // pattern, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP, -0x04*BLOW_UP,  // pattern, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP, -0x04*BLOW_UP,  // pattern, y, x
+	(signed char) 0xFF, +0x04*BLOW_UP, +0x02*BLOW_UP,  // pattern, y, x
+	(signed char) 0xFF, +0x04*BLOW_UP, -0x02*BLOW_UP,  // pattern, y, x
+	(signed char) 0x01 // endmarker (high bit in pattern not set)
 };
 
-static const signed char mine_shape[]=
-{
-    -1, -1*SCALE/4,  1*SCALE/2,
-    -1,  1*SCALE/2  ,        0,
-    -1, -1*SCALE/4, -1*SCALE/2,
-    -1,  1*SCALE/4, -1*SCALE/2,
-    -1, -1*SCALE/2  ,        0,
-    -1,  1*SCALE/4,  1*SCALE/2,
-     1
+const signed char player_ship[]=
+{	(signed char) 0x00, +0x02*BLOW_UP, +0x00*BLOW_UP, // move to y, x
+	(signed char) 0xFF, -0x02*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP, -0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP, -0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
+	(signed char) 0x01 // endmarker 
+};
+
+const signed char alien_ship[]=
+{	(signed char) 0xFF, -0x04*BLOW_UP, +0x01*BLOW_UP,  // pattern, y, x
+	(signed char) 0xFF, -0x03*BLOW_UP, +0x03*BLOW_UP,  // pattern, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP, -0x04*BLOW_UP,  // pattern, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP, -0x04*BLOW_UP,  // pattern, y, x
+	(signed char) 0xFF, +0x03*BLOW_UP, +0x03*BLOW_UP,  // pattern, y, x
+	(signed char) 0xFF, +0x04*BLOW_UP, +0x01*BLOW_UP,  // pattern, y, x
+	(signed char) 0x01 // endmarker (high bit in pattern not set)
 };
 
 struct player player;
@@ -73,8 +88,8 @@ void init_game(void)
 			MINE_TYPE_DIRECTIONAL,
 			15U + (random() % 30U) * 8U,
 			0,
-			DRAW_SCALE,
-			mine_shape
+			DRAW_SCALE/3 + (random () % 3) * DRAW_SCALE/3,
+			mine_1
 			);
 	}
 
@@ -106,22 +121,13 @@ int main(void)
 	disable_controller_2_x();
 	disable_controller_2_y();
 
-	init_random(5, 27, 3, 19);
+	init_random(35, 27, 3, 19);
 
 	init_game();
 
-	init_player(&player, 0, 0, SCALE/4, SCALE/4, 0, DRAW_SCALE, ship_shape);
+	init_player(&player, 0, 0, SCALE/4, SCALE/4, 0, DRAW_SCALE, player_ship);
+	init_ship(&ships[0], 0, 100, SCALE/4, SCALE/4, 0, 0, DRAW_SCALE, alien_ship);
 
-	//init_mine(&mines[0], 80, 0, SCALE/4, SCALE/4, 0, DRAW_SCALE, mine_shape);
-	//init_mine(&mines[1], 0, -80, SCALE/4, SCALE/4, 0, DRAW_SCALE, mine_shape);
-	//init_mine(&mines[2], 50, 50, SCALE/4, SCALE/4, 0, DRAW_SCALE, mine_shape);
-	init_ship(&ships[0], 0, 80, SCALE/4, SCALE/4, 0, 0, DRAW_SCALE, ship_shape);
-
-#if 0
-mines[0].velocity[0] = -1;
-mines[1].velocity[1] = 1;
-mines[2].velocity[0] = mines[2].velocity[1] = 1;
-#endif
 ships[0].speed = 3;
 
 	while(1)
@@ -135,6 +141,9 @@ ships[0].speed = 3;
 		move_bullets(&player);
 
 		Wait_Recal();
+
+		Intensity_7F();
+
 		draw_player(&player);
 		draw_mines();
 		draw_ships();
