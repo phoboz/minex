@@ -30,7 +30,7 @@
 
 #define BLOW_UP SCALE
 
-const signed char mine_1[]=
+const signed char mine_1_1[]=
 {	(signed char) 0xFF, -0x02*BLOW_UP, +0x04*BLOW_UP,  // pattern, y, x
 	(signed char) 0xFF, +0x02*BLOW_UP, +0x04*BLOW_UP,  // pattern, y, x
 	(signed char) 0xFF, -0x04*BLOW_UP, -0x02*BLOW_UP,  // pattern, y, x
@@ -40,6 +40,37 @@ const signed char mine_1[]=
 	(signed char) 0xFF, +0x04*BLOW_UP, +0x02*BLOW_UP,  // pattern, y, x
 	(signed char) 0xFF, +0x04*BLOW_UP, -0x02*BLOW_UP,  // pattern, y, x
 	(signed char) 0x01 // endmarker (high bit in pattern not set)
+};
+
+const signed char mine_1_2[]=
+{	(signed char) 0xFF, -0x02*BLOW_UP/2, +0x04*BLOW_UP/2,  // pattern, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP/2, +0x04*BLOW_UP/2,  // pattern, y, x
+	(signed char) 0xFF, -0x04*BLOW_UP/2, -0x02*BLOW_UP/2,  // pattern, y, x
+	(signed char) 0xFF, -0x04*BLOW_UP/2, +0x02*BLOW_UP/2,  // pattern, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP/2, -0x04*BLOW_UP/2,  // pattern, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP/2, -0x04*BLOW_UP/2,  // pattern, y, x
+	(signed char) 0xFF, +0x04*BLOW_UP/2, +0x02*BLOW_UP/2,  // pattern, y, x
+	(signed char) 0xFF, +0x04*BLOW_UP/2, -0x02*BLOW_UP/2,  // pattern, y, x
+	(signed char) 0x01 // endmarker (high bit in pattern not set)
+};
+
+const signed char mine_1_3[]=
+{	(signed char) 0xFF, -0x02*BLOW_UP/3, +0x04*BLOW_UP/3,  // pattern, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP/3, +0x04*BLOW_UP/3,  // pattern, y, x
+	(signed char) 0xFF, -0x04*BLOW_UP/3, -0x02*BLOW_UP/3,  // pattern, y, x
+	(signed char) 0xFF, -0x04*BLOW_UP/3, +0x02*BLOW_UP/3,  // pattern, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP/3, -0x04*BLOW_UP/3,  // pattern, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP/3, -0x04*BLOW_UP/3,  // pattern, y, x
+	(signed char) 0xFF, +0x04*BLOW_UP/3, +0x02*BLOW_UP/3,  // pattern, y, x
+	(signed char) 0xFF, +0x04*BLOW_UP/3, -0x02*BLOW_UP/3,  // pattern, y, x
+	(signed char) 0x01 // endmarker (high bit in pattern not set)
+};
+
+const signed char * const mine_1[] =
+{
+	mine_1_3,
+	mine_1_2,
+	mine_1_1
 };
 
 const signed char player_ship[]=
@@ -71,6 +102,7 @@ struct bullet bullets[MAX_BULLETS];
 void init_game(void)
 {
 	unsigned int i;
+	unsigned int size;
 
 	for (i = 0; i < MAX_MINES; i++)
 	{
@@ -79,17 +111,19 @@ void init_game(void)
 
 	for (i = 0; i < MAX_MINES; i++)
 	{
+		size = random() % 3;
+
 		init_mine(
 			&mines[i],
 			(signed int) random() % 127 - 64,
 			(signed int) random() % 127 - 64,
-			SCALE/4,
-			SCALE/4,
+			((signed int) size + 1) * SCALE/4,
+			((signed int) size + 1) * SCALE/4,
 			MINE_TYPE_DIRECTIONAL,
 			15U + (random() % 30U) * 8U,
 			0,
-			DRAW_SCALE/3 + (random () % 3) * DRAW_SCALE/3,
-			mine_1
+			DRAW_SCALE,
+			mine_1[size]
 			);
 	}
 
