@@ -110,6 +110,12 @@ void move_mines(
 					{
 						mine->velocity[0] = 6 - (signed int) (random() % 12U);
 						mine->velocity[1] = 6 - (signed int) (random() % 12U);
+
+						if (mine->velocity[0] == 0 && mine->velocity[1] == 0)
+						{
+							mine->velocity[0]++;
+							mine->velocity[1]--;
+						}
 					}
 					update_view = 1;
 				}

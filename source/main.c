@@ -103,6 +103,7 @@ void init_game(void)
 {
 	unsigned int i;
 	unsigned int size;
+	unsigned int pos_y, pos_x;
 
 	for (i = 0; i < MAX_MINES; i++)
 	{
@@ -111,14 +112,16 @@ void init_game(void)
 
 	for (i = 0; i < MAX_MINES; i++)
 	{
+		pos_y = random() % 2;
+		pos_x = random() % 2;
 		size = random() % 3;
 
 		init_mine(
 			&mines[i],
-			(signed int) random() % 127 - 64,
-			(signed int) random() % 127 - 64,
-			((signed int) size + 1) * SCALE/4,
-			((signed int) size + 1) * SCALE/4,
+			(pos_y) ? (signed int) (random() % 127U) : -(signed int) (random() % 127U),
+			(pos_x) ? (signed int) (random() % 127U) : -(signed int) (random() % 127U),
+			((signed int) size + 1) * SCALE/12,
+			((signed int) size + 1) * SCALE/12,
 			MINE_TYPE_DIRECTIONAL,
 			15U + (random() % 30U) * 8U,
 			0,
