@@ -13,8 +13,6 @@
 #define MINE_STATE_EXPLODE		2
 #define MINE_STATE_FIREBALL		3
 
-#define MINE_LO_COUNTER_TRESHOLD	3
-
 struct player;
 
 struct mine

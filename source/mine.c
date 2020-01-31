@@ -59,6 +59,7 @@ void move_mines(
 	struct player *player
 	)
 {
+	unsigned int mine_index = 0;
 	unsigned int update_view;
 
 	struct mine *mine;
@@ -69,7 +70,32 @@ void move_mines(
 	{
 		update_view = 0;
 
-		if (++mine->lo_counter == MINE_LO_COUNTER_TRESHOLD)
+		mine->lo_counter++;
+		if (mine->lo_counter == 1)
+		{
+			if (mine_index == 0 || mine_index == 3 || mine_index == 6 || mine_index == 9)
+			{
+				if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
+				{
+					mine->obj_pos[0] += mine->velocity[0];
+					mine->obj_pos[1] += mine->velocity[1];
+					update_view = 1;
+				}
+			}
+		}
+		else if (mine->lo_counter == 2)
+		{
+			if (mine_index == 1 || mine_index == 4 || mine_index == 7 || mine_index == 10)
+			{
+				if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
+				{
+					mine->obj_pos[0] += mine->velocity[0];
+					mine->obj_pos[1] += mine->velocity[1];
+					update_view = 1;
+				}
+			}
+		}
+		else if (mine->lo_counter == 3)
 		{
 			mine->lo_counter = 0;
 
@@ -82,33 +108,39 @@ void move_mines(
 					mine->state = MINE_STATE_ACTIVE;
 					if (mine->type == MINE_TYPE_DIRECTIONAL)
 					{
-						mine->velocity[0] = 5 - (signed int) (random() % 10U);
-						mine->velocity[1] = 5 - (signed int) (random() % 10U);
+						mine->velocity[0] = 6 - (signed int) (random() % 12U);
+						mine->velocity[1] = 6 - (signed int) (random() % 12U);
 					}
 					update_view = 1;
 				}
 			}
 
-			if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
+			if (mine_index == 2 || mine_index == 5 || mine_index == 8 || mine_index == 11)
 			{
-				mine->obj_pos[0] += mine->velocity[0];
-				mine->obj_pos[1] += mine->velocity[1];
-				update_view = 1;
+				if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
+				{
+					mine->obj_pos[0] += mine->velocity[0];
+					mine->obj_pos[1] += mine->velocity[1];
+					update_view = 1;
+				}
 			}
 		}
 
 		if (update_view || player->update_view)
 		{
-			mine->world_angle = player->angle;
 			mine->obj.pos[0] = mine->obj_pos[0] - player->obj.pos[0];
 			mine->obj.pos[1] = mine->obj_pos[1] + player->obj.pos[1];
+			Rot_VL_ab(player->angle, 0, mine->obj.pos, mine->obj.world_pos);
 
-			Rot_VL_ab(mine->world_angle, 0, mine->obj.pos, mine->obj.world_pos);
-
-			if (mine->state == MINE_STATE_ACTIVE)
+			if (mine->world_angle != player->angle)
 			{
-				Rot_VL_Mode(mine->world_angle, (signed int *) mine->shape, mine->world_vlist);
+				if (mine->state == MINE_STATE_ACTIVE)
+				{
+					Rot_VL_Mode(player->angle, (signed int *) mine->shape, mine->world_vlist);
+				}
 			}
+
+			mine->world_angle = player->angle;
 		}
 	
 		if (/*remove*/0)
@@ -117,6 +149,7 @@ void move_mines(
 		}
 
 		mine = (struct mine *) mine->obj.next;
+		mine_index++;
 
 		if (rem != 0)
 		{

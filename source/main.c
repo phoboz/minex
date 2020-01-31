@@ -21,9 +21,9 @@
 #include "bullet.h"
 #include "random.h"
 
-#define MAX_MINES		10
+#define MAX_MINES		12
 #define MAX_SHIPS		2
-#define MAX_BULLETS	5
+#define MAX_BULLETS	3
 
 #define SCALE 		100
 #define DRAW_SCALE		0x10
@@ -105,6 +105,8 @@ int main(void)
 	enable_controller_1_y();
 	disable_controller_2_x();
 	disable_controller_2_y();
+
+	init_random(5, 27, 3, 19);
 
 	init_game();
 
