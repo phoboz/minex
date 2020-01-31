@@ -118,8 +118,8 @@ void init_game(void)
 
 		init_mine(
 			&mines[i],
-			(pos_y) ? (signed int) (random() % 127U) : -(signed int) (random() % 127U),
-			(pos_x) ? (signed int) (random() % 127U) : -(signed int) (random() % 127U),
+			(pos_y) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U),
+			(pos_x) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U),
 			((signed int) size + 1) * SCALE/12,
 			((signed int) size + 1) * SCALE/12,
 			MINE_TYPE_DIRECTIONAL,
@@ -163,9 +163,11 @@ int main(void)
 	init_game();
 
 	init_player(&player, 0, 0, SCALE/4, SCALE/4, 0, DRAW_SCALE, player_ship);
-	init_ship(&ships[0], 0, 100, SCALE/4, SCALE/4, 0, 0, DRAW_SCALE, alien_ship);
 
-ships[0].speed = 3;
+#if 0
+	init_ship(&ships[0], 0, 100, SCALE/4, SCALE/4, 0, 0, DRAW_SCALE, alien_ship);
+	ships[0].speed = 3;
+#endif
 
 	while(1)
 	{

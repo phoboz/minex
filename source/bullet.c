@@ -23,7 +23,6 @@ void init_bullet(
 	signed int h,
 	signed int w,
 	signed int speed,
-	signed int velocity[2],
 	unsigned int world_angle
 	)
 {
@@ -37,13 +36,8 @@ void init_bullet(
 	Rot_VL_ab(world_angle, 0, bullet->obj.pos, bullet->obj.world_pos);
 
 	bullet->speed = speed;
-#if 1
-velocity=velocity;
 	bullet->velocity[0] = bullet_up_vec[0];
 	bullet->velocity[1] = bullet_up_vec[1];
-#else
-	Rot_VL_ab(world_angle, 0, (signed int *) bullet_up_vec, bullet->velocity);
-#endif
 }
 
 void deinit_bullet(
