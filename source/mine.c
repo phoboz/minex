@@ -4,6 +4,7 @@
 
 #include <vectrex.h>
 #include "player.h"
+#include "bullet.h"
 #include "random.h"
 #include "mine.h"
 
@@ -43,7 +44,8 @@ void init_mine(
 	mine->treshold	= treshold;
 
 	mine->world_angle = world_angle;
-	Rot_VL_ab(world_angle, 0, mine->obj.pos, mine->obj.world_pos);
+	Rot_VL_ab(world_angle, 0, mine->obj.dim_2, mine->obj.center_pos);
+	Rot_VL_ab(world_angle, 0, mine->obj.rel_pos, mine->obj.world_pos);
 	Rot_VL_Mode(world_angle, (signed int*) shape, &mine->world_vlist);
 }
 
@@ -65,6 +67,8 @@ void move_mines(
 	struct mine *mine;
 	struct mine *rem = 0;
 
+	struct bullet *bullet;
+
 	mine = (struct mine *) mine_list;
 	while (mine != 0)
 	{
@@ -84,13 +88,14 @@ void move_mines(
 
 				if (update_view || player->update_view)
 				{
-					mine->obj.pos[0] = mine->obj_pos[0] - player->obj.pos[0];
-					mine->obj.pos[1] = mine->obj_pos[1] + player->obj.pos[1];
-					Rot_VL_ab(player->angle, 0, mine->obj.pos, mine->obj.world_pos);
+					mine->obj.rel_pos[0] = mine->obj_pos[0] - player->obj.rel_pos[0];
+					mine->obj.rel_pos[1] = mine->obj_pos[1] + player->obj.rel_pos[1];
+					Rot_VL_ab(player->angle, 0, mine->obj.dim_2, mine->obj.center_pos);
+					Rot_VL_ab(player->angle, 0, mine->obj.rel_pos, mine->obj.world_pos);
 
 					if (mine->world_angle != player->angle)
 					{
-						if (mine->state == MINE_STATE_ACTIVE)
+						//if (mine->state == MINE_STATE_ACTIVE)
 						{
 							Rot_VL_Mode(player->angle, (signed int *) mine->shape, mine->world_vlist);
 						}
@@ -113,13 +118,14 @@ void move_mines(
 
 				if (update_view || player->update_view)
 				{
-					mine->obj.pos[0] = mine->obj_pos[0] - player->obj.pos[0];
-					mine->obj.pos[1] = mine->obj_pos[1] + player->obj.pos[1];
-					Rot_VL_ab(player->angle, 0, mine->obj.pos, mine->obj.world_pos);
+					mine->obj.rel_pos[0] = mine->obj_pos[0] - player->obj.rel_pos[0];
+					mine->obj.rel_pos[1] = mine->obj_pos[1] + player->obj.rel_pos[1];
+					Rot_VL_ab(player->angle, 0, mine->obj.dim_2, mine->obj.center_pos);
+					Rot_VL_ab(player->angle, 0, mine->obj.rel_pos, mine->obj.world_pos);
 
 					if (mine->world_angle != player->angle)
 					{
-						if (mine->state == MINE_STATE_ACTIVE)
+						//if (mine->state == MINE_STATE_ACTIVE)
 						{
 							Rot_VL_Mode(player->angle, (signed int *) mine->shape, mine->world_vlist);
 						}
@@ -166,13 +172,14 @@ void move_mines(
 
 				if (update_view || player->update_view)
 				{
-					mine->obj.pos[0] = mine->obj_pos[0] - player->obj.pos[0];
-					mine->obj.pos[1] = mine->obj_pos[1] + player->obj.pos[1];
-					Rot_VL_ab(player->angle, 0, mine->obj.pos, mine->obj.world_pos);
+					mine->obj.rel_pos[0] = mine->obj_pos[0] - player->obj.rel_pos[0];
+					mine->obj.rel_pos[1] = mine->obj_pos[1] + player->obj.rel_pos[1];
+					Rot_VL_ab(player->angle, 0, mine->obj.dim_2, mine->obj.center_pos);
+					Rot_VL_ab(player->angle, 0, mine->obj.rel_pos, mine->obj.world_pos);
 
 					if (mine->world_angle != player->angle)
 					{
-						if (mine->state == MINE_STATE_ACTIVE)
+						//if (mine->state == MINE_STATE_ACTIVE)
 						{
 							Rot_VL_Mode(player->angle, (signed int *) mine->shape, mine->world_vlist);
 						}
@@ -182,10 +189,16 @@ void move_mines(
 				}
 			}
 		}
-	
-		if (/*remove*/0)
+
+		bullet = (struct bullet *) bullet_list;
+		while (bullet)
 		{
-			rem = mine;
+			if (hit_particle_object(&bullet->obj, &mine->obj))
+			{
+				rem = mine;
+			}
+
+			bullet = (struct bullet *) bullet->obj.next;
 		}
 
 		mine = (struct mine *) mine->obj.next;
@@ -206,8 +219,8 @@ void draw_mines(void)
 	mine = (struct mine *) mine_list;
 	while (mine != 0)
 	{
-		if (mine->obj.pos[0] >= OBJECT_MIN_Y && mine->obj.pos[0] <= OBJECT_MAX_Y &&
-		    mine->obj.pos[1] >= OBJECT_MIN_X && mine->obj.pos[1] <= OBJECT_MAX_X)
+		if (mine->obj.rel_pos[0] >= OBJECT_MIN_Y && mine->obj.rel_pos[0] <= OBJECT_MAX_Y &&
+		    mine->obj.rel_pos[1] >= OBJECT_MIN_X && mine->obj.rel_pos[1] <= OBJECT_MAX_X)
 		{
 			Reset0Ref();
 			Moveto_d(0, 0);
@@ -220,6 +233,20 @@ void draw_mines(void)
 			}
 			else if (mine->state == MINE_STATE_ACTIVE)
 			{
+//#define DEBUG_DRAW
+#ifdef DEBUG_DRAW
+				Moveto_d(mine->obj.center_pos[0], mine->obj.center_pos[1]);
+
+				Moveto_d(-mine->obj.dim_2[0], -mine->obj.dim_2[1]);
+				Draw_Line_d(0, mine->obj.dim_2[1] << 1);
+				Draw_Line_d(mine->obj.dim_2[0] << 1, 0);
+				Draw_Line_d(0, -mine->obj.dim_2[1] << 1);
+				Draw_Line_d(-mine->obj.dim_2[0] << 1, 0);
+				Moveto_d(mine->obj.dim_2[0], mine->obj.dim_2[1]);
+
+				Moveto_d(-mine->obj.center_pos[0], -mine->obj.center_pos[1]);
+#endif
+
 				dp_VIA_t1_cnt_lo = mine->scale;
 				Draw_VLp(mine->world_vlist);
 			}

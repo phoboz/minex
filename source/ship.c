@@ -41,7 +41,7 @@ void init_ship(
 	Rot_VL_Mode(ship->obj_angle, (signed int *) shape, ship->obj_vlist);
 
 	ship->world_angle	= world_angle;
-	Rot_VL_ab(world_angle, 0, ship->obj.pos, ship->obj.world_pos);
+	Rot_VL_ab(world_angle, 0, ship->obj.rel_pos, ship->obj.world_pos);
 	Rot_VL_Mode(world_angle, (signed int*) ship->obj_vlist, &ship->world_vlist);
 
 	ship->speed = 0;
@@ -86,10 +86,10 @@ void move_ships(
 		if (update_view || player->update_view)
 		{
 			ship->world_angle = player->angle;
-			ship->obj.pos[0] = ship->obj_pos[0] - player->obj.pos[0];
-			ship->obj.pos[1] = ship->obj_pos[1] + player->obj.pos[1];
+			ship->obj.rel_pos[0] = ship->obj_pos[0] - player->obj.rel_pos[0];
+			ship->obj.rel_pos[1] = ship->obj_pos[1] + player->obj.rel_pos[1];
 
-			Rot_VL_ab(ship->world_angle, 0, ship->obj.pos, ship->obj.world_pos);
+			Rot_VL_ab(ship->world_angle, 0, ship->obj.rel_pos, ship->obj.world_pos);
 			Rot_VL_Mode(ship->world_angle, (signed int *) ship->obj_vlist, ship->world_vlist);
 		}
 	
@@ -115,8 +115,8 @@ void draw_ships(void)
 	ship = (struct ship *) ship_list;
 	while (ship != 0)
 	{
-		if (ship->obj.pos[0] >= OBJECT_MIN_Y && ship->obj.pos[0] <= OBJECT_MAX_Y &&
-		    ship->obj.pos[1] >= OBJECT_MIN_X && ship->obj.pos[1] <= OBJECT_MAX_X)
+		if (ship->obj.rel_pos[0] >= OBJECT_MIN_Y && ship->obj.rel_pos[0] <= OBJECT_MAX_Y &&
+		    ship->obj.rel_pos[1] >= OBJECT_MIN_X && ship->obj.rel_pos[1] <= OBJECT_MAX_X)
 		{
 			Reset0Ref();
 			Moveto_d(0, 0);

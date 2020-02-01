@@ -22,7 +22,7 @@
 #include "random.h"
 
 #define MAX_MINES		10
-#define MAX_SHIPS		2
+#define MAX_SHIPS		1
 #define MAX_BULLETS	3
 
 #define SCALE 		24
@@ -120,8 +120,8 @@ void init_game(void)
 			&mines[i],
 			(pos_y) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U),
 			(pos_x) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U),
-			((signed int) size + 1) * SCALE/12,
-			((signed int) size + 1) * SCALE/12,
+			((signed int) size + 1) * SCALE/3,
+			((signed int) size + 1) * SCALE/3,
 			MINE_TYPE_DIRECTIONAL,
 			15U + (random() % 30U) * 8U,
 			0,
@@ -177,7 +177,7 @@ int main(void)
 
 		move_mines(&player);
 		move_ships(&player);
-		move_bullets(&player);
+		move_bullets();
 
 		Wait_Recal();
 

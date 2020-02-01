@@ -72,7 +72,7 @@ void move_player(
 		bullet = (struct bullet *) bullet_free_list;
 		if (bullet)
 		{
-			init_bullet(bullet, player->obj.pos[0], -player->obj.pos[1], 2, 2, 4, player->angle);
+			init_bullet(bullet, 0, 0, 2, 2, 4);
 		}
 	}
 
@@ -87,8 +87,8 @@ void move_player(
 
 	if (player->speed)
 	{
-		player->obj.pos[0] += player->up_vec[0] * player->speed;
-		player->obj.pos[1] += player->up_vec[1] * player->speed;
+		player->obj.rel_pos[0] += player->up_vec[0] * player->speed;
+		player->obj.rel_pos[1] += player->up_vec[1] * player->speed;
 		player->update_view = 1;
 	}
 }
