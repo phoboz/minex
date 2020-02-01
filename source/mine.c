@@ -81,6 +81,23 @@ void move_mines(
 					mine->obj_pos[1] += mine->velocity[1];
 					update_view = 1;
 				}
+
+				if (update_view || player->update_view)
+				{
+					mine->obj.pos[0] = mine->obj_pos[0] - player->obj.pos[0];
+					mine->obj.pos[1] = mine->obj_pos[1] + player->obj.pos[1];
+					Rot_VL_ab(player->angle, 0, mine->obj.pos, mine->obj.world_pos);
+
+					if (mine->world_angle != player->angle)
+					{
+						if (mine->state == MINE_STATE_ACTIVE)
+						{
+							Rot_VL_Mode(player->angle, (signed int *) mine->shape, mine->world_vlist);
+						}
+					}
+
+					mine->world_angle = player->angle;
+				}
 			}
 		}
 		else if (mine->lo_counter == 2)
@@ -92,6 +109,23 @@ void move_mines(
 					mine->obj_pos[0] += mine->velocity[0];
 					mine->obj_pos[1] += mine->velocity[1];
 					update_view = 1;
+				}
+
+				if (update_view || player->update_view)
+				{
+					mine->obj.pos[0] = mine->obj_pos[0] - player->obj.pos[0];
+					mine->obj.pos[1] = mine->obj_pos[1] + player->obj.pos[1];
+					Rot_VL_ab(player->angle, 0, mine->obj.pos, mine->obj.world_pos);
+
+					if (mine->world_angle != player->angle)
+					{
+						if (mine->state == MINE_STATE_ACTIVE)
+						{
+							Rot_VL_Mode(player->angle, (signed int *) mine->shape, mine->world_vlist);
+						}
+					}
+
+					mine->world_angle = player->angle;
 				}
 			}
 		}
@@ -129,24 +163,24 @@ void move_mines(
 					mine->obj_pos[1] += mine->velocity[1];
 					update_view = 1;
 				}
-			}
-		}
 
-		if (update_view || player->update_view)
-		{
-			mine->obj.pos[0] = mine->obj_pos[0] - player->obj.pos[0];
-			mine->obj.pos[1] = mine->obj_pos[1] + player->obj.pos[1];
-			Rot_VL_ab(player->angle, 0, mine->obj.pos, mine->obj.world_pos);
-
-			if (mine->world_angle != player->angle)
-			{
-				if (mine->state == MINE_STATE_ACTIVE)
+				if (update_view || player->update_view)
 				{
-					Rot_VL_Mode(player->angle, (signed int *) mine->shape, mine->world_vlist);
+					mine->obj.pos[0] = mine->obj_pos[0] - player->obj.pos[0];
+					mine->obj.pos[1] = mine->obj_pos[1] + player->obj.pos[1];
+					Rot_VL_ab(player->angle, 0, mine->obj.pos, mine->obj.world_pos);
+
+					if (mine->world_angle != player->angle)
+					{
+						if (mine->state == MINE_STATE_ACTIVE)
+						{
+							Rot_VL_Mode(player->angle, (signed int *) mine->shape, mine->world_vlist);
+						}
+					}
+
+					mine->world_angle = player->angle;
 				}
 			}
-
-			mine->world_angle = player->angle;
 		}
 	
 		if (/*remove*/0)
