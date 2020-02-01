@@ -11,6 +11,7 @@ struct ship
 {
 	struct object obj;
 	signed int obj_pos[2];
+	signed int rel_pos[2];
 	unsigned int obj_angle;
 	unsigned int old_obj_angle;
 	unsigned int world_angle;

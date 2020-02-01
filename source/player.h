@@ -6,6 +6,7 @@
 struct player
 {
 	struct object obj;
+	signed int rel_pos[2];
 	unsigned int update_view;
 	unsigned int angle;
 	signed int speed;

@@ -87,8 +87,8 @@ void move_player(
 
 	if (player->speed)
 	{
-		player->obj.rel_pos[0] += player->up_vec[0] * player->speed;
-		player->obj.rel_pos[1] += player->up_vec[1] * player->speed;
+		player->rel_pos[0] += player->up_vec[0] * player->speed;
+		player->rel_pos[1] += player->up_vec[1] * player->speed;
 		player->update_view = 1;
 	}
 }

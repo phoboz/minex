@@ -72,9 +72,6 @@ void init_object(
 	obj->center_pos[0] = 0;
 	obj->center_pos[1] = 0;
 
-	obj->rel_pos[0] = y;
-	obj->rel_pos[1] = x;
-
 	obj->world_pos[0] = y;
 	obj->world_pos[1] = x;
 

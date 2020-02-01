@@ -162,10 +162,10 @@ int main(void)
 
 	init_game();
 
-	init_player(&player, 0, 0, SCALE/4, SCALE/4, 0, DRAW_SCALE, player_ship);
+	init_player(&player, 0, 0, SCALE/3, SCALE/3, 0, DRAW_SCALE, player_ship);
 
 #if 0
-	init_ship(&ships[0], 0, 100, SCALE/4, SCALE/4, 0, 0, DRAW_SCALE, alien_ship);
+	init_ship(&ships[0], 0, 100, SCALE, SCALE, 0, 0, DRAW_SCALE, alien_ship);
 	ships[0].speed = 3;
 #endif
 
@@ -173,7 +173,7 @@ int main(void)
 	{
 		move_player(&player);
 
-		if (++ships[0].obj_angle == 64) ships[0].obj_angle = 0;
+		//if (++ships[0].obj_angle == 64) ships[0].obj_angle = 0;
 
 		move_mines(&player);
 		move_ships(&player);

@@ -32,7 +32,7 @@
 		<IsCKeepEnriched>false</IsCKeepEnriched>
 		<IsCProject>false</IsCProject>
 		<IsPeerCProject>true</IsPeerCProject>
-		<CFLAGS>-quiet -fno-gcse -fverbose-asm -W -Wall -Wextra -Wconversion -Werror -fomit-frame-pointer -fno-toplevel-reorder -mint8 -msoft-reg-count=0 -std=gnu99 -fno-time-report -IC/PeerC/vectrex/include</CFLAGS>
+		<CFLAGS>-O3 -quiet -fno-gcse -fverbose-asm -W -Wall -Wextra -Wconversion -Werror -fomit-frame-pointer -fno-toplevel-reorder -mint8 -msoft-reg-count=0 -std=gnu99 -fno-time-report -IC/PeerC/vectrex/include</CFLAGS>
 		<IsCRumInlined>false</IsCRumInlined>
 	</ProjectProperties>
 </AllProjectProperties>

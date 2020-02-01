@@ -19,6 +19,7 @@ struct mine
 {
 	struct object obj;
 	signed int obj_pos[2];
+	signed int rel_pos[2];
 	signed int velocity[2];
 	unsigned int type;
 	unsigned int state;
