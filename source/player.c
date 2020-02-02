@@ -32,6 +32,8 @@ void init_player(
 	player->angle	= angle;
 	player->speed	= 0;
 
+	player->fire_countdown = 0;
+
 	Rot_VL_ab(angle, 0, (signed int *) player_up_vec, player->up_vec);
 }
 
@@ -42,6 +44,11 @@ void move_player(
 	struct bullet *bullet;
 
 	player->update_view = 0;
+
+	if (player->fire_countdown)
+	{
+		player->fire_countdown--;
+	}
 
 	check_joysticks();
 	check_buttons();
@@ -69,10 +76,14 @@ void move_player(
 
 	if (button_1_4_pressed())
 	{
-		bullet = (struct bullet *) bullet_free_list;
-		if (bullet)
+		if (!player->fire_countdown)
 		{
-			init_bullet(bullet, 0, 0, 4);
+			bullet = (struct bullet *) bullet_free_list;
+			if (bullet)
+			{
+				init_bullet(bullet, 0, 0, PLAYER_BULLET_SPEED);
+				player->fire_countdown = PLAYER_FIRE_TRESHOLD;
+			}
 		}
 	}
 
