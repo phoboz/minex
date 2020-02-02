@@ -3,7 +3,9 @@
 
 #include "object.h"
 
-#define MINE_MAX_VECTORS		9
+#define MAX_MINES				12
+
+#define MINE_MAX_VECTORS		8
 
 #define MINE_TYPE_DIRECTIONAL	0
 #define MINE_TYPE_MAGNETIC		1
@@ -32,8 +34,8 @@ struct mine
 	signed char world_vlist[MINE_MAX_VECTORS*3 + 1];
 };
 
-extern struct object *mine_list;
-extern struct object *mine_free_list;
+extern unsigned int num_mines;
+extern struct mine mines[];
 
 void init_mine(
 	struct mine *mine,

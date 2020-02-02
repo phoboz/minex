@@ -3,6 +3,9 @@
 
 #include "object.h"
 
+#define PLAYER_FIRE_TRESHOLD	8
+#define PLAYER_FIRE_SPEED		4
+
 struct player
 {
 	struct object obj;
@@ -11,6 +14,7 @@ struct player
 	unsigned int angle;
 	signed int speed;
 	signed int up_vec[2];
+	unsigned int fire_countdown;
 	unsigned int scale;
 	const signed char *shape;
 };

@@ -1,25 +1,24 @@
 #ifndef _BULLET_H
 #define _BULLET_H
 
-#include "object.h"
+#define MAX_BULLETS		3
 
+struct object;
 struct player;
 
 struct bullet
 {
-	struct object obj;
+	unsigned int active;
+	signed int world_pos[2];
 	signed int speed;
 };
 
-extern struct object *bullet_list;
-extern struct object *bullet_free_list;
+extern struct bullet bullets[];
 
 void init_bullet(
 	struct bullet *bullet,
 	signed int y,
 	signed int x,
-	signed int h,
-	signed int w,
 	signed int speed
 	);
 
@@ -27,7 +26,19 @@ void deinit_bullet(
 	struct bullet *bullet
 	);
 
+void fire_bullet(
+	signed int y,
+	signed int x,
+	signed int speed
+	);
+
 void move_bullets(void);
+
+unsigned int hit_object_bullet(
+	struct bullet *bullet,
+	struct object *obj
+	);
+
 void draw_bullets(void);
 
 #endif

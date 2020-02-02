@@ -25,12 +25,14 @@ void init_player(
 	const signed char *shape
 	)
 {
-	init_object(&player->obj, y, x, h, w, 0);
+	init_object(&player->obj, y, x, h, w);
 	player->shape = shape;
 	player->scale = scale;
 
 	player->angle	= angle;
 	player->speed	= 0;
+
+	player->fire_countdown = 0;
 
 	Rot_VL_ab(angle, 0, (signed int *) player_up_vec, player->up_vec);
 }
@@ -39,9 +41,12 @@ void move_player(
 	struct player *player
 	)
 {
-	struct bullet *bullet;
-
 	player->update_view = 0;
+
+	if (player->fire_countdown)
+	{
+		player->fire_countdown--;
+	}
 
 	check_joysticks();
 	check_buttons();
@@ -69,10 +74,10 @@ void move_player(
 
 	if (button_1_4_pressed())
 	{
-		bullet = (struct bullet *) bullet_free_list;
-		if (bullet)
+		if (!player->fire_countdown)
 		{
-			init_bullet(bullet, 0, 0, 2, 2, 4);
+			fire_bullet(0, 0, 4);
+			player->fire_countdown = PLAYER_FIRE_TRESHOLD;
 		}
 	}
 

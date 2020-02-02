@@ -21,10 +21,6 @@
 #include "bullet.h"
 #include "random.h"
 
-#define MAX_MINES		10
-#define MAX_SHIPS		1
-#define MAX_BULLETS	3
-
 #define SCALE 		24
 #define DRAW_SCALE		0x10
 
@@ -100,20 +96,12 @@ const signed char alien_ship[]=
 };
 
 struct player player;
-struct mine mines[MAX_MINES];
-struct ship ships[MAX_SHIPS];
-struct bullet bullets[MAX_BULLETS];
 
 void init_game(void)
 {
 	unsigned int i;
 	unsigned int size;
 	unsigned int pos_y, pos_x;
-
-	for (i = 0; i < MAX_MINES; i++)
-	{
-		deinit_mine(&mines[i]);
-	}
 
 	for (i = 0; i < MAX_MINES; i++)
 	{
@@ -135,15 +123,12 @@ void init_game(void)
 			);
 	}
 
-	for (i = 0; i < MAX_SHIPS; i++)
-	{
-		deinit_ship(&ships[i]);
-	}
+#if 0
+	init_ship(&ships[0], 0, 100, SCALE, SCALE, 0, 0, DRAW_SCALE, alien_ship);
+	ships[0].speed = 3;
+#endif
 
-	for (i = 0; i < MAX_BULLETS; i++)
-	{
-		deinit_bullet(&bullets[i]);
-	}
+	init_player(&player, 0, 0, SCALE/3, SCALE/3, 0, DRAW_SCALE, player_ship);
 }
 
 // ---------------------------------------------------------------------------
@@ -165,17 +150,13 @@ int main(void)
 
 	init_random(35, 27, 3, 19);
 
-	init_game();
-
-	init_player(&player, 0, 0, SCALE/3, SCALE/3, 0, DRAW_SCALE, player_ship);
-
-#if 0
-	init_ship(&ships[0], 0, 100, SCALE, SCALE, 0, 0, DRAW_SCALE, alien_ship);
-	ships[0].speed = 3;
-#endif
-
 	while(1)
 	{
+		if (num_mines == 0)
+		{
+			init_game();
+		}
+
 		move_player(&player);
 
 		//if (++ships[0].obj_angle == 64) ships[0].obj_angle = 0;
