@@ -68,9 +68,10 @@ void move_ships(
 	unsigned int update_view;
 
 	struct ship *ship;
-	struct ship *rem = 0;
+	struct ship *rem_ship = 0;
 
 	struct bullet *bullet;
+	struct bullet *rem_bullet = 0;
 
 	ship = (struct ship *) ship_list;
 	while (ship != 0)
@@ -107,7 +108,14 @@ void move_ships(
 		{
 			if (hit_particle_object(&bullet->obj, &ship->obj))
 			{
-				rem = ship;
+				rem_ship = ship;
+				rem_bullet = bullet;
+			}
+
+			if (rem_bullet != 0)
+			{
+				deinit_bullet(rem_bullet);
+				rem_bullet = 0;
 			}
 
 			bullet = (struct bullet *) bullet->obj.next;
@@ -115,10 +123,10 @@ void move_ships(
 
 		ship = (struct ship *) ship->obj.next;
 
-		if (rem != 0)
+		if (rem_ship != 0)
 		{
-			deinit_ship(rem);
-			rem = 0;
+			deinit_ship(rem_ship);
+			rem_ship = 0;
 		}
 	}
 }

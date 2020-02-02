@@ -68,9 +68,10 @@ void move_mines(
 	unsigned int update_view;
 
 	struct mine *mine;
-	struct mine *rem = 0;
+	struct mine *rem_mine = 0;
 
 	struct bullet *bullet;
+	struct bullet *rem_bullet = 0;
 
 	mine = (struct mine *) mine_list;
 	while (mine != 0)
@@ -198,7 +199,14 @@ void move_mines(
 		{
 			if (hit_particle_object(&bullet->obj, &mine->obj))
 			{
-				rem = mine;
+				rem_mine = mine;
+				rem_bullet = bullet;
+			}
+
+			if (rem_bullet != 0)
+			{
+				deinit_bullet(rem_bullet);
+				rem_bullet = 0;
 			}
 
 			bullet = (struct bullet *) bullet->obj.next;
@@ -207,10 +215,10 @@ void move_mines(
 		mine = (struct mine *) mine->obj.next;
 		mine_index++;
 
-		if (rem != 0)
+		if (rem_mine != 0)
 		{
-			deinit_mine(rem);
-			rem = 0;
+			deinit_mine(rem_mine);
+			rem_mine = 0;
 		}
 	}
 }
@@ -252,7 +260,6 @@ void draw_mines(void)
 
 				Moveto_d(-mine->obj.center_pos[0], -mine->obj.center_pos[1]);
 #endif
-
 				dp_VIA_t1_cnt_lo = mine->scale;
 				Draw_VLp(mine->world_vlist);
 			}

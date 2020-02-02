@@ -3,7 +3,7 @@
 
 #include "object.h"
 
-#define MINE_MAX_VECTORS		8
+#define MINE_MAX_VECTORS		9
 
 #define MINE_TYPE_DIRECTIONAL	0
 #define MINE_TYPE_MAGNETIC		1

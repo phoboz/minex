@@ -41,7 +41,6 @@ const signed char mine_1_1[]=
 	(signed char) 0xFF, +0x04*BLOW_UP, -0x02*BLOW_UP,  // pattern, y, x
 	(signed char) 0x01 // endmarker (high bit in pattern not set)
 };
-
 const signed char mine_1_2[]=
 {	(signed char) 0xFF, -0x02*BLOW_UP/2, +0x04*BLOW_UP/2,  // pattern, y, x
 	(signed char) 0xFF, +0x02*BLOW_UP/2, +0x04*BLOW_UP/2,  // pattern, y, x
@@ -53,7 +52,6 @@ const signed char mine_1_2[]=
 	(signed char) 0xFF, +0x04*BLOW_UP/2, -0x02*BLOW_UP/2,  // pattern, y, x
 	(signed char) 0x01 // endmarker (high bit in pattern not set)
 };
-
 const signed char mine_1_3[]=
 {	(signed char) 0xFF, -0x02*BLOW_UP/3, +0x04*BLOW_UP/3,  // pattern, y, x
 	(signed char) 0xFF, +0x02*BLOW_UP/3, +0x04*BLOW_UP/3,  // pattern, y, x
@@ -71,6 +69,13 @@ const signed char * const mine_1[] =
 	mine_1_3,
 	mine_1_2,
 	mine_1_1
+};
+
+const signed int mine_1_sz[] =
+{
+	8,
+	14,
+	24
 };
 
 const signed char player_ship[]=
@@ -120,8 +125,8 @@ void init_game(void)
 			&mines[i],
 			(pos_y) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U),
 			(pos_x) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U),
-			((signed int) size + 1) * SCALE/3,
-			((signed int) size + 1) * SCALE/3,
+			mine_1_sz[size],
+			mine_1_sz[size],
 			MINE_TYPE_DIRECTIONAL,
 			15U + (random() % 30U) * 8U,
 			0,
