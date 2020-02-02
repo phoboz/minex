@@ -112,13 +112,13 @@ void move_ships(
 				rem_bullet = bullet;
 			}
 
+			bullet = (struct bullet *) bullet->obj.next;
+
 			if (rem_bullet != 0)
 			{
 				deinit_bullet(rem_bullet);
 				rem_bullet = 0;
 			}
-
-			bullet = (struct bullet *) bullet->obj.next;
 		}
 
 		ship = (struct ship *) ship->obj.next;

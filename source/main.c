@@ -110,40 +110,39 @@ void init_game(void)
 	unsigned int size;
 	unsigned int pos_y, pos_x;
 
+	struct mine *mine;
 	for (i = 0; i < MAX_MINES; i++)
 	{
-		deinit_mine(&mines[i]);
+		mine = (struct mine *) mine_free_list;
+		if (mine)
+		{
+			pos_y = random() % 2;
+			pos_x = random() % 2;
+			size = random() % 3;
+
+			init_mine(
+				mine,
+				(pos_y) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U),
+				(pos_x) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U),
+				mine_1_sz[size],
+				mine_1_sz[size],
+				MINE_TYPE_DIRECTIONAL,
+				15U + (random() % 30U) * 8U,
+				0,
+				DRAW_SCALE,
+				mine_1[size]
+				);
+		}
 	}
 
-	for (i = 0; i < MAX_MINES; i++)
+#if 0
+	struct ship *ship = (struct ship *) ship_free_list;
+	if (ship)
 	{
-		pos_y = random() % 2;
-		pos_x = random() % 2;
-		size = random() % 3;
-
-		init_mine(
-			&mines[i],
-			(pos_y) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U),
-			(pos_x) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U),
-			mine_1_sz[size],
-			mine_1_sz[size],
-			MINE_TYPE_DIRECTIONAL,
-			15U + (random() % 30U) * 8U,
-			0,
-			DRAW_SCALE,
-			mine_1[size]
-			);
+		init_ship(ship, 0, 100, SCALE, SCALE, 0, 0, DRAW_SCALE, alien_ship);
+		ship->speed = 3;
 	}
-
-	for (i = 0; i < MAX_SHIPS; i++)
-	{
-		deinit_ship(&ships[i]);
-	}
-
-	for (i = 0; i < MAX_BULLETS; i++)
-	{
-		deinit_bullet(&bullets[i]);
-	}
+#endif
 }
 
 // ---------------------------------------------------------------------------
@@ -158,6 +157,8 @@ void init_game(void)
 
 int main(void)
 {
+	unsigned int i;
+
 	enable_controller_1_x();
 	enable_controller_1_y();
 	disable_controller_2_x();
@@ -165,17 +166,32 @@ int main(void)
 
 	init_random(35, 27, 3, 19);
 
+	for (i = 0; i < MAX_MINES; i++)
+	{
+		give_object(&mines[i].obj, &mine_free_list);
+	}
+
+	for (i = 0; i < MAX_SHIPS; i++)
+	{
+		give_object(&ships[i].obj, &ship_free_list);
+	}
+
+	for (i = 0; i < MAX_BULLETS; i++)
+	{
+		give_object(&bullets[i].obj, &bullet_free_list);
+	}
+
 	init_game();
 
 	init_player(&player, 0, 0, SCALE/3, SCALE/3, 0, DRAW_SCALE, player_ship);
 
-#if 0
-	init_ship(&ships[0], 0, 100, SCALE, SCALE, 0, 0, DRAW_SCALE, alien_ship);
-	ships[0].speed = 3;
-#endif
-
 	while(1)
 	{
+		if (mine_list == 0)
+		{
+			init_game();
+		}
+
 		move_player(&player);
 
 		//if (++ships[0].obj_angle == 64) ships[0].obj_angle = 0;

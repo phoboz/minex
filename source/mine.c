@@ -194,22 +194,25 @@ void move_mines(
 			}
 		}
 
-		bullet = (struct bullet *) bullet_list;
-		while (bullet)
+		if (mine->state == MINE_STATE_ACTIVE)
 		{
-			if (hit_particle_object(&bullet->obj, &mine->obj))
+			bullet = (struct bullet *) bullet_list;
+			while (bullet)
 			{
-				rem_mine = mine;
-				rem_bullet = bullet;
-			}
+				if (hit_particle_object(&bullet->obj, &mine->obj))
+				{
+					rem_mine = mine;
+					rem_bullet = bullet;
+				}
 
-			if (rem_bullet != 0)
-			{
-				deinit_bullet(rem_bullet);
-				rem_bullet = 0;
-			}
+				bullet = (struct bullet *) bullet->obj.next;
 
-			bullet = (struct bullet *) bullet->obj.next;
+				if (rem_bullet != 0)
+				{
+					deinit_bullet(rem_bullet);
+					rem_bullet = 0;
+				}
+			}
 		}
 
 		mine = (struct mine *) mine->obj.next;
