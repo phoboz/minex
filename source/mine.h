@@ -32,8 +32,8 @@ struct mine
 	signed char world_vlist[MINE_MAX_VECTORS*3 + 1];
 };
 
-extern struct object *mine_list;
-extern struct object *mine_free_list;
+extern struct element *mine_list;
+extern struct element *mine_free_list;
 
 void init_mine(
 	struct mine *mine,

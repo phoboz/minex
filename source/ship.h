@@ -23,8 +23,8 @@ struct ship
 	signed char world_vlist[SHIP_MAX_VECTORS*3 + 1];
 };
 
-extern struct object *ship_list;
-extern struct object *ship_free_list;
+extern struct element *ship_list;
+extern struct element *ship_free_list;
 
 void init_ship(
 	struct ship *ship,

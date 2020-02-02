@@ -10,8 +10,8 @@
 
 // ---------------------------------------------------------------------------
 
-struct object *mine_list = 0;
-struct object *mine_free_list = 0;
+struct element *mine_list = 0;
+struct element *mine_free_list = 0;
 
 void init_mine(
 	struct mine *mine,
@@ -26,7 +26,7 @@ void init_mine(
 	const signed char *shape
 	)
 {
-	take_object(&mine->obj, &mine_free_list);
+	take_element(&mine->obj.elmnt, &mine_free_list);
 	init_object(&mine->obj, y, x, h, w, &mine_list);
 	mine->scale = scale;
 	mine->shape = shape;
@@ -57,7 +57,7 @@ void deinit_mine(
 	)
 {
 	deinit_object(&mine->obj, &mine_list);
-	give_object(&mine->obj, &mine_free_list);
+	give_element(&mine->obj.elmnt, &mine_free_list);
 }
 
 void move_mines(
@@ -199,13 +199,13 @@ void move_mines(
 			bullet = (struct bullet *) bullet_list;
 			while (bullet)
 			{
-				if (hit_particle_object(&bullet->obj, &mine->obj))
+				if (hit_object_bullet(bullet, &mine->obj))
 				{
 					rem_mine = mine;
 					rem_bullet = bullet;
 				}
 
-				bullet = (struct bullet *) bullet->obj.next;
+				bullet = (struct bullet *) bullet->elmnt.next;
 
 				if (rem_bullet != 0)
 				{
@@ -215,7 +215,7 @@ void move_mines(
 			}
 		}
 
-		mine = (struct mine *) mine->obj.next;
+		mine = (struct mine *) mine->obj.elmnt.next;
 		mine_index++;
 
 		if (rem_mine != 0)
@@ -268,7 +268,7 @@ void draw_mines(void)
 			}
 		}
 
-		mine = (struct mine *) mine->obj.next;
+		mine = (struct mine *) mine->obj.elmnt.next;
 	}
 }
 

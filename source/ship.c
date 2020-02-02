@@ -9,8 +9,8 @@
 
 // ---------------------------------------------------------------------------
 
-struct object *ship_list = 0;
-struct object *ship_free_list = 0;
+struct element *ship_list = 0;
+struct element *ship_free_list = 0;
 
 static const signed char ship_front_vec[]=
 {
@@ -29,7 +29,7 @@ void init_ship(
 	const signed char *shape
 	)
 {
-	take_object(&ship->obj, &ship_free_list);
+	take_element(&ship->obj.elmnt, &ship_free_list);
 	init_object(&ship->obj, y, x, h, w, &ship_list);
 	ship->shape = shape;
 	ship->scale = scale;
@@ -58,7 +58,7 @@ void deinit_ship(
 	)
 {
 	deinit_object(&ship->obj, &ship_list);
-	give_object(&ship->obj, &ship_free_list);
+	give_element(&ship->obj.elmnt, &ship_free_list);
 }
 
 void move_ships(
@@ -106,13 +106,13 @@ void move_ships(
 		bullet = (struct bullet *) bullet_list;
 		while (bullet)
 		{
-			if (hit_particle_object(&bullet->obj, &ship->obj))
+			if (hit_object_bullet(bullet, &ship->obj))
 			{
 				rem_ship = ship;
 				rem_bullet = bullet;
 			}
 
-			bullet = (struct bullet *) bullet->obj.next;
+			bullet = (struct bullet *) bullet->elmnt.next;
 
 			if (rem_bullet != 0)
 			{
@@ -121,7 +121,7 @@ void move_ships(
 			}
 		}
 
-		ship = (struct ship *) ship->obj.next;
+		ship = (struct ship *) ship->obj.elmnt.next;
 
 		if (rem_ship != 0)
 		{
@@ -167,7 +167,7 @@ void draw_ships(void)
 			Draw_VLp(ship->world_vlist);
 		}
 
-		ship = (struct ship *) ship->obj.next;
+		ship = (struct ship *) ship->obj.elmnt.next;
 	}
 }
 

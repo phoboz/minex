@@ -7,64 +7,13 @@
 
 // ---------------------------------------------------------------------------
 
-void  give_object(
-	struct object *obj,
-	struct object **head
-	)
-{
-	obj->active = 0;
-
-	// Add object to list
-	if (head)
-	{
-		obj->prev = 0;
-		obj->next = *head;
-		*head = obj;
-
-		if (obj->next != 0)
-		{
-			obj->next->prev = obj;
-		}
-	}
-	else
-	{
-		obj->prev = 0;
-		obj->next = 0;
-	}
-}
-
-void take_object(
-	struct object *obj,
-	struct object **head
-	)
-{
-	// Remove object from list
-	if (head)
-	{
-		if (obj->prev != 0)
-		{
-			obj->prev->next = obj->next;
-		}
-
-		if (obj->next != 0)
-		{
-			obj->next->prev = obj->prev;
-		}
-
-		if (*head == obj)
-		{
-			*head = obj->next;
-		}
-	}
-}
-
 void init_object(
 	struct object *obj,
 	signed int y,
 	signed int x,
 	signed int h,
 	signed int w,
-	struct object **head
+	struct element **head
 	)
 {
 	obj->active = 1;
@@ -78,50 +27,17 @@ void init_object(
 	obj->dim_2[0] = -(h >> 1);
 	obj->dim_2[1] = w >> 1;
 
-	// Add object to list
-	if (head)
-	{
-		obj->prev = 0;
-		obj->next = *head;
-		*head = obj;
-
-		if (obj->next != 0)
-		{
-			obj->next->prev = obj;
-		}
-	}
-	else
-	{
-		obj->prev = 0;
-		obj->next = 0;
-	}
+	give_element(&obj->elmnt, head);
 }
 
 void deinit_object(
 	struct object *obj,
-	struct object **head
+	struct element **head
 	)
 {
 	if (obj->active)
 	{
-		// Remove object from list
-		if (head)
-		{
-			if (obj->prev != 0)
-			{
-				obj->prev->next = obj->next;
-			}
-
-			if (obj->next != 0)
-			{
-				obj->next->prev = obj->prev;
-			}
-
-			if (*head == obj)
-			{
-				*head = obj->next;
-			}
-		}
+		take_element(&obj->elmnt, head);
 	}
 
 	obj->active = 0;

@@ -72,7 +72,7 @@ void move_player(
 		bullet = (struct bullet *) bullet_free_list;
 		if (bullet)
 		{
-			init_bullet(bullet, 0, 0, 2, 2, 4);
+			init_bullet(bullet, 0, 0, 4);
 		}
 	}
 

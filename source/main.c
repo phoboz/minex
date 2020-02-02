@@ -168,17 +168,19 @@ int main(void)
 
 	for (i = 0; i < MAX_MINES; i++)
 	{
-		give_object(&mines[i].obj, &mine_free_list);
+		mines[i].obj.active = 0;
+		give_element(&mines[i].obj.elmnt, &mine_free_list);
 	}
 
 	for (i = 0; i < MAX_SHIPS; i++)
 	{
-		give_object(&ships[i].obj, &ship_free_list);
+		ships[i].obj.active = 0;
+		give_element(&ships[i].obj.elmnt, &ship_free_list);
 	}
 
 	for (i = 0; i < MAX_BULLETS; i++)
 	{
-		give_object(&bullets[i].obj, &bullet_free_list);
+		give_element(&bullets[i].elmnt, &bullet_free_list);
 	}
 
 	init_game();
