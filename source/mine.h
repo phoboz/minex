@@ -46,7 +46,7 @@ void init_mine(
 	signed int w,
 	unsigned int type,
 	unsigned int treshold,
-	unsigned int world_angle,
+	struct player *player,
 	unsigned int scale,
 	const signed char *shape
 	);

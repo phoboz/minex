@@ -30,7 +30,9 @@ void init_player(
 	player->scale = scale;
 
 	player->angle	= angle;
-	player->speed	= 0;
+
+	player->speed_counter	= 0;
+	player->speed			= 0;
 
 	player->fire_countdown = 0;
 
@@ -89,11 +91,25 @@ void move_player(
 
 	if (button_1_3_held())
 	{
-		player->speed = 2;
+		if (++player->speed_counter >= PLAYER_ACCELERATE_TRESHOLD)
+		{
+			player->speed_counter = 0;
+			if (player->speed < PLAYER_MAX_SPEED)
+			{
+				player->speed++;
+			}
+		}
 	}
 	else
 	{
-		player->speed = 0;
+		if (++player->speed_counter >= PLAYER_BRAKE_TRESHOLD)
+		{
+			player->speed_counter = 0;
+			if (player->speed > 0)
+			{
+				player->speed--;
+			}
+		}
 	}
 
 	if (player->speed)

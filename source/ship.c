@@ -24,7 +24,7 @@ void init_ship(
 	signed int h,
 	signed int w,
 	unsigned int obj_angle,
-	unsigned int world_angle,
+	struct player *player,
 	unsigned int scale,
 	const signed char *shape
 	)
@@ -44,10 +44,12 @@ void init_ship(
 	ship->old_obj_angle	= obj_angle;
 	Rot_VL_Mode(ship->obj_angle, (signed int *) shape, ship->obj_vlist);
 
-	ship->world_angle	= world_angle;
-	Rot_VL_ab(world_angle, 0, ship->obj.dim_2, ship->obj.center_pos);
-	Rot_VL_ab(world_angle, 0, ship->rel_pos, ship->obj.world_pos);
-	Rot_VL_Mode(world_angle, (signed int*) ship->obj_vlist, &ship->world_vlist);
+	ship->world_angle = player->angle;
+	ship->rel_pos[0] = ship->obj_pos[0] - player->rel_pos[0];
+	ship->rel_pos[1] = ship->obj_pos[1] + player->rel_pos[1];
+	Rot_VL_ab(player->angle, 0, ship->obj.dim_2, ship->obj.center_pos);
+	Rot_VL_ab(player->angle, 0, ship->rel_pos, ship->obj.world_pos);
+	Rot_VL_Mode(player->angle, (signed int*) shape, &ship->world_vlist);
 
 	ship->speed = 0;
 	Rot_VL_ab(obj_angle, 0, (signed int *) ship_front_vec, ship->front_vec);

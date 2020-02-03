@@ -104,7 +104,7 @@ struct mine mines[MAX_MINES];
 struct ship ships[MAX_SHIPS];
 struct bullet bullets[MAX_BULLETS];
 
-void init_game(void)
+void init_level(void)
 {
 	unsigned int i;
 	unsigned int size;
@@ -128,7 +128,7 @@ void init_game(void)
 				mine_1_sz[size],
 				MINE_TYPE_DIRECTIONAL,
 				15U + (random() % 30U) * 8U,
-				0,
+				&player,
 				DRAW_SCALE,
 				mine_1[size]
 				);
@@ -139,7 +139,7 @@ void init_game(void)
 	struct ship *ship = (struct ship *) ship_free_list;
 	if (ship)
 	{
-		init_ship(ship, 0, 100, SCALE, SCALE, 0, 0, DRAW_SCALE, alien_ship);
+		init_ship(ship, 0, 100, SCALE, SCALE, 0, &player, DRAW_SCALE, alien_ship);
 		ship->speed = 3;
 	}
 #endif
@@ -183,15 +183,14 @@ int main(void)
 		give_element(&bullets[i].elmnt, &bullet_free_list);
 	}
 
-	init_game();
-
 	init_player(&player, 0, 0, SCALE/3, SCALE/3, 0, DRAW_SCALE, player_ship);
 
 	while(1)
 	{
 		if (mine_list == 0)
 		{
-			init_game();
+			player.rel_pos[0] = player.rel_pos[1];
+			init_level();
 		}
 
 		move_player(&player);

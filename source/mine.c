@@ -39,7 +39,7 @@ void init_mine(
 	signed int w,
 	unsigned int type,
 	unsigned int treshold,
-	unsigned int world_angle,
+	struct player *player,
 	unsigned int scale,
 	const signed char *shape
 	)
@@ -64,10 +64,12 @@ void init_mine(
 	mine->hi_counter	= 0;
 	mine->treshold	= treshold;
 
-	mine->world_angle = world_angle;
-	Rot_VL_ab(world_angle, 0, mine->obj.dim_2, mine->obj.center_pos);
-	Rot_VL_ab(world_angle, 0, mine->rel_pos, mine->obj.world_pos);
-	Rot_VL_Mode(world_angle, (signed int*) shape, &mine->world_vlist);
+	mine->world_angle = player->angle;
+	mine->rel_pos[0] = mine->obj_pos[0] - player->rel_pos[0];
+	mine->rel_pos[1] = mine->obj_pos[1] + player->rel_pos[1];
+	Rot_VL_ab(player->angle, 0, mine->obj.dim_2, mine->obj.center_pos);
+	Rot_VL_ab(player->angle, 0, mine->rel_pos, mine->obj.world_pos);
+	Rot_VL_Mode(player->angle, (signed int*) shape, &mine->world_vlist);
 }
 
 void deinit_mine(

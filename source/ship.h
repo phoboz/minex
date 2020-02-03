@@ -33,7 +33,7 @@ void init_ship(
 	signed int h,
 	signed int w,
 	unsigned int obj_angle,
-	unsigned int world_angle,
+	struct player *player,
 	unsigned int scale,
 	const signed char *shape
 	);

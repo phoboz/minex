@@ -3,7 +3,7 @@
 
 #include "element.h"
 
-#define OBJECT_MOVE_SCALE	0xc8
+#define OBJECT_MOVE_SCALE	0xa0
 
 #define OBJECT_MIN_Y		-100
 #define OBJECT_MAX_Y		100
