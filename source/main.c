@@ -129,7 +129,7 @@ void init_level(void)
 				mine_1_sz[size],
 				mine_1_sz[size],
 				MINE_TYPE_DIRECTIONAL,
-				15U + (random() % 30U) * 8U,
+				15U + random() % 240U,
 				&player,
 				DRAW_SCALE,
 				mine_1[size]
