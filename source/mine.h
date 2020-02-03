@@ -12,6 +12,9 @@
 #define MINE_STATE_ACTIVE		1
 #define MINE_STATE_EXPLODE		2
 #define MINE_STATE_FIREBALL		3
+#define MINE_STATE_REMOVE		4
+
+#define MINE_EXPLODE_TRESHOLD	8
 
 struct player;
 
