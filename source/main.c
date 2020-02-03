@@ -190,6 +190,7 @@ int main(void)
 		if (mine_list == 0)
 		{
 			player.rel_pos[0] = player.rel_pos[1];
+			player.speed = 0;
 			init_level();
 		}
 
