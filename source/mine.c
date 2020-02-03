@@ -255,14 +255,17 @@ void draw_mines(void)
 {
 	struct mine *mine;
 	signed int center_y, center_x;
+	signed int h, w;
 
 	mine = (struct mine *) mine_list;
 	while (mine != 0)
 	{
 		center_y = mine->obj.world_pos[0] + mine->obj.center_pos[0];
 		center_x = mine->obj.world_pos[1] + mine->obj.center_pos[1];
-		if (center_y >= OBJECT_MIN_Y && center_y <= OBJECT_MAX_Y &&
-		    center_y >= OBJECT_MIN_X && center_y <= OBJECT_MAX_X)
+		h = mine->obj.dim_2[0] << 1;
+		w = mine->obj.dim_2[1] << 1;
+		if (center_y - h >= OBJECT_MIN_Y && center_y + h <= OBJECT_MAX_Y &&
+		    center_x + w >= OBJECT_MIN_X && center_x - w <= OBJECT_MAX_X)
 		{
 			Reset0Ref();
 			Moveto_d(0, 0);

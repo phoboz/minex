@@ -135,14 +135,17 @@ void draw_ships(void)
 {
 	struct ship *ship;
 	signed int center_y, center_x;
+	signed int h, w;
 
 	ship = (struct ship *) ship_list;
 	while (ship != 0)
 	{
 		center_y = ship->obj.world_pos[0] + ship->obj.center_pos[0];
 		center_x = ship->obj.world_pos[1] + ship->obj.center_pos[1];
-		if (center_y >= OBJECT_MIN_Y && center_y <= OBJECT_MAX_Y &&
-		    center_y >= OBJECT_MIN_X && center_y <= OBJECT_MAX_X)
+		h = ship->obj.dim_2[0] << 1;
+		w = ship->obj.dim_2[1] << 1;
+		if (center_y - h >= OBJECT_MIN_Y && center_y + h <= OBJECT_MAX_Y &&
+		    center_x + w >= OBJECT_MIN_X && center_x - w <= OBJECT_MAX_X)
 		{
 			Reset0Ref();
 			Moveto_d(0, 0);

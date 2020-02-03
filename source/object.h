@@ -3,12 +3,12 @@
 
 #include "element.h"
 
-#define OBJECT_MOVE_SCALE	0x80
+#define OBJECT_MOVE_SCALE	0xc8
 
 #define OBJECT_MIN_Y		-100
 #define OBJECT_MAX_Y		100
-#define OBJECT_MIN_X		-100
-#define OBJECT_MAX_X		100
+#define OBJECT_MIN_X		-90
+#define OBJECT_MAX_X		90
 
 struct object
 {
