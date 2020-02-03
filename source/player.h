@@ -9,6 +9,8 @@
 #define PLAYER_FIRE_TRESHOLD		8
 #define PLAYER_BULLET_SPEED			4
 
+#define PLAYER_STATE_NORMAL			0
+
 struct player
 {
 	struct object obj;
@@ -19,6 +21,7 @@ struct player
 	signed int speed;
 	signed int up_vec[2];
 	unsigned int fire_countdown;
+	unsigned int state;
 	unsigned int scale;
 	const signed char *shape;
 };
@@ -38,6 +41,10 @@ void move_player(
 	struct player *player
 	);
 
+void hit_player(
+	struct player *player
+	);
+	
 void draw_player(
 	struct player *player
 	);

@@ -236,6 +236,11 @@ void move_mines(
 					rem_bullet = 0;
 				}
 			}
+
+			if (check_box_object(&mine->obj, player->obj.dim_2[0], -player->obj.dim_2[1], -player->obj.dim_2[0], player->obj.dim_2[1]))
+			{
+				hit_player(player);
+			}
 		}
 		else if (mine->state == MINE_STATE_REMOVE)
 		{

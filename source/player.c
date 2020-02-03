@@ -36,6 +36,8 @@ void init_player(
 
 	player->fire_countdown = 0;
 
+	player->state = PLAYER_STATE_NORMAL;
+
 	Rot_VL_ab(angle, 0, (signed int *) player_up_vec, player->up_vec);
 }
 
@@ -47,87 +49,111 @@ void move_player(
 
 	player->update_view = 0;
 
-	if (player->fire_countdown)
+	if (player->obj.active)
 	{
-		player->fire_countdown--;
-	}
-
-	check_joysticks();
-	check_buttons();
-
-	if (joystick_1_left())
-	{
-		if (--player->angle == 0)
+		if (player->fire_countdown)
 		{
-			player->angle = 64;
+			player->fire_countdown--;
 		}
 
-		Rot_VL_ab(player->angle, 0, (signed int *) player_up_vec, player->up_vec);
-		player->update_view = 1;
-	}
-	else if (joystick_1_right())
-	{
-		if (++player->angle == 64)
-		{
-			player->angle = 0;
-		}
+		check_joysticks();
+		check_buttons();
 
-		Rot_VL_ab(player->angle, 0, (signed int *) player_up_vec, player->up_vec);
-		player->update_view = 1;
-	}
-
-	if (button_1_4_pressed())
-	{
-		if (!player->fire_countdown)
+		if (joystick_1_left())
 		{
-			bullet = (struct bullet *) bullet_free_list;
-			if (bullet)
+			if (--player->angle == 0)
 			{
-				init_bullet(bullet, 0, 0, PLAYER_BULLET_SPEED);
-				player->fire_countdown = PLAYER_FIRE_TRESHOLD;
+				player->angle = 64;
+			}
+
+			Rot_VL_ab(player->angle, 0, (signed int *) player_up_vec, player->up_vec);
+			player->update_view = 1;
+		}
+		else if (joystick_1_right())
+		{
+			if (++player->angle == 64)
+			{
+				player->angle = 0;
+			}
+
+			Rot_VL_ab(player->angle, 0, (signed int *) player_up_vec, player->up_vec);
+			player->update_view = 1;
+		}
+
+		if (button_1_4_pressed())
+		{
+			if (!player->fire_countdown)
+			{
+				bullet = (struct bullet *) bullet_free_list;
+				if (bullet)
+				{
+					init_bullet(bullet, 0, 0, PLAYER_BULLET_SPEED);
+					player->fire_countdown = PLAYER_FIRE_TRESHOLD;
+				}
 			}
 		}
-	}
 
-	if (button_1_3_held())
-	{
-		if (++player->speed_counter >= PLAYER_ACCELERATE_TRESHOLD)
+		if (button_1_3_held())
 		{
-			player->speed_counter = 0;
-			if (player->speed < PLAYER_MAX_SPEED)
+			if (++player->speed_counter >= PLAYER_ACCELERATE_TRESHOLD)
 			{
-				player->speed++;
+				player->speed_counter = 0;
+				if (player->speed < PLAYER_MAX_SPEED)
+				{
+					player->speed++;
+				}
 			}
 		}
-	}
-	else
-	{
-		if (++player->speed_counter >= PLAYER_BRAKE_TRESHOLD)
+		else
 		{
-			player->speed_counter = 0;
-			if (player->speed > 0)
+			if (++player->speed_counter >= PLAYER_BRAKE_TRESHOLD)
 			{
-				player->speed--;
+				player->speed_counter = 0;
+				if (player->speed > 0)
+				{
+					player->speed--;
+				}
 			}
 		}
-	}
 
-	if (player->speed)
-	{
-		player->rel_pos[0] += player->up_vec[0] * player->speed;
-		player->rel_pos[1] += player->up_vec[1] * player->speed;
-		player->update_view = 1;
+		if (player->speed)
+		{
+			player->rel_pos[0] += player->up_vec[0] * player->speed;
+			player->rel_pos[1] += player->up_vec[1] * player->speed;
+			player->update_view = 1;
+		}
 	}
+}
+
+void hit_player(
+	struct player *player
+	)
+{
+	player->obj.active = 0;
 }
 
 void draw_player(
 	struct player *player
 	)
 {
-	Reset0Ref();
-	Moveto_d(0, 0);
-	dp_VIA_t1_cnt_lo = player->scale;
-	Draw_VLp((signed int *) player->shape);
+	if (player->obj.active)
+	{
+		Reset0Ref();
+		Moveto_d(0, 0);
+//#define DEBUG_DRAW
+#ifdef DEBUG_DRAW
+		Moveto_d(-player->obj.dim_2[0], -player->obj.dim_2[1]);
+
+		Draw_Line_d(0, player->obj.dim_2[1] << 1);
+		Draw_Line_d(player->obj.dim_2[0] << 1, 0);
+		Draw_Line_d(0, -player->obj.dim_2[1] << 1);
+		Draw_Line_d(-player->obj.dim_2[0] << 1, 0);
+
+		Moveto_d(player->obj.dim_2[0], player->obj.dim_2[1]);
+#endif
+		dp_VIA_t1_cnt_lo = player->scale;
+		Draw_VLp((signed int *) player->shape);
+	}
 }
 
 // ***************************************************************************
