@@ -23,12 +23,10 @@ void init_player(
 	signed int w,
 	unsigned int angle,
 	unsigned int scale,
-	const signed char *shape
+	const signed char * const *shapes
 	)
 {
-	init_object(&player->obj, y, x, h, w, 0);
-	player->shape = shape;
-	player->scale = scale;
+	init_animation(&player->anim, y, x, h, w, scale, shapes);
 
 	player->angle	= angle;
 
@@ -50,7 +48,7 @@ void move_player(
 
 	player->update_view = 0;
 
-	if (player->obj.active)
+	if (player->anim.obj.active)
 	{
 		if (player->fire_countdown)
 		{
@@ -102,7 +100,25 @@ void move_player(
 				if (player->speed < PLAYER_MAX_SPEED)
 				{
 					player->speed++;
+					player->anim.base_frame++;
 				}
+			}
+
+			if (player->speed == PLAYER_MAX_SPEED)
+			{
+				if (++player->anim_counter >= PLAYER_ANIM_TRESHOLD)
+				{
+					player->anim_counter = 0;
+					if (++player->anim.frame >= PLAYER_FLAME_NUM_FRAMES)
+					{
+						player->anim.frame = 0;
+					}
+				}
+			}
+			else
+			{
+				player->anim_counter = 0;
+				player->anim.frame = 0;
 			}
 		}
 		else
@@ -113,15 +129,19 @@ void move_player(
 				if (player->speed > 0)
 				{
 					player->speed--;
+					player->anim.base_frame--;
 				}
 			}
 		}
 
 		if (player->speed)
 		{
-			wrap_translate(player->rel_pos, player->rel_pos, player->up_vec[0] * player->speed, player->up_vec[1] * player->speed);
-			//player->rel_pos[0] += player->up_vec[0] * player->speed;
-			//player->rel_pos[1] += player->up_vec[1] * player->speed;
+			wrap_translate(
+				player->rel_pos,
+				player->rel_pos,
+				player->up_vec[0] * player->speed,
+				player->up_vec[1] * player->speed
+				);
 			player->update_view = 1;
 		}
 	}
@@ -131,31 +151,7 @@ void hit_player(
 	struct player *player
 	)
 {
-	player->obj.active = 0;
-}
-
-void draw_player(
-	struct player *player
-	)
-{
-	if (player->obj.active)
-	{
-		Reset0Ref();
-		Moveto_d(0, 0);
-//#define DEBUG_DRAW
-#ifdef DEBUG_DRAW
-		Moveto_d(-player->obj.dim_2[0], -player->obj.dim_2[1]);
-
-		Draw_Line_d(0, player->obj.dim_2[1] << 1);
-		Draw_Line_d(player->obj.dim_2[0] << 1, 0);
-		Draw_Line_d(0, -player->obj.dim_2[1] << 1);
-		Draw_Line_d(-player->obj.dim_2[0] << 1, 0);
-
-		Moveto_d(player->obj.dim_2[0], player->obj.dim_2[1]);
-#endif
-		dp_VIA_t1_cnt_lo = player->scale;
-		Draw_VLp((signed int *) player->shape);
-	}
+	player->anim.obj.active = 0;
 }
 
 // ***************************************************************************

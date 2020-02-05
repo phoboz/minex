@@ -78,7 +78,7 @@ const signed int mine_1_sz[] =
 	24
 };
 
-const signed char player_ship[]=
+const signed char player_anim_0[]=
 {	(signed char) 0x00, -0x01*BLOW_UP/2, +0x03*BLOW_UP/2, // move to y, x
 	(signed char) 0xFF, -0x03*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
 	(signed char) 0xFF, +0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
@@ -89,6 +89,78 @@ const signed char player_ship[]=
 	(signed char) 0xFF, -0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
 	(signed char) 0xFF, +0x03*BLOW_UP/2, -0x00*BLOW_UP/2, // draw, y, x
 	(signed char) 0x01 // endmarker 
+};
+const signed char player_anim_1[]=
+{	(signed char) 0x00, -0x01*BLOW_UP/2, +0x03*BLOW_UP/2, // move to y, x
+	(signed char) 0xFF, -0x03*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x03*BLOW_UP/2, -0x00*BLOW_UP/2, // draw, y, x
+	(signed char) 0x00, -0x02*BLOW_UP/2, +0x02*BLOW_UP/2, // move to y, x
+	(signed char) 0xFF, -0x01*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0x01 // endmarker 
+};
+const signed char player_anim_2[]=
+{	(signed char) 0x00, -0x01*BLOW_UP/2, +0x03*BLOW_UP/2, // move to y, x
+	(signed char) 0xFF, -0x03*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x03*BLOW_UP/2, -0x00*BLOW_UP/2, // draw, y, x
+	(signed char) 0x00, -0x02*BLOW_UP/2, +0x02*BLOW_UP/2, // move to y, x
+	(signed char) 0xFF, -0x03*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x03*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0x01 // endmarker 
+};
+const signed char player_anim_3[]=
+{	(signed char) 0x00, -0x01*BLOW_UP/2, +0x03*BLOW_UP/2, // move to y, x
+	(signed char) 0xFF, -0x03*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x03*BLOW_UP/2, -0x00*BLOW_UP/2, // draw, y, x
+	(signed char) 0x00, -0x02*BLOW_UP/2, +0x02*BLOW_UP/2, // move to y, x
+	(signed char) 0xFF, -0x03*BLOW_UP/2, -0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP/2, +0x02*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP/2, +0x02*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x03*BLOW_UP/2, -0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0x01 // endmarker 
+};
+const signed char player_anim_4[]=
+{	(signed char) 0x00, -0x01*BLOW_UP/2, +0x03*BLOW_UP/2, // move to y, x
+	(signed char) 0xFF, -0x03*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x03*BLOW_UP/2, -0x00*BLOW_UP/2, // draw, y, x
+	(signed char) 0x00, -0x02*BLOW_UP/2, +0x02*BLOW_UP/2, // move to y, x
+	(signed char) 0xFF, -0x04*BLOW_UP/2, -0x02*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP/2, +0x03*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP/2, +0x03*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x04*BLOW_UP/2, -0x02*BLOW_UP/2, // draw, y, x
+	(signed char) 0x01 // endmarker 
+};
+const signed char * const player_anim[] =
+{
+	player_anim_0,
+	player_anim_1,
+	player_anim_2,
+	player_anim_3,
+	player_anim_4
 };
 
 const signed char alien_ship[]=
@@ -185,7 +257,7 @@ int main(void)
 		give_element(&bullets[i].elmnt, &bullet_free_list);
 	}
 
-	init_player(&player, 0, 0, SCALE/3, SCALE/3, 0, DRAW_SCALE, player_ship);
+	init_player(&player, 0, 0, SCALE/3, SCALE/3, 0, DRAW_SCALE, player_anim);
 
 	while(1)
 	{
@@ -208,7 +280,7 @@ int main(void)
 
 		Intensity_7F();
 
-		draw_player(&player);
+		draw_animation(&player.anim);
 		draw_mines();
 		draw_ships();
 		draw_bullets();

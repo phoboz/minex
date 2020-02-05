@@ -244,7 +244,13 @@ void move_mines(
 				}
 			}
 
-			if (check_box_object(&mine->obj, player->obj.dim_2[0], -player->obj.dim_2[1], -player->obj.dim_2[0], player->obj.dim_2[1]))
+			if (check_box_object(
+				&mine->obj,
+				player->anim.obj.dim_2[0],
+				-player->anim.obj.dim_2[1],
+				-player->anim.obj.dim_2[0],
+				player->anim.obj.dim_2[1]
+				))
 			{
 				hit_player(player);
 			}
