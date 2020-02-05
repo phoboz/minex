@@ -7,8 +7,8 @@
 
 #define OBJECT_MIN_Y		-80
 #define OBJECT_MAX_Y		80
-#define OBJECT_MIN_X		-80
-#define OBJECT_MAX_X		80
+#define OBJECT_MIN_X		-74
+#define OBJECT_MAX_X		74
 
 #define OBJECT_WRAP_MIN_Y	-100
 #define OBJECT_WRAP_MAX_Y	100
