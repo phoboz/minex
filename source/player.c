@@ -5,6 +5,7 @@
 #include <vectrex.h>
 #include "controller.h"
 #include "bullet.h"
+#include "wrap.h"
 #include "player.h"
 
 // ---------------------------------------------------------------------------
@@ -118,8 +119,9 @@ void move_player(
 
 		if (player->speed)
 		{
-			player->rel_pos[0] += player->up_vec[0] * player->speed;
-			player->rel_pos[1] += player->up_vec[1] * player->speed;
+			wrap_translate(player->rel_pos, player->rel_pos, player->up_vec[0] * player->speed, player->up_vec[1] * player->speed);
+			//player->rel_pos[0] += player->up_vec[0] * player->speed;
+			//player->rel_pos[1] += player->up_vec[1] * player->speed;
 			player->update_view = 1;
 		}
 	}

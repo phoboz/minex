@@ -212,6 +212,26 @@ int main(void)
 		draw_mines();
 		draw_ships();
 		draw_bullets();
+
+//#define DEBUG_DRAW
+#ifdef DEBUG_DRAW
+		Reset0Ref();
+		dp_VIA_t1_cnt_lo = OBJECT_MOVE_SCALE;
+
+		Moveto_d(OBJECT_MIN_Y, OBJECT_MIN_X);
+
+		Draw_Line_d(0, ((long) OBJECT_MAX_X - (long) OBJECT_MIN_X)/2L);
+		Draw_Line_d(0, ((long) OBJECT_MAX_X - (long) OBJECT_MIN_X)/2L);
+
+		Draw_Line_d(((long) OBJECT_MAX_Y - (long) OBJECT_MIN_Y)/2L, 0);
+		Draw_Line_d(((long) OBJECT_MAX_Y - (long) OBJECT_MIN_Y)/2L, 0);
+
+		Draw_Line_d(0, -((long) OBJECT_MAX_X - (long) OBJECT_MIN_X)/2L);
+		Draw_Line_d(0, -((long) OBJECT_MAX_X - (long) OBJECT_MIN_X)/2L);
+
+		Draw_Line_d(-((long) OBJECT_MAX_Y - (long) OBJECT_MIN_Y)/2L, 0);
+		Draw_Line_d(-((long) OBJECT_MAX_Y - (long) OBJECT_MIN_Y)/2L, 0);
+#endif
 	};
 	
 	// if return value is <= 0, then a warm reset will be performed,

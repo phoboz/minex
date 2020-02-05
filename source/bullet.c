@@ -4,6 +4,7 @@
 
 #include <vectrex.h>
 #include "player.h"
+#include "wrap.h"
 #include "bullet.h"
 
 // ---------------------------------------------------------------------------
@@ -48,8 +49,7 @@ void move_bullets(void)
 			bullet->world_pos[0] += bullet->speed;
 		}
 	
-		if (!(bullet->world_pos[0] >= OBJECT_MIN_Y && bullet->world_pos[0] <= OBJECT_MAX_Y &&
-		      bullet->world_pos[1] >= OBJECT_MIN_X && bullet->world_pos[1] <= OBJECT_MAX_X))
+		if (bullet->world_pos[0] < OBJECT_MIN_Y || bullet->world_pos[0] > OBJECT_MAX_Y)
 		{
 			rem_bullet = bullet;
 		}

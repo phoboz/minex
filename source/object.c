@@ -43,6 +43,53 @@ void deinit_object(
 	obj->active = 0;
 }
 
+#if 0
+static signed int check_overflow(
+	signed int a,
+	signed int b
+	)
+{
+	signed int result = 0;
+	signed int sum = a + b;
+
+	// out-of-range only possible when the signs are the same.
+	if ((a < 0) == (b < 0))
+	{
+		if (a < 0)
+		{
+			// underflow here means the result is excessively negative.
+			if (sum > b) result = -1; // underflow detected
+		}
+		else
+		{
+			if (sum < b) result = 1; // overflow detected
+		}
+	}
+
+	return result;
+}
+static int check_overflow(
+	int a,
+	int b
+	)
+{
+	int result = 0;
+
+	if (a > 0 && b > 127 - a)
+	{
+		/* handle overflow */
+		result = 1;
+	}
+	else if (a < 0 && b < -127 - a)
+	{
+		/* handle underflow */
+		result = -1;
+	}
+
+    return result;
+}
+#endif
+
 // ***************************************************************************
 // end of file
 // ***************************************************************************
