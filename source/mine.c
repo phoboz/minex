@@ -66,8 +66,6 @@ void init_mine(
 	mine->treshold	= treshold;
 
 	mine->world_angle = player->angle;
-	//mine->rel_pos[0] = mine->obj_pos[0] - player->rel_pos[0];
-	//mine->rel_pos[1] = mine->obj_pos[1] + player->rel_pos[1];
 	wrap_translate(mine->rel_pos, mine->obj_pos, - player->rel_pos[0], player->rel_pos[1]);
 	Rot_VL_ab(player->angle, 0, mine->obj.dim_2, mine->obj.center_pos);
 	Rot_VL_ab(player->angle, 0, mine->rel_pos, mine->obj.world_pos);
@@ -107,16 +105,12 @@ void move_mines(
 			{
 				if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
 				{
-					//mine->obj_pos[0] += mine->velocity[0];
-					//mine->obj_pos[1] += mine->velocity[1];
 					wrap_translate(mine->obj_pos, mine->obj_pos, mine->velocity[0], mine->velocity[1]);
 					update_view = 1;
 				}
 
 				if (update_view || player->update_view)
 				{
-					//mine->rel_pos[0] = mine->obj_pos[0] - player->rel_pos[0];
-					//mine->rel_pos[1] = mine->obj_pos[1] + player->rel_pos[1];
 					wrap_translate(mine->rel_pos, mine->obj_pos, - player->rel_pos[0], player->rel_pos[1]);
 					Rot_VL_ab(player->angle, 0, mine->obj.dim_2, mine->obj.center_pos);
 					Rot_VL_ab(player->angle, 0, mine->rel_pos, mine->obj.world_pos);
@@ -136,16 +130,12 @@ void move_mines(
 			{
 				if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
 				{
-					//mine->obj_pos[0] += mine->velocity[0];
-					//mine->obj_pos[1] += mine->velocity[1];
 					wrap_translate(mine->obj_pos, mine->obj_pos, mine->velocity[0], mine->velocity[1]);
 					update_view = 1;
 				}
 
 				if (update_view || player->update_view)
 				{
-					//mine->rel_pos[0] = mine->obj_pos[0] - player->rel_pos[0];
-					//mine->rel_pos[1] = mine->obj_pos[1] + player->rel_pos[1];
 					wrap_translate(mine->rel_pos, mine->obj_pos, - player->rel_pos[0], player->rel_pos[1]);
 					Rot_VL_ab(player->angle, 0, mine->obj.dim_2, mine->obj.center_pos);
 					Rot_VL_ab(player->angle, 0, mine->rel_pos, mine->obj.world_pos);
@@ -199,16 +189,12 @@ void move_mines(
 			{
 				if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
 				{
-					//mine->obj_pos[0] += mine->velocity[0];
-					//mine->obj_pos[1] += mine->velocity[1];
 					wrap_translate(mine->obj_pos, mine->obj_pos, mine->velocity[0], mine->velocity[1]);
 					update_view = 1;
 				}
 
 				if (update_view || player->update_view)
 				{
-					//mine->rel_pos[0] = mine->obj_pos[0] - player->rel_pos[0];
-					//mine->rel_pos[1] = mine->obj_pos[1] + player->rel_pos[1];
 					wrap_translate(mine->rel_pos, mine->obj_pos, - player->rel_pos[0], player->rel_pos[1]);
 					Rot_VL_ab(player->angle, 0, mine->obj.dim_2, mine->obj.center_pos);
 					Rot_VL_ab(player->angle, 0, mine->rel_pos, mine->obj.world_pos);
@@ -284,8 +270,6 @@ void draw_mines(void)
 		center_x = mine->obj.world_pos[1] + mine->obj.center_pos[1];
 		h = -mine->obj.dim_2[0];
 		w = mine->obj.dim_2[1];
-		//if (center_y/* - h */>= OBJECT_MIN_Y && center_y/* + h */<= OBJECT_MAX_Y &&
-		//    center_x/* + w */>= OBJECT_MIN_X && center_x/* - w */<= OBJECT_MAX_X)
 		if (!(center_y + h < OBJECT_MIN_Y || center_y - h > OBJECT_MAX_Y ||
 			center_x + w < OBJECT_MIN_X || center_x - w > OBJECT_MAX_X))
 		{
@@ -296,15 +280,14 @@ void draw_mines(void)
 
 			if (mine->state == MINE_STATE_IDLE)
 			{
-				Dot_here();
+				Dot_d(mine->obj.center_pos[0], mine->obj.center_pos[1]);
 			}
 			else if (mine->state == MINE_STATE_ACTIVE)
 			{
 //#define DEBUG_DRAW
 #ifdef DEBUG_DRAW
-				Draw_Line_d(mine->obj.center_pos[0], mine->obj.center_pos[1]);
+				Draw_Line_d(-mine->obj.dim_2[0], -mine->obj.dim_2[1]);
 
-				Moveto_d(-mine->obj.dim_2[0], -mine->obj.dim_2[1]);
 				Draw_Line_d(0, mine->obj.dim_2[1] << 1);
 				Draw_Line_d(mine->obj.dim_2[0] << 1, 0);
 				Draw_Line_d(0, -mine->obj.dim_2[1] << 1);
