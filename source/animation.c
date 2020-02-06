@@ -42,6 +42,7 @@ void draw_animation(
 		Moveto_d(0, 0);
 //#define DEBUG_DRAW
 #ifdef DEBUG_DRAW
+		dp_VIA_t1_cnt_lo = OBJECT_MOVE_SCALE;
 		Moveto_d(-anim->obj.dim_2[0], -anim->obj.dim_2[1]);
 
 		Draw_Line_d(0, anim->obj.dim_2[1] << 1);

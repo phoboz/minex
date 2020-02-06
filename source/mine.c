@@ -302,7 +302,7 @@ void draw_mines(void)
 			{
 //#define DEBUG_DRAW
 #ifdef DEBUG_DRAW
-				Moveto_d(mine->obj.center_pos[0], mine->obj.center_pos[1]);
+				Draw_Line_d(mine->obj.center_pos[0], mine->obj.center_pos[1]);
 
 				Moveto_d(-mine->obj.dim_2[0], -mine->obj.dim_2[1]);
 				Draw_Line_d(0, mine->obj.dim_2[1] << 1);

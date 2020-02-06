@@ -16,7 +16,9 @@
 #include <vectrex.h>
 #include "controller.h"
 #include "player.h"
+#include "player_data.h"
 #include "mine.h"
+#include "mine_data.h"
 #include "ship.h"
 #include "bullet.h"
 #include "random.h"
@@ -25,143 +27,11 @@
 #define MAX_SHIPS		1
 #define MAX_BULLETS	3
 
-#define SCALE 		24
-#define DRAW_SCALE		0x10
+#define SHIP_MODEL_SCALE 	24
+#define SHIP_SIZE			20
+#define SHIP_DRAW_SCALE	0x10
 
-#define BLOW_UP SCALE
-
-const signed char mine_1_1[]=
-{	(signed char) 0xFF, -0x02*BLOW_UP, +0x04*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, +0x02*BLOW_UP, +0x04*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, -0x04*BLOW_UP, -0x02*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, -0x04*BLOW_UP, +0x02*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, +0x02*BLOW_UP, -0x04*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, -0x02*BLOW_UP, -0x04*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, +0x04*BLOW_UP, +0x02*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, +0x04*BLOW_UP, -0x02*BLOW_UP,  // pattern, y, x
-	(signed char) 0x01 // endmarker (high bit in pattern not set)
-};
-const signed char mine_1_2[]=
-{	(signed char) 0xFF, -0x02*BLOW_UP/2, +0x04*BLOW_UP/2,  // pattern, y, x
-	(signed char) 0xFF, +0x02*BLOW_UP/2, +0x04*BLOW_UP/2,  // pattern, y, x
-	(signed char) 0xFF, -0x04*BLOW_UP/2, -0x02*BLOW_UP/2,  // pattern, y, x
-	(signed char) 0xFF, -0x04*BLOW_UP/2, +0x02*BLOW_UP/2,  // pattern, y, x
-	(signed char) 0xFF, +0x02*BLOW_UP/2, -0x04*BLOW_UP/2,  // pattern, y, x
-	(signed char) 0xFF, -0x02*BLOW_UP/2, -0x04*BLOW_UP/2,  // pattern, y, x
-	(signed char) 0xFF, +0x04*BLOW_UP/2, +0x02*BLOW_UP/2,  // pattern, y, x
-	(signed char) 0xFF, +0x04*BLOW_UP/2, -0x02*BLOW_UP/2,  // pattern, y, x
-	(signed char) 0x01 // endmarker (high bit in pattern not set)
-};
-const signed char mine_1_3[]=
-{	(signed char) 0xFF, -0x02*BLOW_UP/3, +0x04*BLOW_UP/3,  // pattern, y, x
-	(signed char) 0xFF, +0x02*BLOW_UP/3, +0x04*BLOW_UP/3,  // pattern, y, x
-	(signed char) 0xFF, -0x04*BLOW_UP/3, -0x02*BLOW_UP/3,  // pattern, y, x
-	(signed char) 0xFF, -0x04*BLOW_UP/3, +0x02*BLOW_UP/3,  // pattern, y, x
-	(signed char) 0xFF, +0x02*BLOW_UP/3, -0x04*BLOW_UP/3,  // pattern, y, x
-	(signed char) 0xFF, -0x02*BLOW_UP/3, -0x04*BLOW_UP/3,  // pattern, y, x
-	(signed char) 0xFF, +0x04*BLOW_UP/3, +0x02*BLOW_UP/3,  // pattern, y, x
-	(signed char) 0xFF, +0x04*BLOW_UP/3, -0x02*BLOW_UP/3,  // pattern, y, x
-	(signed char) 0x01 // endmarker (high bit in pattern not set)
-};
-
-const signed char * const mine_1[] =
-{
-	mine_1_3,
-	mine_1_2,
-	mine_1_1
-};
-
-const signed int mine_1_sz[] =
-{
-	8,
-	14,
-	24
-};
-
-const signed char player_anim_0[]=
-{	(signed char) 0x00, -0x01*BLOW_UP/2, +0x03*BLOW_UP/2, // move to y, x
-	(signed char) 0xFF, -0x03*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, -0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, -0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, -0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x03*BLOW_UP/2, -0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0x01 // endmarker 
-};
-const signed char player_anim_1[]=
-{	(signed char) 0x00, -0x01*BLOW_UP/2, +0x03*BLOW_UP/2, // move to y, x
-	(signed char) 0xFF, -0x03*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, -0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, -0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, -0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x03*BLOW_UP/2, -0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0x00, -0x02*BLOW_UP/2, +0x02*BLOW_UP/2, // move to y, x
-	(signed char) 0xFF, -0x01*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x01*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
-	(signed char) 0x01 // endmarker 
-};
-const signed char player_anim_2[]=
-{	(signed char) 0x00, -0x01*BLOW_UP/2, +0x03*BLOW_UP/2, // move to y, x
-	(signed char) 0xFF, -0x03*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, -0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, -0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, -0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x03*BLOW_UP/2, -0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0x00, -0x02*BLOW_UP/2, +0x02*BLOW_UP/2, // move to y, x
-	(signed char) 0xFF, -0x03*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x03*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
-	(signed char) 0x01 // endmarker 
-};
-const signed char player_anim_3[]=
-{	(signed char) 0x00, -0x01*BLOW_UP/2, +0x03*BLOW_UP/2, // move to y, x
-	(signed char) 0xFF, -0x03*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, -0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, -0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, -0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x03*BLOW_UP/2, -0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0x00, -0x02*BLOW_UP/2, +0x02*BLOW_UP/2, // move to y, x
-	(signed char) 0xFF, -0x03*BLOW_UP/2, -0x01*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x01*BLOW_UP/2, +0x02*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, -0x01*BLOW_UP/2, +0x02*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x03*BLOW_UP/2, -0x01*BLOW_UP/2, // draw, y, x
-	(signed char) 0x01 // endmarker 
-};
-const signed char player_anim_4[]=
-{	(signed char) 0x00, -0x01*BLOW_UP/2, +0x03*BLOW_UP/2, // move to y, x
-	(signed char) 0xFF, -0x03*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, -0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, -0x02*BLOW_UP/2, +0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, -0x02*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x03*BLOW_UP/2, -0x00*BLOW_UP/2, // draw, y, x
-	(signed char) 0x00, -0x02*BLOW_UP/2, +0x02*BLOW_UP/2, // move to y, x
-	(signed char) 0xFF, -0x04*BLOW_UP/2, -0x02*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x01*BLOW_UP/2, +0x03*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, -0x01*BLOW_UP/2, +0x03*BLOW_UP/2, // draw, y, x
-	(signed char) 0xFF, +0x04*BLOW_UP/2, -0x02*BLOW_UP/2, // draw, y, x
-	(signed char) 0x01 // endmarker 
-};
-const signed char * const player_anim[] =
-{
-	player_anim_0,
-	player_anim_1,
-	player_anim_2,
-	player_anim_3,
-	player_anim_4
-};
+#define BLOW_UP	SHIP_MODEL_SCALE
 
 const signed char alien_ship[]=
 {	(signed char) 0xFF, -0x04*BLOW_UP, +0x01*BLOW_UP,  // pattern, y, x
@@ -198,12 +68,12 @@ void init_level(void)
 				mine,
 				(pos_y) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U),
 				(pos_x) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U),
-				mine_1_sz[size],
-				mine_1_sz[size],
+				mine_1_sizes[size],
+				mine_1_sizes[size],
 				MINE_TYPE_DIRECTIONAL,
 				15U + random() % 240U,
 				&player,
-				DRAW_SCALE,
+				MINE_DRAW_SCALE,
 				mine_1[size]
 				);
 		}
@@ -213,7 +83,7 @@ void init_level(void)
 	struct ship *ship = (struct ship *) ship_free_list;
 	if (ship)
 	{
-		init_ship(ship, 0, 100, SCALE, SCALE, 0, &player, DRAW_SCALE, alien_ship);
+		init_ship(ship, 0, 100, SHIP_SIZE, SHIP_SIZE, 0, &player, SHIP_DRAW_SCALE, alien_ship);
 		ship->speed = 3;
 	}
 #endif
@@ -257,7 +127,7 @@ int main(void)
 		give_element(&bullets[i].elmnt, &bullet_free_list);
 	}
 
-	init_player(&player, 0, 0, SCALE/3, SCALE/3, 0, DRAW_SCALE, player_anim);
+	init_player(&player, 0, 0, PLAYER_HEIGHT, PLAYER_WIDTH, 0, PLAYER_DRAW_SCALE, player_anim);
 
 	while(1)
 	{
