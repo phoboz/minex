@@ -13,6 +13,8 @@
 
 #define PLAYER_STATE_NORMAL			0
 
+#define PLAYER_STATUS_FIRE			0x01
+
 struct player
 {
 	struct animation anim;
@@ -39,7 +41,7 @@ void init_player(
 	const signed char * const *shapes
 	);
 
-void move_player(
+unsigned int move_player(
 	struct player *player
 	);
 

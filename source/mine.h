@@ -16,6 +16,8 @@
 
 #define MINE_EXPLODE_TRESHOLD	8
 
+#define MINE_STATUS_EXPLODE		0x01
+
 struct player;
 
 struct mine
@@ -55,7 +57,7 @@ void deinit_mine(
 	struct mine *mine
 	);
 
-void move_mines(
+unsigned int move_mines(
 	struct player *player
 	);
 

@@ -40,11 +40,13 @@ void init_player(
 	Rot_VL_ab(angle, 0, (signed int *) player_up_vec, player->up_vec);
 }
 
-void move_player(
+unsigned int move_player(
 	struct player *player
 	)
 {
 	struct bullet *bullet;
+
+	unsigned int status = 0;
 
 	player->update_view = 0;
 
@@ -88,6 +90,7 @@ void move_player(
 				{
 					init_bullet(bullet, 0, 0, PLAYER_BULLET_SPEED);
 					player->fire_countdown = PLAYER_FIRE_TRESHOLD;
+					status |= PLAYER_STATUS_FIRE;
 				}
 			}
 		}
@@ -145,6 +148,8 @@ void move_player(
 			player->update_view = 1;
 		}
 	}
+
+	return status;
 }
 
 void hit_player(

@@ -14,6 +14,7 @@
 // ---------------------------------------------------------------------------
 
 #include <vectrex.h>
+#include "ayfxPlayer.h"
 #include "controller.h"
 #include "player.h"
 #include "player_data.h"
@@ -32,6 +33,9 @@
 #define SHIP_DRAW_SCALE	0x10
 
 #define BLOW_UP	SHIP_MODEL_SCALE
+
+extern const unsigned int bullet_snd_data[];
+extern const unsigned int explosion_snd_data[];
 
 const signed char alien_ship[]=
 {	(signed char) 0xFF, -0x04*BLOW_UP, +0x01*BLOW_UP,  // pattern, y, x
@@ -102,6 +106,8 @@ void init_level(void)
 int main(void)
 {
 	unsigned int i;
+	unsigned int player_status;
+	unsigned int enemy_status;
 
 	enable_controller_1_x();
 	enable_controller_1_y();
@@ -138,15 +144,41 @@ int main(void)
 			init_level();
 		}
 
-		move_player(&player);
+		player_status = move_player(&player);
 
 		//if (++ships[0].obj_angle == 64) ships[0].obj_angle = 0;
 
-		move_mines(&player);
+		enemy_status = move_mines(&player);
 		move_ships(&player);
 		move_bullets();
 
+		if ((player_status & PLAYER_STATUS_FIRE) == PLAYER_STATUS_FIRE)
+		{
+			sfx_pointer_1 = (long unsigned int) (&bullet_snd_data);
+			sfx_status_1 = 1;
+		}
+
+		if ((enemy_status & MINE_STATUS_EXPLODE) == MINE_STATUS_EXPLODE)
+		{
+			sfx_pointer_2 = (long unsigned int) (&explosion_snd_data);
+			sfx_status_2 = 1;
+		}
+
 		Wait_Recal();
+
+		if (sfx_status_1 == 1 || sfx_status_2 == 1)
+		{
+			if (sfx_status_1 == 1)
+			{
+				ayfx_sound1();
+			}
+
+			if (sfx_status_2 == 1)
+			{
+				ayfx_sound2();
+			}
+			Do_Sound();
+		}
 
 		Intensity_7F();
 

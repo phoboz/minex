@@ -80,10 +80,11 @@ void deinit_mine(
 	give_element(&mine->obj.elmnt, &mine_free_list);
 }
 
-void move_mines(
+unsigned int move_mines(
 	struct player *player
 	)
 {
+	unsigned int status = 0;
 	unsigned int mine_index = 0;
 	unsigned int update_view;
 
@@ -219,6 +220,7 @@ void move_mines(
 					mine->state = MINE_STATE_EXPLODE;
 					mine->velocity[0] = mine->velocity[1] = 0;
 					rem_bullet = bullet;
+					status |= MINE_STATUS_EXPLODE;
 				}
 
 				bullet = (struct bullet *) bullet->elmnt.next;
@@ -255,6 +257,8 @@ void move_mines(
 			rem_mine = 0;
 		}
 	}
+
+	return status;
 }
 
 void draw_mines(void)
