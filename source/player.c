@@ -135,6 +135,7 @@ unsigned int move_player(
 					{
 						player->speed--;
 						player->anim.base_frame--;
+						player->anim.frame = 0;
 					}
 				}
 			}
