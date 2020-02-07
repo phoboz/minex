@@ -36,6 +36,7 @@
 
 extern const unsigned int bullet_snd_data[];
 extern const unsigned int explosion_snd_data[];
+extern const unsigned int thrust_snd_data[];
 
 const signed char alien_ship[]=
 {	(signed char) 0xFF, -0x04*BLOW_UP, +0x01*BLOW_UP,  // pattern, y, x
@@ -152,21 +153,27 @@ int main(void)
 		move_ships(&player);
 		move_bullets();
 
+		if ((player_status & PLAYER_STATUS_THRUST) == PLAYER_STATUS_THRUST)
+		{
+			sfx_pointer_1 = (long unsigned int) (&thrust_snd_data);
+			sfx_status_1 = 1;
+		}
+
 		if ((player_status & PLAYER_STATUS_FIRE) == PLAYER_STATUS_FIRE)
 		{
-			sfx_pointer_1 = (long unsigned int) (&bullet_snd_data);
-			sfx_status_1 = 1;
+			sfx_pointer_2 = (long unsigned int) (&bullet_snd_data);
+			sfx_status_2 = 1;
 		}
 
 		if ((enemy_status & MINE_STATUS_EXPLODE) == MINE_STATUS_EXPLODE)
 		{
-			sfx_pointer_2 = (long unsigned int) (&explosion_snd_data);
-			sfx_status_2 = 1;
+			sfx_pointer_3 = (long unsigned int) (&explosion_snd_data);
+			sfx_status_3 = 1;
 		}
 
 		Wait_Recal();
 
-		if (sfx_status_1 == 1 || sfx_status_2 == 1)
+		if (sfx_status_1 == 1 || sfx_status_2 == 1 || sfx_status_3 == 1)
 		{
 			if (sfx_status_1 == 1)
 			{
@@ -177,6 +184,12 @@ int main(void)
 			{
 				ayfx_sound2();
 			}
+
+			if (sfx_status_3 == 1)
+			{
+				ayfx_sound3();
+			}
+
 			Do_Sound();
 		}
 

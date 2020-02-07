@@ -232,17 +232,20 @@ unsigned int move_mines(
 				}
 			}
 
-			if (check_box_object(
-				&mine->obj,
-				player->anim.obj.dim_2[0],
-				-player->anim.obj.dim_2[1],
-				-player->anim.obj.dim_2[0],
-				player->anim.obj.dim_2[1]
-				))
+			if (player->anim.obj.active)
 			{
-				mine->state = MINE_STATE_EXPLODE;
-				status = MINE_STATUS_EXPLODE;
-				hit_player(player);
+				if (check_box_object(
+					&mine->obj,
+					player->anim.obj.dim_2[0],
+					-player->anim.obj.dim_2[1],
+					-player->anim.obj.dim_2[0],
+					player->anim.obj.dim_2[1]
+					))
+				{
+					mine->state = MINE_STATE_EXPLODE;
+					status = MINE_STATUS_EXPLODE;
+					hit_player(player);
+				}
 			}
 		}
 		else if (mine->state == MINE_STATE_REMOVE)

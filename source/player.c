@@ -148,6 +148,7 @@ unsigned int move_player(
 					player->up_vec[1] * player->speed
 					);
 				player->update_view = 1;
+				status |= PLAYER_STATUS_THRUST;
 			}
 		}
 		else if (player->state == PLAYER_STATE_EXPLODE)

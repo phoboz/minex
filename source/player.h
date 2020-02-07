@@ -21,6 +21,7 @@
 #define PLAYER_STATE_REMOVED		2
 
 #define PLAYER_STATUS_FIRE			0x01
+#define PLAYER_STATUS_THRUST		0x02
 
 struct player
 {
