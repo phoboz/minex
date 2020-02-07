@@ -240,6 +240,8 @@ unsigned int move_mines(
 				player->anim.obj.dim_2[1]
 				))
 			{
+				mine->state = MINE_STATE_EXPLODE;
+				status = MINE_STATUS_EXPLODE;
 				hit_player(player);
 			}
 		}
@@ -290,8 +292,9 @@ void draw_mines(void)
 			{
 //#define DEBUG_DRAW
 #ifdef DEBUG_DRAW
-				Draw_Line_d(-mine->obj.dim_2[0], -mine->obj.dim_2[1]);
+				Moveto_d(mine->obj.center_pos[0], mine->obj.center_pos[1]);
 
+				Moveto_d(-mine->obj.dim_2[0], -mine->obj.dim_2[1]);
 				Draw_Line_d(0, mine->obj.dim_2[1] << 1);
 				Draw_Line_d(mine->obj.dim_2[0] << 1, 0);
 				Draw_Line_d(0, -mine->obj.dim_2[1] << 1);
