@@ -58,6 +58,7 @@ void init_level(void)
 	unsigned int i;
 	unsigned int size;
 	unsigned int pos_y, pos_x;
+	unsigned int type;
 
 	struct mine *mine;
 	for (i = 0; i < MAX_MINES; i++)
@@ -68,18 +69,23 @@ void init_level(void)
 			pos_y = random() % 2;
 			pos_x = random() % 2;
 			size = random() % 3;
+			if (random () % 2)
+			{
+				type = MINE_TYPE_MAGNETIC;
+			}
+			else
+			{
+				type = MINE_TYPE_DIRECTIONAL;
+			}
 
 			init_mine(
 				mine,
 				(pos_y) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U),
 				(pos_x) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U),
-				mine_1_sizes[size],
-				mine_1_sizes[size],
-				MINE_TYPE_DIRECTIONAL,
+				type,
+				size,
 				15U + random() % 240U,
-				&player,
-				MINE_DRAW_SCALE,
-				mine_1[size]
+				&player
 				);
 		}
 	}

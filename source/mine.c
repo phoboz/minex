@@ -7,6 +7,7 @@
 #include "bullet.h"
 #include "random.h"
 #include "wrap.h"
+#include "mine_data.h"
 #include "mine.h"
 
 // ---------------------------------------------------------------------------
@@ -36,19 +37,28 @@ void init_mine(
 	struct mine *mine,
 	signed int y,
 	signed int x,
-	signed int h,
-	signed int w,
 	unsigned int type,
+	unsigned int size,
 	unsigned int treshold,
-	struct player *player,
-	unsigned int scale,
-	const signed char *shape
+	struct player *player
 	)
 {
 	take_element(&mine->obj.elmnt, &mine_free_list);
-	init_object(&mine->obj, y, x, h, w, &mine_list);
-	mine->scale = scale;
-	mine->shape = shape;
+	switch (type)
+	{
+		case MINE_TYPE_DIRECTIONAL:
+			init_object(&mine->obj, y, x, mine_1_sizes[size], mine_1_sizes[size], &mine_list);
+			mine->shape = mine_1[size];
+			break;
+
+		case MINE_TYPE_MAGNETIC:
+			init_object(&mine->obj, y, x, mine_2_sizes[size], mine_2_sizes[size], &mine_list);
+			mine->shape = mine_2[size];
+			break;
+
+		default:
+			break;
+	}
 
 	mine->obj_pos[0]	= y;
 	mine->obj_pos[1]	= x;
@@ -60,6 +70,7 @@ void init_mine(
 	mine->velocity[1]	= 0;
 
 	mine->type		= type;
+	mine->size		= size;
 	mine->state		= MINE_STATE_IDLE;
 	mine->lo_counter	= 0;
 	mine->hi_counter	= 0;
@@ -69,7 +80,7 @@ void init_mine(
 	wrap_translate(mine->rel_pos, mine->obj_pos, - player->rel_pos[0], player->rel_pos[1]);
 	Rot_VL_ab(player->angle, 0, mine->obj.dim_2, mine->obj.center_pos);
 	Rot_VL_ab(player->angle, 0, mine->rel_pos, mine->obj.world_pos);
-	Rot_VL_Mode(player->angle, (signed int*) shape, &mine->world_vlist);
+	Rot_VL_Mode(player->angle, (signed int*) mine->shape, &mine->world_vlist);
 }
 
 void deinit_mine(
@@ -78,6 +89,71 @@ void deinit_mine(
 {
 	deinit_object(&mine->obj, &mine_list);
 	give_element(&mine->obj.elmnt, &mine_free_list);
+}
+
+__INLINE void rand_dir_mine(
+	struct mine *mine
+	)
+{
+	if (random() & 2)
+	{
+		mine->velocity[0] = (signed int) (3 - mine->size);
+	}
+	else
+	{
+		mine->velocity[0] = -(signed int) (3 - mine->size);
+	}
+
+	if (random() & 2)
+	{
+		mine->velocity[1] = (signed int) (3 - mine->size);
+	}
+	else
+	{
+		mine->velocity[1] = -(signed int) (3 - mine->size);
+	}
+}
+
+__INLINE void target_player_mine(
+	struct mine *mine,
+	struct player *player
+	)
+{
+	signed int center_y = mine->obj_pos[0] + mine->obj.center_pos[0];
+	signed int center_x = mine->obj_pos[1] + mine->obj.center_pos[1];
+	signed h = -player->anim.obj.dim_2[0];
+	signed w = player->anim.obj.dim_2[1];
+
+	if (center_y >= player->rel_pos[0] - h && center_y <= player->rel_pos[0] + h)
+	{
+		mine->velocity[0] = 0;
+	}
+	else if (center_y < player->rel_pos[0])
+	{
+		mine->velocity[0] = (signed int) (3 - mine->size);
+	}
+	else if (center_y > player->rel_pos[0])
+	{
+		mine->velocity[0] = -(signed int) (3 - mine->size);
+	}
+
+	if (center_x >= player->rel_pos[1] - w && center_x <= player->rel_pos[1] + w)
+	{
+		mine->velocity[0] = 0;
+	}
+	if (center_x < player->rel_pos[1])
+	{
+		mine->velocity[1] = (signed int) (3 - mine->size);
+	}
+	else if (center_x > player->rel_pos[1])
+	{
+		mine->velocity[1] = -(signed int) (3 - mine->size);
+	}
+
+	if (mine->velocity[0] == 0 && mine->velocity[1] == 0)
+	{
+		rand_dir_mine(mine);
+	}
 }
 
 unsigned int move_mines(
@@ -104,10 +180,18 @@ unsigned int move_mines(
 		{
 			if (mine_index == 0 || mine_index == 3 || mine_index == 6 || mine_index == 9)
 			{
-				if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
+				if (mine->state == MINE_STATE_ACTIVE)
 				{
-					wrap_translate(mine->obj_pos, mine->obj_pos, mine->velocity[0], mine->velocity[1]);
-					update_view = 1;
+					if (mine->type == MINE_TYPE_MAGNETIC)
+					{
+						target_player_mine(mine, player);
+					}
+
+					if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
+					{
+						wrap_translate(mine->obj_pos, mine->obj_pos, mine->velocity[0], mine->velocity[1]);
+						update_view = 1;
+					}
 				}
 
 				if (update_view || player->update_view)
@@ -129,10 +213,18 @@ unsigned int move_mines(
 		{
 			if (mine_index == 1 || mine_index == 4 || mine_index == 7 || mine_index == 10)
 			{
-				if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
+				if (mine->state == MINE_STATE_ACTIVE)
 				{
-					wrap_translate(mine->obj_pos, mine->obj_pos, mine->velocity[0], mine->velocity[1]);
-					update_view = 1;
+					if (mine->type == MINE_TYPE_MAGNETIC)
+					{
+						target_player_mine(mine, player);
+					}
+
+					if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
+					{
+						wrap_translate(mine->obj_pos, mine->obj_pos, mine->velocity[0], mine->velocity[1]);
+						update_view = 1;
+					}
 				}
 
 				if (update_view || player->update_view)
@@ -165,13 +257,7 @@ unsigned int move_mines(
 						mine->state = MINE_STATE_ACTIVE;
 						if (mine->type == MINE_TYPE_DIRECTIONAL)
 						{
-							mine->velocity[0] = 3 - (signed int) (random() % 6U);
-							mine->velocity[1] = 3 - (signed int) (random() % 6U);
-							if (mine->velocity[0] == 0 && mine->velocity[1] == 0)
-							{
-								mine->velocity[0]++;
-								mine->velocity[1]--;
-							}
+							rand_dir_mine(mine);
 						}
 						update_view = 1;
 					}
@@ -188,10 +274,18 @@ unsigned int move_mines(
 
 			if (mine_index == 2 || mine_index == 5 || mine_index == 8 || mine_index == 11)
 			{
-				if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
+				if (mine->state == MINE_STATE_ACTIVE)
 				{
-					wrap_translate(mine->obj_pos, mine->obj_pos, mine->velocity[0], mine->velocity[1]);
-					update_view = 1;
+					if (mine->type == MINE_TYPE_MAGNETIC)
+					{
+						target_player_mine(mine, player);
+					}
+
+					if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
+					{
+						wrap_translate(mine->obj_pos, mine->obj_pos, mine->velocity[0], mine->velocity[1]);
+						update_view = 1;
+					}
 				}
 
 				if (update_view || player->update_view)
@@ -306,7 +400,7 @@ void draw_mines(void)
 
 				Moveto_d(-mine->obj.center_pos[0], -mine->obj.center_pos[1]);
 #endif
-				dp_VIA_t1_cnt_lo = mine->scale;
+				dp_VIA_t1_cnt_lo = MINE_DRAW_SCALE;
 				Draw_VLp(mine->world_vlist);
 			}
 			else if (mine->state == MINE_STATE_EXPLODE)

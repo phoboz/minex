@@ -27,12 +27,12 @@ struct mine
 	signed int rel_pos[2];
 	signed int velocity[2];
 	unsigned int type;
+	unsigned int size;
 	unsigned int state;
 	unsigned int lo_counter;
 	unsigned int hi_counter;
 	unsigned int treshold;
 	unsigned int world_angle;
-	unsigned int scale;
 	const signed char *shape;
 	signed char world_vlist[MINE_MAX_VECTORS*3 + 1];
 };
@@ -44,13 +44,10 @@ void init_mine(
 	struct mine *mine,
 	signed int y,
 	signed int x,
-	signed int h,
-	signed int w,
 	unsigned int type,
+	unsigned int size,
 	unsigned int treshold,
-	struct player *player,
-	unsigned int scale,
-	const signed char *shape
+	struct player *player
 	);
 
 void deinit_mine(
