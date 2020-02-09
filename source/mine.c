@@ -78,7 +78,7 @@ void init_mine(
 	mine->treshold	= treshold;
 
 	mine->world_angle = player->angle;
-	wrap_translate(mine->rel_pos, mine->obj_pos, - player->rel_pos[0], player->rel_pos[1]);
+	wrap_translate(mine->rel_pos, mine->obj_pos, - player->obj_pos[0], player->obj_pos[1]);
 	Rot_VL_ab(player->angle, 0, mine->obj.dim_2, mine->obj.center_pos);
 	Rot_VL_ab(player->angle, 0, mine->rel_pos, mine->obj.world_pos);
 	Rot_VL_Mode(player->angle, (signed int*) mine->shape, &mine->world_vlist);
@@ -127,7 +127,7 @@ void target_player_mine(
 	signed int center_y = mine->obj_pos[0] + mine->obj.center_pos[0];
 	signed int center_x = mine->obj_pos[1] + mine->obj.center_pos[1];
 
-	wrap = wrap_translate(v, player->rel_pos, -center_y, -center_x);
+	wrap = wrap_translate(v, player->obj_pos, -center_y, -center_x);
 
 	if (wrap & WRAP_Y)
 	{
@@ -197,7 +197,7 @@ unsigned int move_mines(
 
 				if (update_view || player->update_view)
 				{
-					wrap_translate(mine->rel_pos, mine->obj_pos, - player->rel_pos[0], player->rel_pos[1]);
+					wrap_translate(mine->rel_pos, mine->obj_pos, - player->obj_pos[0], player->obj_pos[1]);
 					Rot_VL_ab(player->angle, 0, mine->obj.dim_2, mine->obj.center_pos);
 					Rot_VL_ab(player->angle, 0, mine->rel_pos, mine->obj.world_pos);
 
@@ -234,7 +234,7 @@ unsigned int move_mines(
 
 				if (update_view || player->update_view)
 				{
-					wrap_translate(mine->rel_pos, mine->obj_pos, - player->rel_pos[0], player->rel_pos[1]);
+					wrap_translate(mine->rel_pos, mine->obj_pos, - player->obj_pos[0], player->obj_pos[1]);
 					Rot_VL_ab(player->angle, 0, mine->obj.dim_2, mine->obj.center_pos);
 					Rot_VL_ab(player->angle, 0, mine->rel_pos, mine->obj.world_pos);
 
@@ -303,7 +303,7 @@ unsigned int move_mines(
 
 				if (update_view || player->update_view)
 				{
-					wrap_translate(mine->rel_pos, mine->obj_pos, - player->rel_pos[0], player->rel_pos[1]);
+					wrap_translate(mine->rel_pos, mine->obj_pos, - player->obj_pos[0], player->obj_pos[1]);
 					Rot_VL_ab(player->angle, 0, mine->obj.dim_2, mine->obj.center_pos);
 					Rot_VL_ab(player->angle, 0, mine->rel_pos, mine->obj.world_pos);
 

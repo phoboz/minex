@@ -147,8 +147,8 @@ unsigned int move_player(
 			if (player->speed)
 			{
 				wrap_translate(
-					player->rel_pos,
-					player->rel_pos,
+					player->obj_pos,
+					player->obj_pos,
 					player->up_vec[0] * player->speed,
 					player->up_vec[1] * player->speed
 					);

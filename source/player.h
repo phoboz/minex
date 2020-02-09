@@ -26,7 +26,7 @@
 struct player
 {
 	struct animation anim;
-	signed int rel_pos[2];
+	signed int obj_pos[2];
 	unsigned int update_view;
 	unsigned int angle;
 	unsigned int speed_counter;

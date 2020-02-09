@@ -5,6 +5,7 @@
 #include <vectrex.h>
 #include "player.h"
 #include "bullet.h"
+#include "wrap.h"
 #include "ship.h"
 
 // ---------------------------------------------------------------------------
@@ -45,8 +46,8 @@ void init_ship(
 	Rot_VL_Mode(ship->obj_angle, (signed int *) shape, ship->obj_vlist);
 
 	ship->world_angle = player->angle;
-	ship->rel_pos[0] = ship->obj_pos[0] - player->rel_pos[0];
-	ship->rel_pos[1] = ship->obj_pos[1] + player->rel_pos[1];
+	ship->rel_pos[0] = ship->obj_pos[0] - player->obj_pos[0];
+	ship->rel_pos[1] = ship->obj_pos[1] + player->obj_pos[1];
 	Rot_VL_ab(player->angle, 0, ship->obj.dim_2, ship->obj.center_pos);
 	Rot_VL_ab(player->angle, 0, ship->rel_pos, ship->obj.world_pos);
 	Rot_VL_Mode(player->angle, (signed int*) shape, &ship->world_vlist);
@@ -89,16 +90,14 @@ void move_ships(
 
 		if (ship->speed)
 		{
-			ship->obj_pos[0] += ship->speed * ship->front_vec[0];
-			ship->obj_pos[1] += ship->speed * ship->front_vec[1];
+			wrap_translate(ship->obj_pos, ship->obj_pos, ship->speed * ship->front_vec[0], ship->speed * ship->front_vec[1]);
 			update_view = 1;
 		}
 
 		if (update_view || player->update_view)
 		{
 			ship->world_angle = player->angle;
-			ship->rel_pos[0] = ship->obj_pos[0] - player->rel_pos[0];
-			ship->rel_pos[1] = ship->obj_pos[1] + player->rel_pos[1];
+			wrap_translate(ship->rel_pos, ship->obj_pos, - player->obj_pos[0], player->obj_pos[1]);
 
 			Rot_VL_ab(ship->world_angle, 0, ship->obj.dim_2, ship->obj.center_pos);
 			Rot_VL_ab(ship->world_angle, 0, ship->rel_pos, ship->obj.world_pos);
