@@ -1,6 +1,8 @@
 #ifndef _IMATH_H
 #define _IMATH_H
 
+#define abs(a)	(((a) < 0) ? (-a) : (a))
+
 unsigned int isqrt8(
 	unsigned int num
 	);

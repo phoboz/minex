@@ -6,6 +6,7 @@
 #include "controller.h"
 #include "bullet.h"
 #include "wrap.h"
+#include "imath.h"
 #include "player.h"
 
 // ---------------------------------------------------------------------------
@@ -105,10 +106,10 @@ unsigned int move_player(
 					if (player->speed < PLAYER_MAX_SPEED)
 					{
 						player->speed++;
-						player->anim.base_frame++;
 					}
 				}
 
+				player->anim.base_frame = (unsigned int) abs(player->speed);
 				if (player->speed == PLAYER_MAX_SPEED)
 				{
 					if (++player->anim_counter >= PLAYER_FLAME_ANIM_TRESHOLD)
