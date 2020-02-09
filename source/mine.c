@@ -91,7 +91,7 @@ void deinit_mine(
 	give_element(&mine->obj.elmnt, &mine_free_list);
 }
 
-__INLINE void rand_dir_mine(
+void rand_dir_mine(
 	struct mine *mine
 	)
 {
@@ -114,46 +114,36 @@ __INLINE void rand_dir_mine(
 	}
 }
 
-__INLINE void target_player_mine(
+void target_player_mine(
 	struct mine *mine,
 	struct player *player
 	)
 {
-	signed int center_y = mine->obj_pos[0] + mine->obj.center_pos[0];
-	signed int center_x = mine->obj_pos[1] + mine->obj.center_pos[1];
-	signed h = -player->anim.obj.dim_2[0];
-	signed w = player->anim.obj.dim_2[1];
+	signed int pos[2];
+	signed int v[2];
 
-	if (center_y >= player->rel_pos[0] - h && center_y <= player->rel_pos[0] + h)
+	pos[0] = 0;
+	pos[1] = 0;
+
+	if (mine->obj.world_pos[0] < 0)
 	{
-		mine->velocity[0] = 0;
+		v[0] = (signed int) (3 - mine->size);
 	}
-	else if (center_y < player->rel_pos[0])
+	else if (mine->obj.world_pos[0] > 0)
 	{
-		mine->velocity[0] = (signed int) (3 - mine->size);
-	}
-	else if (center_y > player->rel_pos[0])
-	{
-		mine->velocity[0] = -(signed int) (3 - mine->size);
+		v[0] = -(signed int) (3 - mine->size);
 	}
 
-	if (center_x >= player->rel_pos[1] - w && center_x <= player->rel_pos[1] + w)
+	if (mine->obj.world_pos[1] < 0)
 	{
-		mine->velocity[0] = 0;
+		v[1] = (signed int) (3 - mine->size);
 	}
-	if (center_x < player->rel_pos[1])
+	else if (mine->obj.world_pos[1] > 0)
 	{
-		mine->velocity[1] = (signed int) (3 - mine->size);
-	}
-	else if (center_x > player->rel_pos[1])
-	{
-		mine->velocity[1] = -(signed int) (3 - mine->size);
+		v[1] = -(signed int) (3 - mine->size);
 	}
 
-	if (mine->velocity[0] == 0 && mine->velocity[1] == 0)
-	{
-		rand_dir_mine(mine);
-	}
+	Rot_VL_ab(-player->angle, 0, v, mine->velocity);
 }
 
 unsigned int move_mines(
@@ -182,11 +172,6 @@ unsigned int move_mines(
 			{
 				if (mine->state == MINE_STATE_ACTIVE)
 				{
-					if (mine->type == MINE_TYPE_MAGNETIC)
-					{
-						target_player_mine(mine, player);
-					}
-
 					if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
 					{
 						wrap_translate(mine->obj_pos, mine->obj_pos, mine->velocity[0], mine->velocity[1]);
@@ -215,11 +200,6 @@ unsigned int move_mines(
 			{
 				if (mine->state == MINE_STATE_ACTIVE)
 				{
-					if (mine->type == MINE_TYPE_MAGNETIC)
-					{
-						target_player_mine(mine, player);
-					}
-
 					if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
 					{
 						wrap_translate(mine->obj_pos, mine->obj_pos, mine->velocity[0], mine->velocity[1]);
@@ -263,6 +243,13 @@ unsigned int move_mines(
 					}
 				}
 			}
+			else if (mine->state == MINE_STATE_ACTIVE)
+			{
+				if (mine->type == MINE_TYPE_MAGNETIC)
+				{
+					target_player_mine(mine, player);
+				}
+			}
 			else if (mine->state == MINE_STATE_EXPLODE)
 			{
 				if (++mine->hi_counter == MINE_EXPLODE_TRESHOLD)
@@ -276,11 +263,6 @@ unsigned int move_mines(
 			{
 				if (mine->state == MINE_STATE_ACTIVE)
 				{
-					if (mine->type == MINE_TYPE_MAGNETIC)
-					{
-						target_player_mine(mine, player);
-					}
-
 					if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
 					{
 						wrap_translate(mine->obj_pos, mine->obj_pos, mine->velocity[0], mine->velocity[1]);

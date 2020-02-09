@@ -4,6 +4,7 @@
 
 #include <vectrex.h>
 #include "object.h"
+#include "wrap.h"
 
 // ---------------------------------------------------------------------------
 
@@ -29,7 +30,7 @@ static wrap_t wrap(
 	}
 }
 
-void wrap_translate(
+unsigned int wrap_translate(
 	signed int p1[2],
 	signed int p0[2],
 	signed int dy,
@@ -37,6 +38,7 @@ void wrap_translate(
 	)
 {
 	wrap_t y, x;
+	unsigned int result = 0;
 
 	y = (wrap_t) p0[0] + (wrap_t) dy;
 	x = (wrap_t) p0[1] + (wrap_t) dx;
@@ -48,6 +50,7 @@ void wrap_translate(
 	else
 	{
 		p1[0] = (signed int) wrap(y, OBJECT_WRAP_MIN_Y, OBJECT_WRAP_MAX_Y);
+		result |= WRAP_Y;
 	}
 
 	if (x >= OBJECT_MIN_X && x <= OBJECT_MAX_X)
@@ -57,7 +60,10 @@ void wrap_translate(
 	else
 	{
 		p1[1] = (signed int) wrap(x, OBJECT_WRAP_MIN_X, OBJECT_WRAP_MAX_X);
+		result |= WRAP_X;
 	}
+
+	return result;
 }
 
 // ***************************************************************************
