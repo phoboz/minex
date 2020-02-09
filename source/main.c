@@ -28,25 +28,29 @@
 #define MAX_SHIPS		1
 #define MAX_BULLETS	3
 
+extern const unsigned int bullet_snd_data[];
+extern const unsigned int explosion_snd_data[];
+extern const unsigned int thrust_snd_data[];
+
+//#define ENABLE_SHIP
+#ifdef ENABLE_SHIP
+
 #define SHIP_MODEL_SCALE 	24
 #define SHIP_SIZE			20
 #define SHIP_DRAW_SCALE	0x10
 
 #define BLOW_UP	SHIP_MODEL_SCALE
-
-extern const unsigned int bullet_snd_data[];
-extern const unsigned int explosion_snd_data[];
-extern const unsigned int thrust_snd_data[];
-
 const signed char alien_ship[]=
-{	(signed char) 0xFF, -0x04*BLOW_UP, +0x01*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, -0x03*BLOW_UP, +0x03*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, -0x01*BLOW_UP, -0x04*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, +0x01*BLOW_UP, -0x04*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, +0x03*BLOW_UP, +0x03*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, +0x04*BLOW_UP, +0x01*BLOW_UP,  // pattern, y, x
-	(signed char) 0x01 // endmarker (high bit in pattern not set)
+{	(signed char) 0x00, +0x04*BLOW_UP, +0x00*BLOW_UP, // move, y, x
+	(signed char) 0xFF, -0x04*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x03*BLOW_UP, +0x03*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP, -0x04*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP, -0x04*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x03*BLOW_UP, +0x03*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x04*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
+	(signed char) 0x01 // endmarker 
 };
+#endif
 
 struct player player;
 struct mine mines[MAX_MINES];
@@ -95,7 +99,7 @@ void init_level(void)
 		}
 	}
 
-#if 0
+#ifdef ENABLE_SHIP
 	struct ship *ship = (struct ship *) ship_free_list;
 	if (ship)
 	{
@@ -158,7 +162,9 @@ int main(void)
 
 		player_status = move_player(&player);
 
-		//if (++ships[0].obj_angle == 64) ships[0].obj_angle = 0;
+#ifdef ENABLE_SHIP
+		if (++ships[0].obj_angle == 64) ships[0].obj_angle = 0;
+#endif
 
 		enemy_status = move_mines(&player);
 		move_ships(&player);

@@ -80,7 +80,6 @@ void move_ships(
 		update_view = 0;
 		if (ship->obj_angle != ship->old_obj_angle)
 		{
-			// TODO: Rotate ship center vector
 			Rot_VL_Mode(ship->obj_angle, (signed int *) ship->shape, ship->obj_vlist);
 			Rot_VL_ab(ship->obj_angle, 0, (signed int *) ship_front_vec, ship->front_vec);
 			update_view = 1;
@@ -115,6 +114,20 @@ void move_ships(
 			{
 				deinit_bullet(rem_bullet);
 				rem_bullet = 0;
+			}
+		}
+
+		if (player->anim.obj.active)
+		{
+			if (check_box_object(
+				&ship->obj,
+				player->anim.obj.dim_2[0],
+				-player->anim.obj.dim_2[1],
+				-player->anim.obj.dim_2[0],
+				player->anim.obj.dim_2[1]
+				))
+			{
+				hit_player(player);
 			}
 		}
 
