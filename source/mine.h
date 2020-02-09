@@ -5,8 +5,11 @@
 
 #define MINE_MAX_VECTORS		9
 
-#define MINE_TYPE_DIRECTIONAL	0
-#define MINE_TYPE_MAGNETIC		1
+#define MINE_TYPE_DIRECTIONAL	0x00
+#define MINE_TYPE_MAGNETIC		0x10
+#define MINE_TYPE_FIREBALL		0x20
+
+#define MINE_SIZE_MASK			0x0f
 
 #define MINE_STATE_IDLE		0
 #define MINE_STATE_ACTIVE		1
@@ -27,8 +30,7 @@ struct mine
 	signed int obj_pos[2];
 	signed int rel_pos[2];
 	signed int velocity[2];
-	unsigned int type;
-	unsigned int size;
+	unsigned int type_size;
 	unsigned int state;
 	unsigned int lo_counter;
 	unsigned int hi_counter;

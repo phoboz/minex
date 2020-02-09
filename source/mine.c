@@ -70,8 +70,7 @@ void init_mine(
 	mine->velocity[0]	= 0;
 	mine->velocity[1]	= 0;
 
-	mine->type		= type;
-	mine->size		= size;
+	mine->type_size	= type | size;
 	mine->state		= MINE_STATE_IDLE;
 	mine->lo_counter	= 0;
 	mine->hi_counter	= 0;
@@ -96,22 +95,24 @@ void rand_dir_mine(
 	struct mine *mine
 	)
 {
+	unsigned int size = mine->type_size & MINE_SIZE_MASK;
+
 	if (random() & 2)
 	{
-		mine->velocity[0] = (signed int) (3 - mine->size);
+		mine->velocity[0] = (signed int) (3 - size);
 	}
 	else
 	{
-		mine->velocity[0] = -(signed int) (3 - mine->size);
+		mine->velocity[0] = -(signed int) (3 - size);
 	}
 
 	if (random() & 2)
 	{
-		mine->velocity[1] = (signed int) (3 - mine->size);
+		mine->velocity[1] = (signed int) (3 - size);
 	}
 	else
 	{
-		mine->velocity[1] = -(signed int) (3 - mine->size);
+		mine->velocity[1] = -(signed int) (3 - size);
 	}
 }
 
@@ -123,6 +124,8 @@ void target_player_mine(
 	signed int v[2];
 	unsigned long len;
 	unsigned int wrap;
+
+	unsigned int size = mine->type_size & MINE_SIZE_MASK;
 
 	signed int center_y = mine->obj_pos[0] + mine->obj.center_pos[0];
 	signed int center_x = mine->obj_pos[1] + mine->obj.center_pos[1];
@@ -143,8 +146,8 @@ void target_player_mine(
 
 	if (len != 0)
 	{
-		mine->velocity[0] = (signed int) (v[0] * 	(signed long) (4 - mine->size) / (signed long) len);
-		mine->velocity[1] = (signed int) (v[1] * (signed long) (4 - mine->size) / (signed long) len);
+		mine->velocity[0] = (signed int) (v[0] * 	(signed long) (4 - size) / (signed long) len);
+		mine->velocity[1] = (signed int) (v[1] * (signed long) (4 - size) / (signed long) len);
 	}
 	else
 	{
@@ -182,7 +185,7 @@ unsigned int move_mines(
 					if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
 					{
 						mine->hi_counter = 0;
-						if (mine->type == MINE_TYPE_MAGNETIC)
+						if (mine->type_size & MINE_TYPE_MAGNETIC)
 						{
 							target_player_mine(mine, player);
 						}
@@ -219,7 +222,7 @@ unsigned int move_mines(
 					if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
 					{
 						mine->hi_counter = 0;
-						if (mine->type == MINE_TYPE_MAGNETIC)
+						if (mine->type_size & MINE_TYPE_MAGNETIC)
 						{
 							target_player_mine(mine, player);
 						}
@@ -260,14 +263,15 @@ unsigned int move_mines(
 					if (mine->state == MINE_STATE_IDLE)
 					{
 						mine->state = MINE_STATE_ACTIVE;
-						if (mine->type == MINE_TYPE_DIRECTIONAL)
-						{
-							rand_dir_mine(mine);
-						}
-						else if (mine->type == MINE_TYPE_DIRECTIONAL)
+						if (mine->type_size & MINE_TYPE_MAGNETIC)
 						{
 							target_player_mine(mine, player);
 						}
+						else
+						{
+							rand_dir_mine(mine);
+						}
+
 						update_view = 1;
 					}
 				}
@@ -288,7 +292,7 @@ unsigned int move_mines(
 					if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
 					{
 						mine->hi_counter = 0;
-						if (mine->type == MINE_TYPE_MAGNETIC)
+						if (mine->type_size & MINE_TYPE_MAGNETIC)
 						{
 							target_player_mine(mine, player);
 						}
