@@ -7,6 +7,7 @@
 #include "bullet.h"
 #include "random.h"
 #include "wrap.h"
+#include "imath.h"
 #include "mine_data.h"
 #include "mine.h"
 
@@ -119,31 +120,23 @@ void target_player_mine(
 	struct player *player
 	)
 {
-	signed int pos[2];
-	signed int v[2];
+	signed long v[2];
+	unsigned long len;
 
-	pos[0] = 0;
-	pos[1] = 0;
+	v[0] = player->rel_pos[0] - (mine->obj_pos[0] + mine->obj.center_pos[0]);
+	v[1] = player->rel_pos[1] - (mine->obj_pos[1] + mine->obj.center_pos[1]);
+	len = isqrt16((unsigned long) v[0] * (unsigned long) v[0] + (unsigned long) v[1] * (unsigned long) v[1]);
 
-	if (mine->obj.world_pos[0] < 0)
+	if (len != 0)
 	{
-		v[0] = (signed int) (3 - mine->size);
+		mine->velocity[0] = (signed int) (v[0] * 	(signed long) (4 - mine->size) / (signed long) len);
+		mine->velocity[1] = (signed int) (v[1] * (signed long) (4 - mine->size) / (signed long) len);
 	}
-	else if (mine->obj.world_pos[0] > 0)
+	else
 	{
-		v[0] = -(signed int) (3 - mine->size);
+		mine->velocity[0] = 0;
+		mine->velocity[1] = 0;
 	}
-
-	if (mine->obj.world_pos[1] < 0)
-	{
-		v[1] = (signed int) (3 - mine->size);
-	}
-	else if (mine->obj.world_pos[1] > 0)
-	{
-		v[1] = -(signed int) (3 - mine->size);
-	}
-
-	Rot_VL_ab(-player->angle, 0, v, mine->velocity);
 }
 
 unsigned int move_mines(
@@ -172,6 +165,15 @@ unsigned int move_mines(
 			{
 				if (mine->state == MINE_STATE_ACTIVE)
 				{
+					if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
+					{
+						mine->hi_counter = 0;
+						if (mine->type == MINE_TYPE_MAGNETIC)
+						{
+							target_player_mine(mine, player);
+						}
+					}
+
 					if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
 					{
 						wrap_translate(mine->obj_pos, mine->obj_pos, mine->velocity[0], mine->velocity[1]);
@@ -200,6 +202,15 @@ unsigned int move_mines(
 			{
 				if (mine->state == MINE_STATE_ACTIVE)
 				{
+					if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
+					{
+						mine->hi_counter = 0;
+						if (mine->type == MINE_TYPE_MAGNETIC)
+						{
+							target_player_mine(mine, player);
+						}
+					}
+
 					if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
 					{
 						wrap_translate(mine->obj_pos, mine->obj_pos, mine->velocity[0], mine->velocity[1]);
@@ -239,15 +250,12 @@ unsigned int move_mines(
 						{
 							rand_dir_mine(mine);
 						}
+						else if (mine->type == MINE_TYPE_DIRECTIONAL)
+						{
+							target_player_mine(mine, player);
+						}
 						update_view = 1;
 					}
-				}
-			}
-			else if (mine->state == MINE_STATE_ACTIVE)
-			{
-				if (mine->type == MINE_TYPE_MAGNETIC)
-				{
-					target_player_mine(mine, player);
 				}
 			}
 			else if (mine->state == MINE_STATE_EXPLODE)
@@ -263,6 +271,15 @@ unsigned int move_mines(
 			{
 				if (mine->state == MINE_STATE_ACTIVE)
 				{
+					if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
+					{
+						mine->hi_counter = 0;
+						if (mine->type == MINE_TYPE_MAGNETIC)
+						{
+							target_player_mine(mine, player);
+						}
+					}
+
 					if (mine->velocity[0] != 0 || mine->velocity[1] != 0)
 					{
 						wrap_translate(mine->obj_pos, mine->obj_pos, mine->velocity[0], mine->velocity[1]);
