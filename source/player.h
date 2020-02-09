@@ -3,6 +3,10 @@
 
 #include "animation.h"
 
+
+#define PLAYER_HEIGHT			6
+#define PLAYER_WIDTH			6
+
 #define PLAYER_ACCELERATE_TRESHOLD	12
 #define PLAYER_BRAKE_TRESHOLD		14
 #define PLAYER_MAX_SPEED			3

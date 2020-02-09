@@ -10,4 +10,6 @@ extern const signed int mine_1_sizes[];
 extern const signed char * const mine_2[];
 extern const signed int mine_2_sizes[];
 
+extern const signed char * const mine_explode[];
+
 #endif

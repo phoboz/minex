@@ -16,24 +16,6 @@
 struct element *mine_list = 0;
 struct element *mine_free_list = 0;
 
-#define BLOW_UP 24
-
-const signed char mine_explode[]=
-{	(signed char) 0x00, -0x03*BLOW_UP, -0x03*BLOW_UP, // move to y, x
-	(signed char) 0xFF, +0x03*BLOW_UP, +0x03*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, +0x00*BLOW_UP, -0x04*BLOW_UP,  // pattern, y, x
-	(signed char) 0x00, +0x03*BLOW_UP, +0x01*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, -0x03*BLOW_UP, +0x03*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, -0x03*BLOW_UP, +0x03*BLOW_UP,  // pattern, y, x
-	(signed char) 0x00, -0x01*BLOW_UP, -0x03*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, +0x04*BLOW_UP, +0x00*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, +0x00*BLOW_UP, +0x04*BLOW_UP,  // pattern, y, x
-	(signed char) 0x00, +0x03*BLOW_UP, -0x01*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, -0x03*BLOW_UP, -0x03*BLOW_UP,  // pattern, y, x
-	(signed char) 0xFF, +0x04*BLOW_UP, +0x00*BLOW_UP,  // pattern, y, x
-	(signed char) 0x01 // endmarker (high bit in pattern not set)
-};
-
 void init_mine(
 	struct mine *mine,
 	signed int y,
@@ -410,13 +392,18 @@ void draw_mines(void)
 
 				Moveto_d(mine->obj.dim_2[0], mine->obj.dim_2[1]);
 #endif
+				if (mine->type_size & MINE_TYPE_FIREBALL)
+				{
+					Dot_here();
+				}
+
 				dp_VIA_t1_cnt_lo = MINE_DRAW_SCALE;
 				Draw_VLp(mine->world_vlist);
 			}
 			else if (mine->state == MINE_STATE_EXPLODE)
 			{
 				dp_VIA_t1_cnt_lo = 0x10 + (mine->hi_counter << 3);
-				Draw_VLp((signed char *) mine_explode);
+				Draw_VLp((signed char *) mine_explode[mine->type_size & MINE_SIZE_MASK]);
 			}
 		}
 

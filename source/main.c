@@ -69,13 +69,18 @@ void init_level(void)
 			pos_y = random() % 2;
 			pos_x = random() % 2;
 			size = random() % 3;
-			if (0/*random () % 2*/)
+			if (random () % 2)
 			{
 				type = MINE_TYPE_MAGNETIC;
 			}
 			else
 			{
 				type = MINE_TYPE_DIRECTIONAL;
+			}
+
+			if (random() % 2)
+			{
+				type |= MINE_TYPE_FIREBALL;
 			}
 
 			init_mine(

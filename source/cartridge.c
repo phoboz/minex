@@ -39,7 +39,7 @@ const struct cartridge_t game_header __attribute__((section(".cartridge"), used)
 	.title_height 	= -8,
 	.title_width 	= 80,
 	.title_y 		= -16,
-	.title_x 		= -44,
+	.title_x 		= -40,
 	.title 			= "MINEX\x80"	// note that \x00 is automatically appended!
 };
 
