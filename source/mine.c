@@ -124,18 +124,19 @@ void target_player_mine(
 	unsigned long len;
 	unsigned int wrap;
 
-	//v[0] = player->rel_pos[0] - (mine->obj_pos[0] + mine->obj.center_pos[0]);
-	//v[1] = player->rel_pos[1] - (mine->obj_pos[1] + mine->obj.center_pos[1]);
-	wrap = wrap_translate(v, player->rel_pos, -(mine->obj_pos[0] + mine->obj.center_pos[0]), -(mine->obj_pos[1] + mine->obj.center_pos[1]));
+	signed int center_y = mine->obj_pos[0] + mine->obj.center_pos[0];
+	signed int center_x = mine->obj_pos[1] + mine->obj.center_pos[1];
+
+	wrap = wrap_translate(v, player->rel_pos, -center_y, -center_x);
 
 	if (wrap & WRAP_Y)
 	{
-		wrap_translate(v, player->rel_pos, (mine->obj_pos[0] + mine->obj.center_pos[0]), -(mine->obj_pos[1] + mine->obj.center_pos[1]));
+		v[0] = -v[0];
 	}
 
 	if (wrap & WRAP_X)
 	{
-		wrap_translate(v, player->rel_pos, -(mine->obj_pos[0] + mine->obj.center_pos[0]), (mine->obj_pos[1] + mine->obj.center_pos[1]));
+		v[1] = -v[1];
 	}
 
 	len = isqrt16((unsigned long) v[0] * (unsigned long) v[0] + (unsigned long) v[1] * (unsigned long) v[1]);
