@@ -238,20 +238,24 @@ unsigned int move_mines(
 				{
 					mine->hi_counter = 0;
 
-					if (mine->state == MINE_STATE_IDLE)
+					mine->state = MINE_STATE_ACTIVATE;
+					if (mine->type_size & MINE_TYPE_MAGNETIC)
 					{
-						mine->state = MINE_STATE_ACTIVE;
-						if (mine->type_size & MINE_TYPE_MAGNETIC)
-						{
-							target_player_mine(mine, player);
-						}
-						else
-						{
-							rand_dir_mine(mine);
-						}
-
-						update_view = 1;
+						target_player_mine(mine, player);
 					}
+					else
+					{
+						rand_dir_mine(mine);
+					}
+					update_view = 1;
+				}
+			}
+			else if (mine->state == MINE_STATE_ACTIVATE)
+			{
+				if (++mine->hi_counter == MINE_ACTIVATE_TRESHOLD)
+				{
+					mine->hi_counter = 0;
+					mine->state = MINE_STATE_ACTIVE;
 				}
 			}
 			else if (mine->state == MINE_STATE_EXPLODE)
@@ -378,6 +382,11 @@ void draw_mines(void)
 			if (mine->state == MINE_STATE_IDLE)
 			{
 				Dot_here();
+			}
+			else if (mine->state == MINE_STATE_ACTIVATE)
+			{
+				dp_VIA_t1_cnt_lo = (MINE_DRAW_SCALE - MINE_ACTIVATE_TRESHOLD) + mine->hi_counter;
+				Draw_VLp(mine->world_vlist);
 			}
 			else if (mine->state == MINE_STATE_ACTIVE)
 			{
