@@ -125,17 +125,20 @@ unsigned int move_player(
 					player->anim_counter = 0;
 					player->anim.frame = 0;
 				}
+
+				status |= PLAYER_STATUS_THRUST;
 			}
-			else
+			else if (player->speed)
 			{
+				player->anim.base_frame = 0;
+				player->anim.frame = 0;
+
 				if (++player->speed_counter >= PLAYER_BRAKE_TRESHOLD)
 				{
 					player->speed_counter = 0;
 					if (player->speed > 0)
 					{
 						player->speed--;
-						player->anim.base_frame--;
-						player->anim.frame = 0;
 					}
 				}
 			}
@@ -149,7 +152,6 @@ unsigned int move_player(
 					player->up_vec[1] * player->speed
 					);
 				player->update_view = 1;
-				status |= PLAYER_STATUS_THRUST;
 			}
 		}
 		else if (player->state == PLAYER_STATE_EXPLODE)
