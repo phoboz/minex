@@ -74,7 +74,6 @@ void init_mine(
 
 	mine->world_angle = player->angle;
 	wrap_translate(mine->rel_pos, mine->obj_pos, - player->obj_pos[0], player->obj_pos[1]);
-	Rot_VL_ab(player->angle, 0, mine->obj.dim_2, mine->obj.center_pos);
 	Rot_VL_ab(player->angle, 0, mine->rel_pos, mine->obj.world_pos);
 	Rot_VL_Mode(player->angle, (signed int*) mine->shape, &mine->world_vlist);
 }
@@ -118,16 +117,18 @@ void target_player_mine(
 	)
 {
 	signed int v[2];
+	signed int p[2];
 	unsigned long len;
 	unsigned int wrap;
 
 	unsigned int size = mine->type_size & MINE_SIZE_MASK;
 
-	signed int center_y = mine->obj_pos[0] + mine->obj.center_pos[0];
-	signed int center_x = mine->obj_pos[1] + mine->obj.center_pos[1];
+	p[0] = mine->obj_pos[0];
+	p[1] = mine->obj_pos[1];
 
-	wrap = wrap_translate(v, player->obj_pos, -center_y, -center_x);
+	wrap = wrap_translate(v, player->obj_pos, -p[0], -p[1]);
 
+#if 0
 	if (wrap & WRAP_Y)
 	{
 		v[0] = -v[0];
@@ -137,6 +138,7 @@ void target_player_mine(
 	{
 		v[1] = -v[1];
 	}
+#endif
 
 	len = isqrt16((unsigned long) v[0] * (unsigned long) v[0] + (unsigned long) v[1] * (unsigned long) v[1]);
 
@@ -197,7 +199,6 @@ unsigned int move_mines(
 				if (update_view || player->update_view)
 				{
 					wrap_translate(mine->rel_pos, mine->obj_pos, - player->obj_pos[0], player->obj_pos[1]);
-					Rot_VL_ab(player->angle, 0, mine->obj.dim_2, mine->obj.center_pos);
 					Rot_VL_ab(player->angle, 0, mine->rel_pos, mine->obj.world_pos);
 
 					if (mine->world_angle != player->angle)
@@ -234,7 +235,6 @@ unsigned int move_mines(
 				if (update_view || player->update_view)
 				{
 					wrap_translate(mine->rel_pos, mine->obj_pos, - player->obj_pos[0], player->obj_pos[1]);
-					Rot_VL_ab(player->angle, 0, mine->obj.dim_2, mine->obj.center_pos);
 					Rot_VL_ab(player->angle, 0, mine->rel_pos, mine->obj.world_pos);
 
 					if (mine->world_angle != player->angle)
@@ -304,7 +304,6 @@ unsigned int move_mines(
 				if (update_view || player->update_view)
 				{
 					wrap_translate(mine->rel_pos, mine->obj_pos, - player->obj_pos[0], player->obj_pos[1]);
-					Rot_VL_ab(player->angle, 0, mine->obj.dim_2, mine->obj.center_pos);
 					Rot_VL_ab(player->angle, 0, mine->rel_pos, mine->obj.world_pos);
 
 					if (mine->world_angle != player->angle)
@@ -376,49 +375,46 @@ unsigned int move_mines(
 void draw_mines(void)
 {
 	struct mine *mine;
-	signed int center_y, center_x;
+	signed int y, x;
 	signed int h, w;
 
 	mine = (struct mine *) mine_list;
 	while (mine != 0)
 	{
-		center_y = mine->obj.world_pos[0] + mine->obj.center_pos[0];
-		center_x = mine->obj.world_pos[1] + mine->obj.center_pos[1];
+		y = mine->obj.world_pos[0];
+		x = mine->obj.world_pos[1];
 		h = -mine->obj.dim_2[0];
 		w = mine->obj.dim_2[1];
-		if (!(center_y + h < OBJECT_MIN_Y || center_y - h > OBJECT_MAX_Y ||
-			center_x + w < OBJECT_MIN_X || center_x - w > OBJECT_MAX_X))
+		if (!(y + h < OBJECT_MIN_Y || y - h > OBJECT_MAX_Y ||
+			x + w < OBJECT_MIN_X || x - w > OBJECT_MAX_X))
 		{
 			Reset0Ref();
 			Moveto_d(0, 0);
 			dp_VIA_t1_cnt_lo = OBJECT_MOVE_SCALE;
-			Moveto_d(mine->obj.world_pos[0], mine->obj.world_pos[1]);
+			Moveto_d(y, x);
 
 			if (mine->state == MINE_STATE_IDLE)
 			{
-				Dot_d(mine->obj.center_pos[0], mine->obj.center_pos[1]);
+				Dot_here();
 			}
 			else if (mine->state == MINE_STATE_ACTIVE)
 			{
 //#define DEBUG_DRAW
 #ifdef DEBUG_DRAW
-				Moveto_d(mine->obj.center_pos[0], mine->obj.center_pos[1]);
-
 				Moveto_d(-mine->obj.dim_2[0], -mine->obj.dim_2[1]);
+
 				Draw_Line_d(0, mine->obj.dim_2[1] << 1);
 				Draw_Line_d(mine->obj.dim_2[0] << 1, 0);
 				Draw_Line_d(0, -mine->obj.dim_2[1] << 1);
 				Draw_Line_d(-mine->obj.dim_2[0] << 1, 0);
-				Moveto_d(mine->obj.dim_2[0], mine->obj.dim_2[1]);
 
-				Moveto_d(-mine->obj.center_pos[0], -mine->obj.center_pos[1]);
+				Moveto_d(mine->obj.dim_2[0], mine->obj.dim_2[1]);
 #endif
 				dp_VIA_t1_cnt_lo = MINE_DRAW_SCALE;
 				Draw_VLp(mine->world_vlist);
 			}
 			else if (mine->state == MINE_STATE_EXPLODE)
 			{
-				Moveto_d(mine->obj.center_pos[0], mine->obj.center_pos[1]);
 				dp_VIA_t1_cnt_lo = 0x10 + (mine->hi_counter << 3);
 				Draw_VLp((signed char *) mine_explode);
 			}

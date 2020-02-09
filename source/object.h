@@ -20,7 +20,6 @@ struct object
 	struct element elmnt;
 	unsigned int active;
 	signed int world_pos[2];
-	signed int center_pos[2];
 	signed int dim_2[2];
 };
 
@@ -46,18 +45,13 @@ __INLINE unsigned int check_box_object(
 	signed int obj2_x2
 	)
 {
-	signed int obj1_center_x, obj1_center_y;
 	signed int obj1_y1, obj1_x1, obj1_y2, obj1_x2;
-
 	unsigned int result = 0;
 
-	obj1_center_y = obj1->world_pos[0] + obj1->center_pos[0];
-	obj1_center_x = obj1->world_pos[1] + obj1->center_pos[1];
-
-	obj1_y1 = obj1_center_y + obj1->dim_2[0];
-	obj1_x1 = obj1_center_x - obj1->dim_2[1];
-	obj1_y2 = obj1_center_y - obj1->dim_2[0];
-	obj1_x2 = obj1_center_x + obj1->dim_2[1];
+	obj1_y1 = obj1->world_pos[0] + obj1->dim_2[0];
+	obj1_x1 = obj1->world_pos[1] - obj1->dim_2[1];
+	obj1_y2 = obj1->world_pos[0] - obj1->dim_2[0];
+	obj1_x2 = obj1->world_pos[1] + obj1->dim_2[1];
 
 	if (obj1_y1 < obj2_y2 && obj1_y2 > obj2_y1 && obj1_x1 < obj2_x2 && obj1_x2 > obj2_x1)
 	{

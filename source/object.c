@@ -18,9 +18,6 @@ void init_object(
 {
 	obj->active = 1;
 
-	obj->center_pos[0] = 0;
-	obj->center_pos[1] = 0;
-
 	obj->world_pos[0] = y;
 	obj->world_pos[1] = x;
 

@@ -35,21 +35,16 @@ __INLINE unsigned int hit_object_bullet(
 	)
 {
 	signed int obj1_y, obj1_x;
-	signed int obj2_center_y, obj2_center_x;
 	signed int obj2_y1, obj2_x1, obj2_y2, obj2_x2;
-
 	unsigned int result = 0;
 
 	obj1_y = obj1->world_pos[0];
 	obj1_x = obj1->world_pos[1];
 
-	obj2_center_y = obj2->world_pos[0] + obj2->center_pos[0];
-	obj2_center_x = obj2->world_pos[1] + obj2->center_pos[1];
-
-	obj2_y1 = obj2_center_y + obj2->dim_2[0];
-	obj2_x1 = obj2_center_x - obj2->dim_2[1];
-	obj2_y2 = obj2_center_y - obj2->dim_2[0];
-	obj2_x2 = obj2_center_x + obj2->dim_2[1];
+	obj2_y1 = obj2->world_pos[0] + obj2->dim_2[0];
+	obj2_x1 = obj2->world_pos[1] - obj2->dim_2[1];
+	obj2_y2 = obj2->world_pos[0] - obj2->dim_2[0];
+	obj2_x2 = obj2->world_pos[1] + obj2->dim_2[1];
 
 	if (obj1_y > obj2_y1 && obj1_y < obj2_y2 && obj1_x > obj2_x1 && obj1_x < obj2_x2)
 	{
