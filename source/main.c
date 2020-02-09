@@ -121,7 +121,7 @@ int main(void)
 	disable_controller_2_x();
 	disable_controller_2_y();
 
-	init_random(35, 27, 3, 19);
+	init_random(5, 27, 3, 19);
 
 	for (i = 0; i < MAX_MINES; i++)
 	{
