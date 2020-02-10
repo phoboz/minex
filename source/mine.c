@@ -95,24 +95,23 @@ void rand_dir_mine(
 
 void target_player_mine(
 	struct mine *mine,
-	struct player *player
+	struct player *player,
+	signed int speed
 	)
 {
 	signed int v[2];
 	signed int p[2];
 	unsigned long len;
 
-	unsigned int size = mine->type_size & MINE_SIZE_MASK;
-
 	p[0] = player->obj_pos[0];
 	p[1] = -player->obj_pos[1];
 
 	wrap_translate(v, p, -mine->obj_pos[0], -mine->obj_pos[1]);
 	len = isqrt16((unsigned long) v[0] * (unsigned long) v[0] + (unsigned long) v[1] * (unsigned long) v[1]);
-	if (len != 0)
+	if (len >= MINE_TARGET_MIN_RANGE)
 	{
-		mine->velocity[0] = (signed int) (v[0] * 	(signed long) (4 - size) / (signed long) len);
-		mine->velocity[1] = (signed int) (v[1] * (signed long) (4 - size) / (signed long) len);
+		mine->velocity[0] = (signed int) (v[0] * 	(signed long) speed / (signed long) len);
+		mine->velocity[1] = (signed int) (v[1] * (signed long) speed / (signed long) len);
 	}
 	else
 	{
@@ -145,14 +144,14 @@ unsigned int move_mines(
 		{
 			if (mine_index == 0 || mine_index == 3 || mine_index == 6 || mine_index == 9)
 			{
-				if (mine->state == MINE_STATE_ACTIVE)
+				if (mine->state == MINE_STATE_ACTIVE || mine->state == MINE_STATE_FIREBALL)
 				{
 					if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
 					{
 						mine->hi_counter = 0;
-						if (mine->type_size & MINE_TYPE_MAGNETIC)
+						if ((mine->type_size & MINE_TYPE_MAGNETIC) && mine->state == MINE_STATE_ACTIVE)
 						{
-							target_player_mine(mine, player);
+							target_player_mine(mine, player, 4 - (signed int) (mine->type_size & MINE_SIZE_MASK));
 						}
 					}
 
@@ -181,14 +180,14 @@ unsigned int move_mines(
 		{
 			if (mine_index == 1 || mine_index == 4 || mine_index == 7 || mine_index == 10)
 			{
-				if (mine->state == MINE_STATE_ACTIVE)
+				if (mine->state == MINE_STATE_ACTIVE || mine->state == MINE_STATE_FIREBALL)
 				{
 					if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
 					{
 						mine->hi_counter = 0;
-						if (mine->type_size & MINE_TYPE_MAGNETIC)
+						if ((mine->type_size & MINE_TYPE_MAGNETIC) && mine->state == MINE_STATE_ACTIVE)
 						{
-							target_player_mine(mine, player);
+							target_player_mine(mine, player, 4 - (signed int) (mine->type_size & MINE_SIZE_MASK));
 						}
 					}
 
@@ -226,7 +225,7 @@ unsigned int move_mines(
 					mine->state = MINE_STATE_ACTIVATE;
 					if (mine->type_size & MINE_TYPE_MAGNETIC)
 					{
-						target_player_mine(mine, player);
+						target_player_mine(mine, player, 4 - (signed int) (mine->type_size & MINE_SIZE_MASK));
 					}
 					else
 					{
@@ -248,20 +247,28 @@ unsigned int move_mines(
 				if (++mine->hi_counter == MINE_EXPLODE_TRESHOLD)
 				{
 					mine->hi_counter = 0;
-					mine->state = MINE_STATE_REMOVE;
+					if (mine->type_size & MINE_TYPE_FIREBALL)
+					{
+						target_player_mine(mine, player, MINE_FIREBALL_SPEED);
+						mine->state = MINE_STATE_FIREBALL;
+					}
+					else
+					{
+						mine->state = MINE_STATE_REMOVE;
+					}
 				}
 			}
 
 			if (mine_index == 2 || mine_index == 5 || mine_index == 8 || mine_index == 11)
 			{
-				if (mine->state == MINE_STATE_ACTIVE)
+				if (mine->state == MINE_STATE_ACTIVE || mine->state == MINE_STATE_FIREBALL)
 				{
 					if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
 					{
 						mine->hi_counter = 0;
-						if (mine->type_size & MINE_TYPE_MAGNETIC)
+						if ((mine->type_size & MINE_TYPE_MAGNETIC) && mine->state == MINE_STATE_ACTIVE)
 						{
-							target_player_mine(mine, player);
+							target_player_mine(mine, player, 4 - (signed int) (mine->type_size & MINE_SIZE_MASK));
 						}
 					}
 
@@ -287,17 +294,29 @@ unsigned int move_mines(
 			}
 		}
 
-		if (mine->state == MINE_STATE_ACTIVE)
+		if (mine->state == MINE_STATE_ACTIVE || mine->state == MINE_STATE_FIREBALL)
 		{
 			bullet = (struct bullet *) bullet_list;
 			while (bullet)
 			{
-				if (hit_object_bullet(bullet, &mine->obj))
+				if (mine->state == MINE_STATE_ACTIVE)
 				{
-					mine->state = MINE_STATE_EXPLODE;
-					mine->velocity[0] = mine->velocity[1] = 0;
-					rem_bullet = bullet;
-					status |= MINE_STATUS_EXPLODE;
+					if (hit_object_bullet(bullet, &mine->obj))
+					{
+						mine->state = MINE_STATE_EXPLODE;
+						mine->velocity[0] = mine->velocity[1] = 0;
+						rem_bullet = bullet;
+						status |= MINE_STATUS_EXPLODE;
+					}
+				}
+				else if (mine->state == MINE_STATE_FIREBALL) 
+				{
+					if (hit_dim_object_bullet(bullet, &mine->obj, -FIREBALL_SIZE, FIREBALL_SIZE))
+					{
+						mine->state = MINE_STATE_REMOVE;
+						mine->velocity[0] = mine->velocity[1] = 0;
+						rem_bullet = bullet;
+					}
 				}
 
 				bullet = (struct bullet *) bullet->elmnt.next;
@@ -312,17 +331,36 @@ unsigned int move_mines(
 #ifndef NO_HIT
 			if (player->anim.obj.active)
 			{
-				if (check_box_object(
-					&mine->obj,
-					player->anim.obj.dim_2[0],
-					-player->anim.obj.dim_2[1],
-					-player->anim.obj.dim_2[0],
-					player->anim.obj.dim_2[1]
-					))
+				if (mine->state == MINE_STATE_ACTIVE)
 				{
-					mine->state = MINE_STATE_EXPLODE;
-					status = MINE_STATUS_EXPLODE;
-					hit_player(player);
+					if (check_box_object(
+						&mine->obj,
+						player->anim.obj.dim_2[0],
+						-player->anim.obj.dim_2[1],
+						-player->anim.obj.dim_2[0],
+						player->anim.obj.dim_2[1]
+						))
+					{
+						mine->state = MINE_STATE_EXPLODE;
+						hit_player(player);
+						status = MINE_STATUS_EXPLODE;
+					}
+				}
+				else if (mine->state == MINE_STATE_FIREBALL)
+				{
+					if (check_box_dim_object(
+						&mine->obj,
+						-FIREBALL_SIZE,
+						FIREBALL_SIZE,
+						player->anim.obj.dim_2[0],
+						-player->anim.obj.dim_2[1],
+						-player->anim.obj.dim_2[0],
+						player->anim.obj.dim_2[1]
+						))
+					{
+						mine->state = MINE_STATE_REMOVE;
+						hit_player(player);
+					}
 				}
 			}
 #endif
@@ -400,6 +438,22 @@ void draw_mines(void)
 			{
 				dp_VIA_t1_cnt_lo = 0x10 + (mine->hi_counter << 3);
 				Draw_VLp((signed char *) mine_explode[mine->type_size & MINE_SIZE_MASK]);
+			}
+			else if (mine->state == MINE_STATE_FIREBALL)
+			{
+#ifdef DEBUG_DRAW
+				Moveto_d(-FIREBALL_SIZE, -FIREBALL_SIZE);
+
+				Draw_Line_d(0, FIREBALL_SIZE << 1);
+				Draw_Line_d(FIREBALL_SIZE << 1, 0);
+				Draw_Line_d(0, -FIREBALL_SIZE << 1);
+				Draw_Line_d(-FIREBALL_SIZE << 1, 0);
+
+				Moveto_d(FIREBALL_SIZE, FIREBALL_SIZE);
+#endif
+
+				dp_VIA_t1_cnt_lo = MINE_DRAW_SCALE;
+				Draw_VLp((signed char *) fireball);
 			}
 		}
 

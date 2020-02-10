@@ -54,4 +54,31 @@ __INLINE unsigned int hit_object_bullet(
 	return result;
 }
 
+__INLINE unsigned int hit_dim_object_bullet(
+	struct bullet *obj1,
+	struct object *obj2,
+	signed int h,
+	signed int w
+	)
+{
+	signed int obj1_y, obj1_x;
+	signed int obj2_y1, obj2_x1, obj2_y2, obj2_x2;
+	unsigned int result = 0;
+
+	obj1_y = obj1->world_pos[0];
+	obj1_x = obj1->world_pos[1];
+
+	obj2_y1 = obj2->world_pos[0] + h;
+	obj2_x1 = obj2->world_pos[1] - w;
+	obj2_y2 = obj2->world_pos[0] - h;
+	obj2_x2 = obj2->world_pos[1] + w;
+
+	if (obj1_y > obj2_y1 && obj1_y < obj2_y2 && obj1_x > obj2_x1 && obj1_x < obj2_x2)
+	{
+		result = 1;
+	}
+
+	return result;
+}
+
 #endif

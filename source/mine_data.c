@@ -157,6 +157,18 @@ const signed char * const mine_explode[]=
 	mine_explode_2,
 	mine_explode_1
 };
+
+const signed char fireball[]=
+{	(signed char) 0x01, +0x00*BLOW_UP, -0x01*BLOW_UP, // sync and move to y, x
+	(signed char) 0xFF, +0x00*BLOW_UP, +0x02*BLOW_UP, // draw, y, x
+	(signed char) 0x00, +0x01*BLOW_UP, -0x02*BLOW_UP, // mode, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP, +0x02*BLOW_UP, // draw, y, x
+	(signed char) 0x00, +0x02*BLOW_UP, -0x01*BLOW_UP, // mode, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP, +0x00*BLOW_UP, // draw, y, x
+	(signed char) 0x00, +0x02*BLOW_UP, +0x01*BLOW_UP, // mode, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP, -0x02*BLOW_UP, // draw, y, x
+	(signed char) 0x02 // endmarker 
+};
 // ***************************************************************************
 // end of file
 // ***************************************************************************

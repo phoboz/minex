@@ -61,4 +61,30 @@ __INLINE unsigned int check_box_object(
 	return result;
 }
 
+__INLINE unsigned int check_box_dim_object(
+	struct object *obj1,
+	signed int h,
+	signed int w,
+	signed int obj2_y1,
+	signed int obj2_x1,
+	signed int obj2_y2,
+	signed int obj2_x2
+	)
+{
+	signed int obj1_y1, obj1_x1, obj1_y2, obj1_x2;
+	unsigned int result = 0;
+
+	obj1_y1 = obj1->world_pos[0] + h;
+	obj1_x1 = obj1->world_pos[1] - w;
+	obj1_y2 = obj1->world_pos[0] - h;
+	obj1_x2 = obj1->world_pos[1] + w;
+
+	if (obj1_y1 < obj2_y2 && obj1_y2 > obj2_y1 && obj1_x1 < obj2_x2 && obj1_x2 > obj2_x1)
+	{
+		result = 1;
+	}
+
+	return result;
+}
+
 #endif
