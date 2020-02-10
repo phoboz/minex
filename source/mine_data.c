@@ -159,15 +159,15 @@ const signed char * const mine_explode[]=
 };
 
 const signed char fireball[]=
-{	(signed char) 0x01, +0x00*BLOW_UP, -0x01*BLOW_UP, // sync and move to y, x
-	(signed char) 0xFF, +0x00*BLOW_UP, +0x02*BLOW_UP, // draw, y, x
-	(signed char) 0x00, +0x01*BLOW_UP, -0x02*BLOW_UP, // mode, y, x
+{	(signed char) 0x00, +0x00*BLOW_UP, -0x02*BLOW_UP, // move, to y, x
+	(signed char) 0xFF, +0x00*BLOW_UP, +0x04*BLOW_UP, // draw, y, x
+	(signed char) 0x00, +0x01*BLOW_UP, -0x03*BLOW_UP, // mode, y, x
 	(signed char) 0xFF, -0x02*BLOW_UP, +0x02*BLOW_UP, // draw, y, x
-	(signed char) 0x00, +0x02*BLOW_UP, -0x01*BLOW_UP, // mode, y, x
-	(signed char) 0xFF, -0x02*BLOW_UP, +0x00*BLOW_UP, // draw, y, x
-	(signed char) 0x00, +0x02*BLOW_UP, +0x01*BLOW_UP, // mode, y, x
+	(signed char) 0x00, +0x03*BLOW_UP, -0x01*BLOW_UP, // mode, y, x
+	(signed char) 0xFF, -0x04*BLOW_UP, +0x00*BLOW_UP, // draw, y, x
+	(signed char) 0x00, +0x03*BLOW_UP, +0x01*BLOW_UP, // mode, y, x
 	(signed char) 0xFF, -0x02*BLOW_UP, -0x02*BLOW_UP, // draw, y, x
-	(signed char) 0x02 // endmarker 
+	(signed char) 0x01 // endmarker 
 };
 // ***************************************************************************
 // end of file

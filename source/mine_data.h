@@ -4,6 +4,7 @@
 #define MINE_DRAW_SCALE		0x10
 #define MINE_MODEL_SCALE		24
 
+#define FIREBALL_DRAW_SCALE		0x08
 #define FIREBALL_SIZE			3
 
 extern const signed char * const mine_1[];

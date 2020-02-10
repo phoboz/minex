@@ -360,6 +360,7 @@ unsigned int move_mines(
 					{
 						mine->state = MINE_STATE_REMOVE;
 						hit_player(player);
+						status = MINE_STATUS_EXPLODE;
 					}
 				}
 			}
@@ -367,7 +368,8 @@ unsigned int move_mines(
 
 			if (mine->state == MINE_STATE_FIREBALL)
 			{
-				if (mine->obj.world_pos[0] < OBJECT_MIN_Y || mine->obj.world_pos[0] > OBJECT_MAX_Y ||
+				if ((mine->velocity[0] == 0 && mine->velocity[1] == 0) ||
+					mine->obj.world_pos[0] < OBJECT_MIN_Y || mine->obj.world_pos[0] > OBJECT_MAX_Y ||
 					mine->obj.world_pos[1] < OBJECT_MIN_X || mine->obj.world_pos[1] > OBJECT_MAX_X)
 				{
 					mine->state = MINE_STATE_REMOVE;
@@ -461,7 +463,7 @@ void draw_mines(void)
 				Moveto_d(FIREBALL_SIZE, FIREBALL_SIZE);
 #endif
 
-				dp_VIA_t1_cnt_lo = MINE_DRAW_SCALE;
+				dp_VIA_t1_cnt_lo = FIREBALL_DRAW_SCALE;
 				Draw_VLp((signed char *) fireball);
 			}
 		}
