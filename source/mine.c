@@ -101,29 +101,14 @@ void target_player_mine(
 	signed int v[2];
 	signed int p[2];
 	unsigned long len;
-	unsigned int wrap;
 
 	unsigned int size = mine->type_size & MINE_SIZE_MASK;
 
-	p[0] = mine->obj_pos[0];
-	p[1] = mine->obj_pos[1];
+	p[0] = player->obj_pos[0];
+	p[1] = -player->obj_pos[1];
 
-	wrap = wrap_translate(v, player->obj_pos, -p[0], -p[1]);
-
-#if 0
-	if (wrap & WRAP_Y)
-	{
-		v[0] = -v[0];
-	}
-
-	if (wrap & WRAP_X)
-	{
-		v[1] = -v[1];
-	}
-#endif
-
+	wrap_translate(v, p, -mine->obj_pos[0], -mine->obj_pos[1]);
 	len = isqrt16((unsigned long) v[0] * (unsigned long) v[0] + (unsigned long) v[1] * (unsigned long) v[1]);
-
 	if (len != 0)
 	{
 		mine->velocity[0] = (signed int) (v[0] * 	(signed long) (4 - size) / (signed long) len);
@@ -324,6 +309,7 @@ unsigned int move_mines(
 				}
 			}
 
+#ifndef NO_HIT
 			if (player->anim.obj.active)
 			{
 				if (check_box_object(
@@ -339,6 +325,7 @@ unsigned int move_mines(
 					hit_player(player);
 				}
 			}
+#endif
 		}
 		else if (mine->state == MINE_STATE_REMOVE)
 		{

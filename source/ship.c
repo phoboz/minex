@@ -117,6 +117,7 @@ void move_ships(
 			}
 		}
 
+#ifndef NO_HIT
 		if (player->anim.obj.active)
 		{
 			if (check_box_object(
@@ -130,6 +131,7 @@ void move_ships(
 				hit_player(player);
 			}
 		}
+#endif
 
 		ship = (struct ship *) ship->obj.elmnt.next;
 

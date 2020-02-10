@@ -103,7 +103,7 @@ void init_level(void)
 	struct ship *ship = (struct ship *) ship_free_list;
 	if (ship)
 	{
-		init_ship(ship, 0, 100, SHIP_SIZE, SHIP_SIZE, 0, &player, SHIP_DRAW_SCALE, alien_ship);
+		init_ship(ship, 0, 0, SHIP_SIZE, SHIP_SIZE, 0, &player, SHIP_DRAW_SCALE, alien_ship);
 		ship->speed = 3;
 	}
 #endif
