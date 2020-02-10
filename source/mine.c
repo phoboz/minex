@@ -364,6 +364,15 @@ unsigned int move_mines(
 				}
 			}
 #endif
+
+			if (mine->state == MINE_STATE_FIREBALL)
+			{
+				if (mine->obj.world_pos[0] < OBJECT_MIN_Y || mine->obj.world_pos[0] > OBJECT_MAX_Y ||
+					mine->obj.world_pos[1] < OBJECT_MIN_X || mine->obj.world_pos[1] > OBJECT_MAX_X)
+				{
+					mine->state = MINE_STATE_REMOVE;
+				}
+			}
 		}
 		else if (mine->state == MINE_STATE_REMOVE)
 		{
