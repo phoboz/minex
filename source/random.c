@@ -37,6 +37,42 @@ unsigned int random(void)
 	return _c;
 }
 
+static unsigned long long random_number = 1;
+//32,7,5,3,2,1
+#define MASK 0x80000057
+unsigned long random_long(void)
+{
+	unsigned int i;
+
+	for (i = 0; i < 16; i++)
+	{
+		if (random_number & 0x00000001)
+		{
+			random_number = (((random_number ^ MASK) >> 1) | 0x80000000);
+		}
+		else
+		{
+			random_number >>=1;
+		}
+	}
+
+	return((unsigned long) random_number);
+}
+
+void random_long_seed(
+	unsigned long long seed
+	)
+{
+	if (seed == 0)
+	{
+		random_number = 1;
+	}
+	else
+	{
+		random_number = seed;
+	}
+}
+
 // ***************************************************************************
 // end of file
 // ***************************************************************************

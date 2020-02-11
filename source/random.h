@@ -10,4 +10,10 @@ void init_random(
 
 unsigned int random(void);
 
+
+unsigned long random_long(void);
+void random_long_seed(
+	unsigned long long seed
+	);
+
 #endif
