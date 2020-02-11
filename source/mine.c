@@ -28,15 +28,25 @@ void init_mine(
 {
 	take_element(&mine->obj.elmnt, &mine_free_list);
 
-	if (type & MINE_TYPE_MAGNETIC)
+	if ((type & MINE_TYPE_MAGNETIC) && (type & MINE_TYPE_FIREBALL))
+	{
+		init_object(&mine->obj, y, x, mine_3_sizes[size], mine_3_sizes[size], &mine_list);
+		mine->shape = mine_3[size];
+	}
+	else if (type & MINE_TYPE_MAGNETIC)
+	{
+		init_object(&mine->obj, y, x, mine_1_sizes[size], mine_1_sizes[size], &mine_list);
+		mine->shape = mine_1[size];
+	}
+	else if (type & MINE_TYPE_FIREBALL)
 	{
 		init_object(&mine->obj, y, x, mine_2_sizes[size], mine_2_sizes[size], &mine_list);
 		mine->shape = mine_2[size];
 	}
 	else
 	{
-		init_object(&mine->obj, y, x, mine_1_sizes[size], mine_1_sizes[size], &mine_list);
-		mine->shape = mine_1[size];
+		init_object(&mine->obj, y, x, mine_0_sizes[size], mine_0_sizes[size], &mine_list);
+		mine->shape = mine_0[size];
 	}
 
 	mine->obj_pos[0]	= y;
