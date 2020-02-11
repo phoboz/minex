@@ -49,7 +49,7 @@ const signed int mine_0_sizes[]=
 {
 	8,
 	10,
-	16
+	18
 };
 
 static const signed char mine_1_1[]=
@@ -145,9 +145,9 @@ const signed char * const mine_2[]=
 };
 const signed int mine_2_sizes[]=
 {
-	8,
 	10,
-	16
+	12,
+	22
 };
 
 static const signed char mine_3_1[]=

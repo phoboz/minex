@@ -11,6 +11,8 @@
 #include "mine_data.h"
 #include "mine.h"
 
+//#define NO_HIT
+
 // ---------------------------------------------------------------------------
 
 struct element *mine_list = 0;

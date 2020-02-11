@@ -2,7 +2,7 @@
 #define _MINE_DATA_H
 
 #define MINE_DRAW_SCALE		0x10
-#define MINE_MODEL_SCALE		24
+#define MINE_MODEL_SCALE		25
 
 #define FIREBALL_DRAW_SCALE		0x08
 #define FIREBALL_SIZE			3
