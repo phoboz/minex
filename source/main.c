@@ -34,20 +34,25 @@ extern const unsigned int thrust_snd_data[];
 
 //#define ENABLE_SHIP
 #ifdef ENABLE_SHIP
-
-#define SHIP_MODEL_SCALE 	24
+#define SHIP_MODEL_SCALE 	16
 #define SHIP_SIZE			20
-#define SHIP_DRAW_SCALE	0x10
+#define SHIP_DRAW_SCALE	0x18
 
 #define BLOW_UP	SHIP_MODEL_SCALE
-const signed char alien_ship[]=
-{	(signed char) 0x00, +0x04*BLOW_UP, +0x00*BLOW_UP, // move, y, x
-	(signed char) 0xFF, -0x04*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
-	(signed char) 0xFF, -0x03*BLOW_UP, +0x03*BLOW_UP, // draw, y, x
-	(signed char) 0xFF, -0x01*BLOW_UP, -0x04*BLOW_UP, // draw, y, x
-	(signed char) 0xFF, +0x01*BLOW_UP, -0x04*BLOW_UP, // draw, y, x
-	(signed char) 0xFF, +0x03*BLOW_UP, +0x03*BLOW_UP, // draw, y, x
-	(signed char) 0xFF, +0x04*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
+const signed char mine_layer[]=
+{	(signed char) 0x00, +0x03*BLOW_UP, +0x01*BLOW_UP, // move, y, x
+	(signed char) 0xFF, -0x06*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP, +0x00*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x00*BLOW_UP, -0x04*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP, +0x00*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP, -0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x07*BLOW_UP, +0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP, +0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP, +0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x07*BLOW_UP, +0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP, -0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x00*BLOW_UP, -0x04*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x06*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
 	(signed char) 0x01 // endmarker 
 };
 #endif
@@ -103,8 +108,8 @@ void init_level(void)
 	struct ship *ship = (struct ship *) ship_free_list;
 	if (ship)
 	{
-		init_ship(ship, 0, 0, SHIP_SIZE, SHIP_SIZE, 0, &player, SHIP_DRAW_SCALE, alien_ship);
-		ship->speed = 3;
+		init_ship(ship, 0, 0, SHIP_SIZE, SHIP_SIZE, 0, &player, SHIP_DRAW_SCALE, mine_layer);
+		ship->speed = 1;
 	}
 #endif
 }

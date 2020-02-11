@@ -3,7 +3,7 @@
 
 #include "object.h"
 
-#define SHIP_MAX_VECTORS	8
+#define SHIP_MAX_VECTORS	13
 
 struct player;
 
