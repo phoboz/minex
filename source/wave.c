@@ -23,7 +23,7 @@ struct mine_data
 	long rarity;
 };
 
-struct mine_data md[MAX_MINE_TYPES]=
+static const struct mine_data md[MAX_MINE_TYPES]=
 {
 	// first level
 	{	MINE_TYPE_DIRECTIONAL,						2,	MINE_COMMON		},
@@ -74,7 +74,7 @@ const signed char mine_layer[]=
 static signed char level = 0;
 static unsigned long total_rarity = 0;
 
-static signed char lmod[] =
+static const signed char lmod[] =
 {
 	100, 90, 80, 72, 64, 56, 50, 42, 35, 28, 20, 12, 4, 1
 };
