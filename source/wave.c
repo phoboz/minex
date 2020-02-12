@@ -27,7 +27,7 @@ struct mine_data
 	unsigned int type;
 	unsigned int size;
 	unsigned long points;
-	long rarity;
+	unsigned long rarity;
 };
 
 static const struct mine_data md[MAX_MINE_TYPES]=
@@ -78,10 +78,10 @@ const signed char mine_layer[]=
 };
 #endif
 
-static signed char level = 0;
+static unsigned int level = 0;
 static unsigned long total_rarity = 0;
 
-static const signed char lmod[] =
+static const unsigned int lmod[] =
 {
 	100, 90, 80, 72, 64, 56, 50, 42, 35, 28, 20, 12, 4, 1
 };
@@ -95,34 +95,34 @@ struct mine mines[MAX_MINES];
 struct ship ships[MAX_SHIPS];
 struct bullet bullets[MAX_BULLETS];
 
-static signed char max_mine_types(void)
+static unsigned int max_mine_types(void)
 {
 	return min(level * 3, MAX_MINE_TYPES);
 }
 
-static signed char mine_level(
-	signed char index
+static unsigned int mine_level(
+	unsigned int index
 	)
 {
-	return (index/3);
+	return (index / 3);
 }
 
-static long mine_rarity(
-	signed char index
+static unsigned long mine_rarity(
+	unsigned int index
 	)
 {
-	long rarity = md[index].rarity;
-	signed char level_diff = level - mine_level(index);
+	unsigned long rarity = md[index].rarity;
+	unsigned int level_diff = level - mine_level(index);
 
 	return max(1, (rarity * lmod[min(13, level_diff)]) / 100);
 }
 
-static signed char random_mine_type(void)
+static unsigned int random_mine_type(void)
 {
-	long roll;
-	signed char i;
+	unsigned long roll;
+	unsigned int i;
 
-	roll = (long) (random_long() % total_rarity) + 1;
+	roll = random_long() % total_rarity + 1;
 	i = 0;
 
 	while (roll > mine_rarity(i))
@@ -153,7 +153,7 @@ static unsigned int get_idle_time(void)
 static void init_minefield(void)
 {
 	unsigned int i;
-	signed char mine_type;
+	unsigned int mine_type;
 	unsigned int type;
 	unsigned int size;
 	unsigned int pos_y, pos_x;
@@ -217,7 +217,7 @@ void clear_wave(void)
 
 void init_wave(void)
 {
-	signed char i, num;
+	unsigned int i, num;
 
 	level++;
 
@@ -237,7 +237,7 @@ unsigned long get_points_wave(
 	)
 {
 	unsigned int type, size;
-	signed char i, num;
+	unsigned int i, num;
 	unsigned long result = 0;
 
 	size = mine->type_size & MINE_SIZE_MASK;
