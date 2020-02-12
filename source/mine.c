@@ -16,6 +16,7 @@
 
 // ---------------------------------------------------------------------------
 
+unsigned int num_mines = 0;
 struct element *mine_list = 0;
 struct element *mine_free_list = 0;
 
@@ -71,6 +72,8 @@ void init_mine(
 	wrap_translate(mine->rel_pos, mine->obj_pos, - player->obj_pos[0], player->obj_pos[1]);
 	Rot_VL_ab(player->angle, 0, mine->rel_pos, mine->obj.world_pos);
 	Rot_VL_Mode(player->angle, (signed int*) mine->shape, &mine->world_vlist);
+
+	num_mines++;
 }
 
 void deinit_mine(
@@ -79,6 +82,8 @@ void deinit_mine(
 {
 	deinit_object(&mine->obj, &mine_list);
 	give_element(&mine->obj.elmnt, &mine_free_list);
+
+	num_mines--;
 }
 
 void rand_dir_mine(

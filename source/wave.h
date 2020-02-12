@@ -16,6 +16,8 @@ extern struct bullet bullets[];
 void clear_wave(void);
 void init_wave();
 
+void move_wave(void);
+
 unsigned long get_points_wave(
 	struct mine *mine
 	);

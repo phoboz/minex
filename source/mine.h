@@ -49,6 +49,7 @@ struct mine
 	signed char world_vlist[MINE_MAX_VECTORS*3 + 1];
 };
 
+extern unsigned int num_mines;
 extern struct element *mine_list;
 extern struct element *mine_free_list;
 

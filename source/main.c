@@ -62,18 +62,20 @@ int main(void)
 
 	while(1)
 	{
-		if (mine_list == 0 && sfx_status_1 == 0 && sfx_status_2 == 0 && sfx_status_3 == 0)
+		if (mine_list == 0)
 		{
-			player.speed = 0;
-			init_wave();
+			if (sfx_status_1 == 0 && sfx_status_2 == 0 && sfx_status_3 == 0)
+			{
+				player.speed = 0;
+				init_wave();
+			}
+		}
+		else
+		{
+			move_wave();
 		}
 
 		player_status = move_player(&player);
-
-#ifdef ENABLE_SHIP
-		if (++ships[0].obj_angle == 64) ships[0].obj_angle = 0;
-#endif
-
 		enemy_status = move_mines(&player);
 		move_ships(&player);
 		move_bullets();

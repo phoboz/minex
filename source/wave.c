@@ -5,6 +5,7 @@
 #include <vectrex.h>
 #include "imath.h"
 #include "random.h"
+#include "ship_data.h"
 #include "wave.h"
 
 #define MAX_MINE_TYPES	12
@@ -53,32 +54,8 @@ static const struct mine_data md[MAX_MINE_TYPES]=
 	{	MINE_TYPE_MAGNETIC | MINE_TYPE_FIREBALL,		0,	250,		MINE_RARE			}
 };
 
-//#define ENABLE_SHIP
-#ifdef ENABLE_SHIP
-#define SHIP_MODEL_SCALE 	16
-#define SHIP_SIZE			20
-#define SHIP_DRAW_SCALE	0x18
-
-#define BLOW_UP	SHIP_MODEL_SCALE
-const signed char mine_layer[]=
-{	(signed char) 0x00, +0x03*BLOW_UP, +0x01*BLOW_UP, // move, y, x
-	(signed char) 0xFF, -0x06*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
-	(signed char) 0xFF, -0x01*BLOW_UP, +0x00*BLOW_UP, // draw, y, x
-	(signed char) 0xFF, +0x00*BLOW_UP, -0x04*BLOW_UP, // draw, y, x
-	(signed char) 0xFF, +0x01*BLOW_UP, +0x00*BLOW_UP, // draw, y, x
-	(signed char) 0xFF, -0x01*BLOW_UP, -0x02*BLOW_UP, // draw, y, x
-	(signed char) 0xFF, +0x07*BLOW_UP, +0x02*BLOW_UP, // draw, y, x
-	(signed char) 0xFF, +0x01*BLOW_UP, +0x02*BLOW_UP, // draw, y, x
-	(signed char) 0xFF, -0x01*BLOW_UP, +0x02*BLOW_UP, // draw, y, x
-	(signed char) 0xFF, -0x07*BLOW_UP, +0x02*BLOW_UP, // draw, y, x
-	(signed char) 0xFF, +0x01*BLOW_UP, -0x02*BLOW_UP, // draw, y, x
-	(signed char) 0xFF, +0x00*BLOW_UP, -0x04*BLOW_UP, // draw, y, x
-	(signed char) 0xFF, +0x06*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
-	(signed char) 0x01 // endmarker 
-};
-#endif
-
 static unsigned int level = 0;
+static unsigned int ship_activated = 0;
 static unsigned long total_rarity = 0;
 
 static const unsigned int lmod[] =
@@ -182,20 +159,14 @@ static void init_minefield(void)
 				);
 		}
 	}
-
-#ifdef ENABLE_SHIP
-	struct ship *ship = (struct ship *) ship_free_list;
-	if (ship)
-	{
-		init_ship(ship, 0, 0, SHIP_SIZE, SHIP_SIZE, 0, &player, SHIP_DRAW_SCALE, mine_layer);
-		ship->speed = 1;
-	}
-#endif
 }
 
 void clear_wave(void)
 {
 	unsigned int i;
+
+	level = 0;
+	ship_activated = 0;
 
 	for (i = 0; i < MAX_MINES; i++)
 	{
@@ -220,6 +191,7 @@ void init_wave(void)
 	unsigned int i, num;
 
 	level++;
+	ship_activated = 0;
 
 	total_rarity = 0;
 	num = max_mine_types();
@@ -230,6 +202,73 @@ void init_wave(void)
 	}
 
 	init_minefield();
+}
+
+void move_wave(void)
+{
+	static unsigned int ship_counter;
+	static unsigned int ship_treshold;
+	static unsigned int ship_angle;
+
+	struct ship *ship;
+	struct mine *mine;
+	unsigned int mine_type;
+
+	if (ship_activated)
+	{
+		ship = (struct ship *) ship_list;
+		if (ship)
+		{
+			if (++ship_counter >= ship_treshold)
+			{
+				ship_counter = 0;
+
+				mine = (struct mine *) mine_free_list;
+				if (mine)
+				{
+					mine_type = random_mine_type();
+					init_mine(
+						mine,
+						ship->obj_pos[0],
+						ship->obj_pos[1],
+						md[mine_type].type,
+						md[mine_type].size,
+						15U + random() % get_idle_time(),
+						&player
+						);
+				}
+
+				ship_treshold = 50 + (random() % 100);
+				ship_angle = 8 * (random () % 8);
+			}
+			else
+			{
+				if (ship->obj_angle < ship_angle)
+				{
+					ship->obj_angle++;
+				}
+				else if (ship->obj_angle > ship_angle)
+				{
+					ship->obj_angle--;
+				}
+			}
+		}
+	}
+	else
+	{
+		if (num_mines <= 3)
+		{
+			ship = (struct ship *) ship_free_list;
+			if (ship)
+			{
+				init_ship(ship, -100, -100, SHIP_SIZE, SHIP_SIZE, 0, &player, SHIP_DRAW_SCALE, mine_layer);
+				ship->speed = 1;
+				ship_activated = 1;
+				ship_counter = 0;
+				ship_treshold = 0;
+			}
+		}
+	}
 }
 
 unsigned long get_points_wave(
