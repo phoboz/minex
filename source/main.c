@@ -64,8 +64,6 @@ int main(void)
 	{
 		if (mine_list == 0 && sfx_status_1 == 0 && sfx_status_2 == 0 && sfx_status_3 == 0)
 		{
-			player.angle = 0;
-			player.obj_pos[0] = player.obj_pos[1];
 			player.speed = 0;
 			init_wave();
 		}
