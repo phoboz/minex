@@ -12,6 +12,15 @@
 
 #define MAX_MINE_TYPES	12
 
+#define MINE_UNIQUE		 0L
+#define MINE_VERY_RARE		 1L
+#define MINE_RARE			 5L
+#define MINE_UNCOMMON		10L
+#define MINE_COMMON		20L
+#define MINE_VERY_COMMON	30L
+
+#define MAX_IDLE_TIMES		9
+
 // ---------------------------------------------------------------------------
 
 extern struct player player;
@@ -26,9 +35,9 @@ struct mine_data
 static const struct mine_data md[MAX_MINE_TYPES]=
 {
 	// first level
-	{	MINE_TYPE_DIRECTIONAL,						2,	MINE_COMMON		},
-	{	MINE_TYPE_DIRECTIONAL,						1,	MINE_UNCOMMON		},
-	{	MINE_TYPE_DIRECTIONAL,						0,	MINE_RARE			},
+	{	MINE_TYPE_DIRECTIONAL,						2,	MINE_VERY_COMMON	},
+	{	MINE_TYPE_DIRECTIONAL,						1,	MINE_COMMON		},
+	{	MINE_TYPE_DIRECTIONAL,						0,	MINE_UNCOMMON		},
 
 	// second level
 	{	MINE_TYPE_MAGNETIC,						2,	MINE_COMMON		},
@@ -79,23 +88,28 @@ static const signed char lmod[] =
 	100, 90, 80, 72, 64, 56, 50, 42, 35, 28, 20, 12, 4, 1
 };
 
+static const unsigned int idle_times[MAX_IDLE_TIMES] =
+{
+	240, 220, 200, 180, 160, 140, 120, 100, 80
+};
+
 struct mine mines[MAX_MINES];
 struct ship ships[MAX_SHIPS];
 struct bullet bullets[MAX_BULLETS];
 
-signed char max_mines(void)
+static signed char max_mines(void)
 {
 	return min(level * 3, MAX_MINE_TYPES);
 }
 
-signed char mine_level(
+static signed char mine_level(
 	signed char index
 	)
 {
 	return (index/3);
 }
 
-long mine_rarity(
+static long mine_rarity(
 	signed char index
 	)
 {
@@ -105,7 +119,7 @@ long mine_rarity(
 	return max(1, (rarity * lmod[min(13, level_diff)]) / 100);
 }
 
-signed char random_mine_type(void)
+static signed char random_mine_type(void)
 {
 	long roll;
 	signed char i;
@@ -120,6 +134,22 @@ signed char random_mine_type(void)
 	}
   
 	return i;
+}
+
+static unsigned int get_idle_time(void)
+{
+	unsigned int idle_time;
+
+	if (level < MAX_IDLE_TIMES)
+	{
+		idle_time = idle_times[level];
+	}
+	else
+	{
+		idle_time = idle_times[MAX_IDLE_TIMES - 1];
+	}
+
+	return idle_time;
 }
 
 static void init_minefield(void)
@@ -149,7 +179,7 @@ static void init_minefield(void)
 				(pos_x) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U),
 				type,
 				size,
-				15U + random() % 240U,
+				15U + random() % get_idle_time(),
 				&player
 				);
 		}
