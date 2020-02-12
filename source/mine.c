@@ -8,6 +8,7 @@
 #include "random.h"
 #include "wrap.h"
 #include "imath.h"
+#include "wave.h"
 #include "mine_data.h"
 #include "mine.h"
 
@@ -326,6 +327,7 @@ unsigned int move_mines(
 						mine->state = MINE_STATE_EXPLODE;
 						mine->velocity[0] = mine->velocity[1] = 0;
 						rem_bullet = bullet;
+						collect_points_player(player, get_points_wave(mine));
 						status |= MINE_STATUS_EXPLODE;
 					}
 				}

@@ -3,7 +3,6 @@
 
 #include "animation.h"
 
-
 #define PLAYER_HEIGHT			6
 #define PLAYER_WIDTH			6
 
@@ -40,6 +39,8 @@ struct player
 	unsigned int fire_countdown;
 	unsigned int state;
 	unsigned int scale;
+
+	unsigned long score;
 };
 
 void init_player(
@@ -59,6 +60,11 @@ unsigned int move_player(
 
 void hit_player(
 	struct player *player
+	);
+
+void collect_points_player(
+	struct player *player,
+	unsigned long points
 	);
 
 #endif

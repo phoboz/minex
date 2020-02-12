@@ -24,6 +24,7 @@
 #include "bullet.h"
 #include "random.h"
 #include "wave.h"
+#include "text.h"
 
 extern const unsigned int bullet_snd_data[];
 extern const unsigned int explosion_snd_data[];
@@ -57,11 +58,13 @@ int main(void)
 	clear_wave();
 
 	init_player(&player, 0, 0, PLAYER_HEIGHT, PLAYER_WIDTH, 0, PLAYER_DRAW_SCALE, player_anim);
+	player.score = 0;
 
 	while(1)
 	{
-		if (mine_list == 0)
+		if (mine_list == 0 && sfx_status_1 == 0 && sfx_status_2 == 0 && sfx_status_3 == 0)
 		{
+			player.angle = 0;
 			player.obj_pos[0] = player.obj_pos[1];
 			player.speed = 0;
 			init_wave();
@@ -116,6 +119,10 @@ int main(void)
 
 			Do_Sound();
 		}
+
+		Intensity_5F();
+		reset_text();
+		print_ulong(127, -12, player.score);
 
 		Intensity_7F();
 

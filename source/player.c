@@ -185,6 +185,14 @@ void hit_player(
 	}
 }
 
+void collect_points_player(
+	struct player *player,
+	unsigned long points
+	)
+{
+	player->score += points;
+}
+
 // ***************************************************************************
 // end of file
 // ***************************************************************************

@@ -3,9 +3,6 @@
 // ***************************************************************************
 
 #include <vectrex.h>
-#include "mine.h"
-#include "ship.h"
-#include "bullet.h"
 #include "imath.h"
 #include "random.h"
 #include "wave.h"
@@ -29,30 +26,31 @@ struct mine_data
 {
 	unsigned int type;
 	unsigned int size;
+	unsigned long points;
 	long rarity;
 };
 
 static const struct mine_data md[MAX_MINE_TYPES]=
 {
 	// first level
-	{	MINE_TYPE_DIRECTIONAL,						2,	MINE_VERY_COMMON	},
-	{	MINE_TYPE_DIRECTIONAL,						1,	MINE_COMMON		},
-	{	MINE_TYPE_DIRECTIONAL,						0,	MINE_UNCOMMON		},
+	{	MINE_TYPE_DIRECTIONAL,						2,	100,		MINE_VERY_COMMON	},
+	{	MINE_TYPE_DIRECTIONAL,						1,	120,		MINE_COMMON		},
+	{	MINE_TYPE_DIRECTIONAL,						0,	150,		MINE_UNCOMMON		},
 
 	// second level
-	{	MINE_TYPE_MAGNETIC,						2,	MINE_COMMON		},
-	{	MINE_TYPE_MAGNETIC,						1,	MINE_UNCOMMON		},
-	{	MINE_TYPE_MAGNETIC,						0,	MINE_RARE			},
+	{	MINE_TYPE_MAGNETIC,						2,	200,		MINE_COMMON		},
+	{	MINE_TYPE_MAGNETIC,						1,	220,		MINE_UNCOMMON		},
+	{	MINE_TYPE_MAGNETIC,						0,	250,		MINE_RARE			},
 
 	// third level
-	{	MINE_TYPE_DIRECTIONAL | MINE_TYPE_FIREBALL,	2,	MINE_COMMON		},
-	{	MINE_TYPE_DIRECTIONAL | MINE_TYPE_FIREBALL,	1,	MINE_UNCOMMON		},
-	{	MINE_TYPE_DIRECTIONAL | MINE_TYPE_FIREBALL,	0,	MINE_RARE			},
+	{	MINE_TYPE_DIRECTIONAL | MINE_TYPE_FIREBALL,	2,	300,		MINE_COMMON		},
+	{	MINE_TYPE_DIRECTIONAL | MINE_TYPE_FIREBALL,	1,	320,		MINE_UNCOMMON		},
+	{	MINE_TYPE_DIRECTIONAL | MINE_TYPE_FIREBALL,	0,	350,		MINE_RARE			},
 
 	// forth level
-	{	MINE_TYPE_MAGNETIC | MINE_TYPE_FIREBALL,		2,	MINE_COMMON		},
-	{	MINE_TYPE_MAGNETIC | MINE_TYPE_FIREBALL,		1,	MINE_UNCOMMON		},
-	{	MINE_TYPE_MAGNETIC | MINE_TYPE_FIREBALL,		0,	MINE_RARE			}
+	{	MINE_TYPE_MAGNETIC | MINE_TYPE_FIREBALL,		2,	400,		MINE_COMMON		},
+	{	MINE_TYPE_MAGNETIC | MINE_TYPE_FIREBALL,		1,	420,		MINE_UNCOMMON		},
+	{	MINE_TYPE_MAGNETIC | MINE_TYPE_FIREBALL,		0,	250,		MINE_RARE			}
 };
 
 //#define ENABLE_SHIP
@@ -97,7 +95,7 @@ struct mine mines[MAX_MINES];
 struct ship ships[MAX_SHIPS];
 struct bullet bullets[MAX_BULLETS];
 
-static signed char max_mines(void)
+static signed char max_mine_types(void)
 {
 	return min(level * 3, MAX_MINE_TYPES);
 }
@@ -219,19 +217,43 @@ void clear_wave(void)
 
 void init_wave(void)
 {
-	signed char i, num_mines;
+	signed char i, num;
 
 	level++;
 
 	total_rarity = 0;
-	num_mines = max_mines();
+	num = max_mine_types();
 
-	for (i = 0; i < num_mines; i++)
+	for (i = 0; i < num; i++)
 	{
 		total_rarity += (unsigned long) mine_rarity(i);
 	}
 
 	init_minefield();
+}
+
+unsigned long get_points_wave(
+	struct mine *mine
+	)
+{
+	unsigned int type, size;
+	signed char i, num;
+	unsigned long result = 0;
+
+	size = mine->type_size & MINE_SIZE_MASK;
+	type = mine->type_size & MINE_TYPE_MASK;
+
+	num = max_mine_types();
+
+	for (i = 0; i < num; i++)
+	{
+		if (md[i].type == type && md[i].size == size)
+		{
+			result = md[i].points;
+		}
+	}
+
+	return result;
 }
 
 // ***************************************************************************
