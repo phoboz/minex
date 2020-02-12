@@ -158,7 +158,7 @@ unsigned int move_mines(
 			{
 				if (mine->state == MINE_STATE_ACTIVE || mine->state == MINE_STATE_FIREBALL_IDLE || mine->state == MINE_STATE_FIREBALL)
 				{
-					if (mine->type_size & MINE_TYPE_MAGNETIC)
+					if (mine->state == MINE_STATE_ACTIVE && (mine->type_size & MINE_TYPE_MAGNETIC))
 					{
 						if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
 						{
@@ -194,7 +194,7 @@ unsigned int move_mines(
 			{
 				if (mine->state == MINE_STATE_ACTIVE || mine->state == MINE_STATE_FIREBALL_IDLE || mine->state == MINE_STATE_FIREBALL)
 				{
-					if (mine->type_size & MINE_TYPE_MAGNETIC)
+					if (mine->state == MINE_STATE_ACTIVE && (mine->type_size & MINE_TYPE_MAGNETIC))
 					{
 						if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
 						{
@@ -283,7 +283,7 @@ unsigned int move_mines(
 			{
 				if (mine->state == MINE_STATE_ACTIVE || mine->state == MINE_STATE_FIREBALL_IDLE || mine->state == MINE_STATE_FIREBALL)
 				{
-					if (mine->type_size & MINE_TYPE_MAGNETIC)
+					if (mine->state == MINE_STATE_ACTIVE && (mine->type_size & MINE_TYPE_MAGNETIC))
 					{
 						if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
 						{
