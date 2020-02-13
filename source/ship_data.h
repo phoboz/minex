@@ -6,7 +6,7 @@
 #define SHIP_DRAW_SCALE	0x18
 
 extern const signed char mine_layer[];
-
 extern const signed char ship_explode[];
+extern const signed char* const ship_hyperspace[];
 
 #endif
