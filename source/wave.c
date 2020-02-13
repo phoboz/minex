@@ -264,7 +264,7 @@ void move_wave(void)
 						ship->obj_pos[1],
 						md[mine_type].type,
 						md[mine_type].size,
-						5U + random() % get_idle_time(),
+						15U + random() % 40,
 						&player
 						);
 				}

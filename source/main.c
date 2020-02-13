@@ -28,7 +28,8 @@
 #include "text.h"
 
 #define GAME_STATE_NORMAL		0
-#define GAME_STATE_HYPERSPACE	1
+#define GAME_STATE_NEXT_LEVEL	1
+#define GAME_STATE_HYPERSPACE	2
 
 extern const unsigned int bullet_snd_data[];
 extern const unsigned int explosion_snd_data[];
@@ -37,6 +38,7 @@ extern const unsigned int thrust_snd_data[];
 struct player player;
 
 static unsigned int game_state;
+static unsigned long game_seed;
 static unsigned int anim_counter;
 static unsigned int anim_frame;
 
@@ -60,8 +62,10 @@ int main(void)
 	disable_controller_2_x();
 	disable_controller_2_y();
 
+	game_seed = (unsigned long) 2458433;
+
 	init_random(5, 27, 3, 19);
-	random_long_seed(2458433);
+	random_long_seed(game_seed);
 
 	init_wave();
 
@@ -69,7 +73,7 @@ int main(void)
 	player.score = 0;
 	player.extra_lives = 3;
 
-	game_state = GAME_STATE_NORMAL;
+	game_state = GAME_STATE_NEXT_LEVEL;
 	anim_counter = 0;
 	anim_frame = 0;
 
@@ -81,9 +85,9 @@ int main(void)
 			{
 				if (sfx_status_1 == 0 && sfx_status_2 == 0 && sfx_status_3 == 0)
 				{
-					player.speed = 0;
-					player.obj_pos[0] = player.obj_pos[1] = 0;
-					generate_wave(1);
+					game_state = GAME_STATE_HYPERSPACE;
+					anim_counter = 0;
+					anim_frame = 0;
 				}
 			}
 			else if (player.state == PLAYER_STATE_REMOVED)
@@ -186,8 +190,17 @@ int main(void)
 			Draw_Line_d(-((long) OBJECT_MAX_Y - (long) OBJECT_MIN_Y)/2L, 0);
 #endif
 		}
+		if (game_state == GAME_STATE_NEXT_LEVEL)
+		{
+			player.speed = 0;
+			player.obj_pos[0] = player.obj_pos[1] = 0;
+			generate_wave(1);
+			game_state = GAME_STATE_NORMAL;
+		}
 		else if (game_state == GAME_STATE_HYPERSPACE)
 		{
+			game_seed += random();
+
 			if (++anim_counter >= 2)
 			{
 				anim_counter = 0;
@@ -195,6 +208,15 @@ int main(void)
 				{
 					anim_frame = 0;
 				}
+			}
+
+			check_buttons();
+			if (button_1_4_pressed())
+			{
+				anim_counter = 0;
+				anim_frame = 0;
+				game_state = GAME_STATE_NEXT_LEVEL;
+				random_long_seed(game_seed);
 			}
 
 			Wait_Recal();
