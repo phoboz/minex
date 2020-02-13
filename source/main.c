@@ -204,7 +204,7 @@ int main(void)
 			if (++anim_counter >= 2)
 			{
 				anim_counter = 0;
-				if (++anim_frame > 6)
+				if (++anim_frame > PLAYER_HYPERSPACE_NUM_FRAMES)
 				{
 					anim_frame = 0;
 				}
@@ -225,7 +225,10 @@ int main(void)
 			dp_VIA_t1_cnt_lo = 0x80;
 
 			Intensity_3F();
-			Draw_VLp((signed char *) ship_hyperspace[anim_frame]);
+			Draw_VLp((signed char *) player_hyperspace[anim_frame]);
+
+			Intensity_7F();
+			draw_animation(&player.anim);
 		}
 	};
 	
