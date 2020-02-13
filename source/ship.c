@@ -6,6 +6,7 @@
 #include "player.h"
 #include "bullet.h"
 #include "wrap.h"
+#include "ship_data.h"
 #include "ship.h"
 
 // ---------------------------------------------------------------------------
@@ -41,6 +42,9 @@ void init_ship(
 	ship->rel_pos[0] = y;
 	ship->rel_pos[1] = x;
 
+	ship->state_counter	= 0;
+	ship->state			= SHIP_STATE_NORMAL;
+
 	ship->obj_angle		= obj_angle;
 	ship->old_obj_angle	= obj_angle;
 	Rot_VL_Mode(ship->obj_angle, (signed int *) shape, ship->obj_vlist);
@@ -62,10 +66,12 @@ void deinit_ship(
 	give_element(&ship->obj.elmnt, &ship_free_list);
 }
 
-void move_ships(
+unsigned int move_ships(
 	struct player *player
 	)
 {
+	unsigned int status = 0;
+
 	unsigned int update_view;
 
 	struct ship *ship;
@@ -98,41 +104,59 @@ void move_ships(
 			Rot_VL_ab(ship->world_angle, 0, ship->rel_pos, ship->obj.world_pos);
 			Rot_VL_Mode(ship->world_angle, (signed int *) ship->obj_vlist, ship->world_vlist);
 		}
-	
-		bullet = (struct bullet *) bullet_list;
-		while (bullet)
+
+		if (ship->state == SHIP_STATE_NORMAL)
 		{
-			if (hit_object_bullet(bullet, &ship->obj))
+			bullet = (struct bullet *) bullet_list;
+			while (bullet)
 			{
-				rem_ship = ship;
-				rem_bullet = bullet;
-			}
+				if (hit_object_bullet(bullet, &ship->obj))
+				{
+					ship->state = SHIP_STATE_EXPLODE;
+					ship->speed = 0;
+					ship->state_counter = 0;
+					rem_bullet = bullet;
+					status |= SHIP_STATUS_EXPLODE;
+				}
 
-			bullet = (struct bullet *) bullet->elmnt.next;
+				bullet = (struct bullet *) bullet->elmnt.next;
 
-			if (rem_bullet != 0)
-			{
-				deinit_bullet(rem_bullet);
-				rem_bullet = 0;
+				if (rem_bullet != 0)
+				{
+					deinit_bullet(rem_bullet);
+					rem_bullet = 0;
+				}
 			}
-		}
 
 #ifndef NO_HIT
-		if (player->anim.obj.active)
-		{
-			if (check_box_object(
-				&ship->obj,
-				player->anim.obj.dim_2[0],
-				-player->anim.obj.dim_2[1],
-				-player->anim.obj.dim_2[0],
-				player->anim.obj.dim_2[1]
-				))
+			if (player->anim.obj.active)
 			{
-				hit_player(player);
+				if (check_box_object(
+					&ship->obj,
+					player->anim.obj.dim_2[0],
+					-player->anim.obj.dim_2[1],
+					-player->anim.obj.dim_2[0],
+					player->anim.obj.dim_2[1]
+					))
+				{
+					hit_player(player);
+				}
+			}
+#endif
+		}
+		else if (ship->state == SHIP_STATE_EXPLODE)
+		{
+			if (++ship->state_counter >= SHIP_EXPLODE_TRESHOLD)
+			{
+				ship->state_counter = 0;
+				ship->state = SHIP_STATE_REMOVE;
 			}
 		}
-#endif
-
+		else if (ship->state == SHIP_STATE_REMOVE)
+		{
+			rem_ship = ship;
+		}
+	
 		ship = (struct ship *) ship->obj.elmnt.next;
 
 		if (rem_ship != 0)
@@ -141,6 +165,8 @@ void move_ships(
 			rem_ship = 0;
 		}
 	}
+
+	return status;
 }
 
 void draw_ships(void)
@@ -176,8 +202,16 @@ void draw_ships(void)
 			Moveto_d(ship->obj.dim_2[0], ship->obj.dim_2[1]);
 #endif
 
-			dp_VIA_t1_cnt_lo = ship->scale;
-			Draw_VLp(ship->world_vlist);
+			if (ship->state == SHIP_STATE_NORMAL)
+			{
+				dp_VIA_t1_cnt_lo = ship->scale;
+				Draw_VLp(ship->world_vlist);
+			}
+			else if (ship->state == SHIP_STATE_EXPLODE)
+			{
+				dp_VIA_t1_cnt_lo = 0x10 + (ship->state_counter << 3);
+				Draw_VLp((signed char *) ship_explode);
+			}
 		}
 
 		ship = (struct ship *) ship->obj.elmnt.next;

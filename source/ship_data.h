@@ -7,4 +7,6 @@
 
 extern const signed char mine_layer[];
 
+extern const signed char ship_explode[];
+
 #endif

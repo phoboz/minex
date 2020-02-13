@@ -26,6 +26,27 @@ const signed char mine_layer[]=
 	(signed char) 0x01 // endmarker 
 };
 
+const signed char ship_explode[]=
+{	(signed char) 0x00, +0x04*BLOW_UP, +0x00*BLOW_UP, // move, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP, +0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP, -0x01*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP, +0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP, -0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP, -0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP, -0x01*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP, -0x01*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP, -0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP, -0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP, +0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP, -0x01*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP, +0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
+	(signed char) 0x01 // endmarker 
+};
+
 // ***************************************************************************
 // end of file
 // ***************************************************************************

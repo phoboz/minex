@@ -3,7 +3,15 @@
 
 #include "object.h"
 
-#define SHIP_MAX_VECTORS	13
+#define SHIP_MAX_VECTORS		13
+
+#define SHIP_STATE_NORMAL		0
+#define SHIP_STATE_EXPLODE		1
+#define SHIP_STATE_REMOVE		2
+
+#define SHIP_EXPLODE_TRESHOLD	8
+
+#define SHIP_STATUS_EXPLODE		0x01
 
 struct player;
 
@@ -17,6 +25,8 @@ struct ship
 	unsigned int world_angle;
 	signed int front_vec[2];
 	signed int speed;
+	unsigned int state_counter;
+	unsigned int state;
 	unsigned int scale;
 	const signed char *shape;
 	signed char obj_vlist[SHIP_MAX_VECTORS*3 + 1];
@@ -42,7 +52,7 @@ void deinit_ship(
 	struct ship *ship
 	);
 
-void move_ships(
+unsigned int move_ships(
 	struct player *player
 	);
 
