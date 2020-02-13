@@ -54,9 +54,9 @@ static const struct mine_data md[MAX_MINE_TYPES]=
 	{	MINE_TYPE_MAGNETIC | MINE_TYPE_FIREBALL,		0,	250,		MINE_RARE			}
 };
 
-static unsigned int level = 0;
-static unsigned int ship_activated = 0;
-static unsigned long total_rarity = 0;
+static unsigned int level;
+static unsigned int ship_activated;
+static unsigned long total_rarity;
 
 static const unsigned int lmod[] =
 {
@@ -165,8 +165,8 @@ void clear_wave(void)
 {
 	unsigned int i;
 
-	level = 0;
 	ship_activated = 0;
+	total_rarity = 0;
 
 	for (i = 0; i < MAX_MINES; i++)
 	{
@@ -188,12 +188,23 @@ void clear_wave(void)
 
 void init_wave(void)
 {
+	level = 0;
+	clear_wave();
+}
+
+void generate_wave(
+	signed int level_advance
+	)
+{
 	unsigned int i, num;
 
-	level++;
+	if (level_advance)
+	{
+		level += (unsigned int) level_advance;
+	}
 	ship_activated = 0;
-
 	total_rarity = 0;
+
 	num = max_mine_types();
 
 	for (i = 0; i < num; i++)
@@ -233,7 +244,7 @@ void move_wave(void)
 						ship->obj_pos[1],
 						md[mine_type].type,
 						md[mine_type].size,
-						15U + random() % get_idle_time(),
+						5U + random() % get_idle_time(),
 						&player
 						);
 				}
@@ -289,6 +300,7 @@ unsigned long get_points_wave(
 		if (md[i].type == type && md[i].size == size)
 		{
 			result = md[i].points;
+			break;
 		}
 	}
 

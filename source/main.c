@@ -55,7 +55,7 @@ int main(void)
 	init_random(5, 27, 3, 19);
 	random_long_seed(2458433);
 
-	clear_wave();
+	init_wave();
 
 	init_player(&player, 0, 0, PLAYER_HEIGHT, PLAYER_WIDTH, 0, PLAYER_DRAW_SCALE, player_anim);
 	player.score = 0;
@@ -67,7 +67,8 @@ int main(void)
 			if (sfx_status_1 == 0 && sfx_status_2 == 0 && sfx_status_3 == 0)
 			{
 				player.speed = 0;
-				init_wave();
+				player.obj_pos[0] = player.obj_pos[1] = 0;
+				generate_wave(1);
 			}
 		}
 		else
