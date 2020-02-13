@@ -161,10 +161,11 @@ static void init_minefield(void)
 	}
 }
 
-void clear_wave(void)
+void init_wave(void)
 {
 	unsigned int i;
 
+	level = 0;
 	ship_activated = 0;
 	total_rarity = 0;
 
@@ -186,10 +187,28 @@ void clear_wave(void)
 	}
 }
 
-void init_wave(void)
+void close_wave(void)
 {
-	level = 0;
-	clear_wave();
+	unsigned int i;
+
+	ship_activated = 0;
+	total_rarity = 0;
+
+	for (i = 0; i < MAX_MINES; i++)
+	{
+		if (mines[i].obj.active)
+		{
+			deinit_mine(&mines[i]);
+		}
+	}
+
+	for (i = 0; i < MAX_SHIPS; i++)
+	{
+		if (ships[i].obj.active)
+		{
+			deinit_ship(&ships[i]);
+		}
+	}
 }
 
 void generate_wave(
@@ -202,6 +221,7 @@ void generate_wave(
 	{
 		level += level_advance;
 	}
+
 	ship_activated = 0;
 	total_rarity = 0;
 

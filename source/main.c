@@ -59,6 +59,7 @@ int main(void)
 
 	init_player(&player, 0, 0, PLAYER_HEIGHT, PLAYER_WIDTH, 0, PLAYER_DRAW_SCALE, player_anim);
 	player.score = 0;
+	player.extra_lives = 3;
 
 	while(1)
 	{
@@ -69,6 +70,19 @@ int main(void)
 				player.speed = 0;
 				player.obj_pos[0] = player.obj_pos[1] = 0;
 				generate_wave(1);
+			}
+		}
+		else if (player.state == PLAYER_STATE_REMOVED)
+		{
+			if (sfx_status_1 == 0 && sfx_status_2 == 0 && sfx_status_3 == 0)
+			{
+				if (player.extra_lives > 0)
+				{
+					player.extra_lives--;
+					close_wave();
+					init_player(&player, 0, 0, PLAYER_HEIGHT, PLAYER_WIDTH, 0, PLAYER_DRAW_SCALE, player_anim);
+					generate_wave(0);
+				}
 			}
 		}
 		else
@@ -124,6 +138,12 @@ int main(void)
 		Intensity_5F();
 		reset_text();
 		print_ulong(127, -12, player.score);
+
+		Moveto_d(-127, -127);
+		for (unsigned int i = 0; i < player.extra_lives; i++)
+		{
+			Dot_d(0, 4);
+		}
 
 		Intensity_7F();
 

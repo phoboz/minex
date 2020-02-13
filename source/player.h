@@ -41,6 +41,7 @@ struct player
 	unsigned int scale;
 
 	unsigned long score;
+	unsigned int extra_lives;
 };
 
 void init_player(

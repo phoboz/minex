@@ -13,8 +13,8 @@ extern struct mine mines[];
 extern struct ship ships[];
 extern struct bullet bullets[];
 
-void clear_wave(void);
 void init_wave();
+void close_wave(void);
 
 void generate_wave(
 	unsigned int advance_level

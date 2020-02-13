@@ -52,7 +52,7 @@ void init_ship(
 	ship->world_angle = player->angle;
 	wrap_translate(ship->rel_pos, ship->obj_pos, - player->obj_pos[0], player->obj_pos[1]);
 	Rot_VL_ab(player->angle, 0, ship->rel_pos, ship->obj.world_pos);
-	Rot_VL_Mode(player->angle, (signed int*) shape, &ship->world_vlist);
+	Rot_VL_Mode(player->angle, ship->obj_vlist, &ship->world_vlist);
 
 	ship->speed = 0;
 	Rot_VL_ab(obj_angle, 0, (signed int *) ship_front_vec, ship->front_vec);
@@ -102,7 +102,7 @@ unsigned int move_ships(
 			ship->world_angle = player->angle;
 			wrap_translate(ship->rel_pos, ship->obj_pos, - player->obj_pos[0], player->obj_pos[1]);
 			Rot_VL_ab(ship->world_angle, 0, ship->rel_pos, ship->obj.world_pos);
-			Rot_VL_Mode(ship->world_angle, (signed int *) ship->obj_vlist, ship->world_vlist);
+			Rot_VL_Mode(ship->world_angle, ship->obj_vlist, ship->world_vlist);
 		}
 
 		if (ship->state == SHIP_STATE_NORMAL)
@@ -209,7 +209,7 @@ void draw_ships(void)
 			}
 			else if (ship->state == SHIP_STATE_EXPLODE)
 			{
-				dp_VIA_t1_cnt_lo = 0x10 + (ship->state_counter << 3);
+				dp_VIA_t1_cnt_lo = 0x10 + (ship->state_counter << 2);
 				Draw_VLp((signed char *) ship_explode);
 			}
 		}
