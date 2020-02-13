@@ -193,14 +193,14 @@ void init_wave(void)
 }
 
 void generate_wave(
-	signed int level_advance
+	unsigned int level_advance
 	)
 {
 	unsigned int i, num;
 
 	if (level_advance)
 	{
-		level += (unsigned int) level_advance;
+		level += level_advance;
 	}
 	ship_activated = 0;
 	total_rarity = 0;

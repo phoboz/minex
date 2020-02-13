@@ -17,7 +17,7 @@ void clear_wave(void);
 void init_wave();
 
 void generate_wave(
-	signed int advance_level
+	unsigned int advance_level
 	);
 
 void move_wave(void);
