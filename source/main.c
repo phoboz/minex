@@ -37,6 +37,8 @@ extern const unsigned int thrust_snd_data[];
 
 struct player player;
 
+static const char game_over_text[]	= "GAME OVER\x80";
+
 static unsigned int game_state;
 static unsigned long game_seed;
 static unsigned int anim_counter;
@@ -56,6 +58,7 @@ int main(void)
 {
 	unsigned int player_status;
 	unsigned int enemy_status;
+	unsigned int ship_status;
 
 	enable_controller_1_x();
 	enable_controller_1_y();
@@ -110,7 +113,7 @@ int main(void)
 
 			player_status = move_player(&player);
 			enemy_status = move_mines(&player);
-			move_ships(&player);
+			ship_status = move_ships(&player);
 			move_bullets();
 
 			if ((player_status & PLAYER_STATUS_THRUST) == PLAYER_STATUS_THRUST)
@@ -126,6 +129,11 @@ int main(void)
 			}
 
 			if ((enemy_status & MINE_STATUS_EXPLODE) == MINE_STATUS_EXPLODE)
+			{
+				sfx_pointer_3 = (long unsigned int) (&explosion_snd_data);
+				sfx_status_3 = 1;
+			}
+			else if ((ship_status & SHIP_STATUS_EXPLODE) == SHIP_STATUS_EXPLODE)
 			{
 				sfx_pointer_3 = (long unsigned int) (&explosion_snd_data);
 				sfx_status_3 = 1;
@@ -157,10 +165,18 @@ int main(void)
 			reset_text();
 			print_ulong(127, -12, player.score);
 
-			Moveto_d(-127, -127);
-			for (unsigned int i = 0; i < player.extra_lives; i++)
+			if (player.state == PLAYER_STATE_REMOVED && player.extra_lives <= 0)
 			{
-				Dot_d(0, 4);
+				reset_text();
+				Print_Str_d(0, -24, (char *) game_over_text);
+			}
+			else
+			{
+				Moveto_d(-127, -127);
+				for (unsigned int i = 0; i < player.extra_lives; i++)
+				{
+					Dot_d(0, 4);
+				}
 			}
 
 			Intensity_7F();
@@ -222,13 +238,16 @@ int main(void)
 			Wait_Recal();
 			Moveto_d(0, 0);
 
-			dp_VIA_t1_cnt_lo = 0x80;
-
 			Intensity_3F();
+			dp_VIA_t1_cnt_lo = 0x80;
 			Draw_VLp((signed char *) player_hyperspace[anim_frame]);
 
-			Intensity_7F();
-			draw_animation(&player.anim);
+			Reset0Ref();
+			Moveto_d(0, 0);
+
+			Intensity_5F();
+			dp_VIA_t1_cnt_lo = 0x20;
+			Draw_VLp((signed char *) player_behind);
 		}
 	};
 	

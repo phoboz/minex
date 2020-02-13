@@ -7,6 +7,7 @@
 #define PLAYER_HYPERSPACE_NUM_FRAMES		8
 
 extern const signed char * const player_anim[];
+extern const signed char player_behind[];
 extern const signed char* const player_hyperspace[];
 
 #endif
