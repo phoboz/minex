@@ -26,6 +26,7 @@ void init_ship(
 	signed int h,
 	signed int w,
 	unsigned int obj_angle,
+	unsigned int num_hits,
 	struct player *player,
 	unsigned int scale,
 	const signed char *shape
@@ -44,6 +45,7 @@ void init_ship(
 
 	ship->state_counter	= 0;
 	ship->state			= SHIP_STATE_NORMAL;
+	ship->num_hits		= num_hits;
 
 	ship->obj_angle		= obj_angle;
 	ship->old_obj_angle	= obj_angle;
@@ -112,11 +114,15 @@ unsigned int move_ships(
 			{
 				if (hit_object_bullet(bullet, &ship->obj))
 				{
-					ship->state = SHIP_STATE_EXPLODE;
-					ship->speed = 0;
-					ship->state_counter = 0;
+					if (--ship->num_hits <= 0)
+					{
+						ship->state = SHIP_STATE_EXPLODE;
+						ship->speed = 0;
+						ship->state_counter = 0;
+						status |= SHIP_STATUS_EXPLODE;
+					}
+
 					rem_bullet = bullet;
-					status |= SHIP_STATUS_EXPLODE;
 				}
 
 				bullet = (struct bullet *) bullet->elmnt.next;

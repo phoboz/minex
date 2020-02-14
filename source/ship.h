@@ -27,6 +27,7 @@ struct ship
 	signed int speed;
 	unsigned int state_counter;
 	unsigned int state;
+	unsigned int num_hits;
 	unsigned int scale;
 	const signed char *shape;
 	signed char obj_vlist[SHIP_MAX_VECTORS*3 + 1];
@@ -43,6 +44,7 @@ void init_ship(
 	signed int h,
 	signed int w,
 	unsigned int obj_angle,
+	unsigned int num_hits,
 	struct player *player,
 	unsigned int scale,
 	const signed char *shape

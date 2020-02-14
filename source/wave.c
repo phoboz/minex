@@ -23,6 +23,7 @@
 #define WAVE_SHIP_START_Y			-100
 #define WAVE_SHIP_START_X			-100
 #define WAVE_SHIP_SPEED			3
+#define WAVE_SHIP_MAX_HITS			5
 #define WAVE_SHIP_STILL_TRESHOLD	12
 
 // ---------------------------------------------------------------------------
@@ -131,6 +132,26 @@ static unsigned int get_idle_time(void)
 	}
 
 	return idle_time;
+}
+
+static unsigned int get_ship_num_hits(void)
+{
+	unsigned int result;
+
+	if (level < 2)
+	{
+		result = 1;
+	}
+	else
+	{
+		result = 1 + random() % level;
+		if (result > WAVE_SHIP_MAX_HITS)
+		{
+			result = WAVE_SHIP_MAX_HITS;
+		}
+	}
+
+	return result;
 }
 
 static void init_minefield(void)
@@ -320,7 +341,18 @@ void move_wave(void)
 			ship = (struct ship *) ship_free_list;
 			if (ship)
 			{
-				init_ship(ship, WAVE_SHIP_START_Y, WAVE_SHIP_START_X, SHIP_SIZE, SHIP_SIZE, 0, &player, SHIP_DRAW_SCALE, mine_layer);
+				init_ship(
+					ship,
+					WAVE_SHIP_START_Y,
+					WAVE_SHIP_START_X,
+					SHIP_SIZE, SHIP_SIZE,
+					0,
+					get_ship_num_hits(),
+					&player,
+					SHIP_DRAW_SCALE,
+					mine_layer
+					);
+
 				ship->speed = WAVE_SHIP_SPEED;
 				ship_activated = 1;
 				ship_counter = 0;
