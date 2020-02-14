@@ -19,6 +19,12 @@
 
 #define MAX_IDLE_TIMES		9
 
+#define WAVE_SHIP_APPEAR_MINE_LIMIT	3
+#define WAVE_SHIP_START_Y			-100
+#define WAVE_SHIP_START_X			-100
+#define WAVE_SHIP_SPEED			3
+#define WAVE_SHIP_STILL_TRESHOLD	12
+
 // ---------------------------------------------------------------------------
 
 extern struct player player;
@@ -250,29 +256,45 @@ void move_wave(void)
 		ship = (struct ship *) ship_list;
 		if (ship)
 		{
-			if (++ship_counter >= ship_treshold)
+			if (ship->speed && ship->state == SHIP_STATE_NORMAL)
 			{
-				ship_counter = 0;
-
-				mine = (struct mine *) mine_free_list;
-				if (mine)
+				if (++ship_counter >= ship_treshold)
 				{
-					mine_type = random_mine_type();
-					init_mine(
-						mine,
-						ship->obj_pos[0],
-						ship->obj_pos[1],
-						md[mine_type].type,
-						md[mine_type].size,
-						15U + random() % 40,
-						&player
-						);
-				}
+					ship_counter = 0;
 
-				ship_treshold = 50 + (random() % 100);
-				ship_angle = 8 * (random () % 8);
+					mine = (struct mine *) mine_free_list;
+					if (mine)
+					{
+						mine_type = random_mine_type();
+						init_mine(
+							mine,
+							ship->obj_pos[0],
+							ship->obj_pos[1],
+							md[mine_type].type,
+							md[mine_type].size,
+							15U + random() % 40,
+							&player
+							);
+
+						ship->speed = 0;
+					}
+
+					ship_treshold = 15 + (random() % 20);
+					ship_angle = 8 * (random () % 8);
+				}
+				else
+				{
+					if (ship->obj_angle < ship_angle)
+					{
+						ship->obj_angle++;
+					}
+					else if (ship->obj_angle > ship_angle)
+					{
+						ship->obj_angle--;
+					}
+				}
 			}
-			else
+			else if (ship->state == SHIP_STATE_NORMAL)
 			{
 				if (ship->obj_angle < ship_angle)
 				{
@@ -282,18 +304,24 @@ void move_wave(void)
 				{
 					ship->obj_angle--;
 				}
+
+				if (++ship_counter >= WAVE_SHIP_STILL_TRESHOLD)
+				{
+					ship_counter = 0;
+					ship->speed = WAVE_SHIP_SPEED;
+				}
 			}
 		}
 	}
 	else
 	{
-		if (num_mines <= 3)
+		if (num_mines <= WAVE_SHIP_APPEAR_MINE_LIMIT)
 		{
 			ship = (struct ship *) ship_free_list;
 			if (ship)
 			{
-				init_ship(ship, -100, -100, SHIP_SIZE, SHIP_SIZE, 0, &player, SHIP_DRAW_SCALE, mine_layer);
-				ship->speed = 1;
+				init_ship(ship, WAVE_SHIP_START_Y, WAVE_SHIP_START_X, SHIP_SIZE, SHIP_SIZE, 0, &player, SHIP_DRAW_SCALE, mine_layer);
+				ship->speed = WAVE_SHIP_SPEED;
 				ship_activated = 1;
 				ship_counter = 0;
 				ship_treshold = 0;

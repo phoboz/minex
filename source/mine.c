@@ -12,7 +12,7 @@
 #include "mine_data.h"
 #include "mine.h"
 
-//#define NO_HIT
+//#define MINE_NO_HIT
 
 // ---------------------------------------------------------------------------
 
@@ -355,7 +355,7 @@ unsigned int move_mines(
 				}
 			}
 
-#ifndef NO_HIT
+#ifndef MINE_NO_HIT
 			if (player->anim.obj.active)
 			{
 				if (mine->state == MINE_STATE_ACTIVE)

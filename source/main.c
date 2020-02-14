@@ -27,6 +27,8 @@
 #include "wave.h"
 #include "text.h"
 
+#define GAME_ANIM_TRESHOLD		2
+
 #define GAME_STATE_NORMAL		0
 #define GAME_STATE_NEXT_LEVEL	1
 #define GAME_STATE_HYPERSPACE	2
@@ -217,7 +219,7 @@ int main(void)
 		{
 			game_seed += random();
 
-			if (++anim_counter >= 2)
+			if (++anim_counter >= GAME_ANIM_TRESHOLD)
 			{
 				anim_counter = 0;
 				if (++anim_frame > PLAYER_HYPERSPACE_NUM_FRAMES)
@@ -238,14 +240,14 @@ int main(void)
 			Wait_Recal();
 			Moveto_d(0, 0);
 
-			Intensity_3F();
+			Intensity_5F();
 			dp_VIA_t1_cnt_lo = 0x80;
 			Draw_VLp((signed char *) player_hyperspace[anim_frame]);
 
 			Reset0Ref();
 			Moveto_d(0, 0);
 
-			Intensity_5F();
+			Intensity_7F();
 			dp_VIA_t1_cnt_lo = 0x20;
 			Draw_VLp((signed char *) player_behind);
 		}

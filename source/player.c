@@ -9,6 +9,8 @@
 #include "imath.h"
 #include "player.h"
 
+//#define PLAYER_NO_HIT
+
 // ---------------------------------------------------------------------------
 
 static const signed char player_up_vec[]=
@@ -180,8 +182,10 @@ void hit_player(
 	if (player->state != PLAYER_STATE_EXPLODE)
 	{
 		player->anim_counter = 0;
+#ifndef PLAYER_NO_HIT
 		player->anim.base_frame = PLAYER_EXPLODE_FRAME;
 		player->state = PLAYER_STATE_EXPLODE;
+#endif
 	}
 }
 

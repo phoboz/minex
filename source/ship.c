@@ -128,7 +128,7 @@ unsigned int move_ships(
 				}
 			}
 
-#ifndef NO_HIT
+#ifndef SHIP_NO_HIT
 			if (player->anim.obj.active)
 			{
 				if (check_box_object(
