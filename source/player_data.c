@@ -178,7 +178,7 @@ const signed char player_behind[]=
 	(signed char) 0x01 // endmarker 
 };
 
-static const signed char hyperspace_1[]=
+static const signed char player_hyperspace_0[]=
 {	(signed char) 0x00, +0x73, +0x09, // sync and move to y, x
 	(signed char) 0x00, +0x04, +0x00, // additional sync move to y, x
 	(signed char) 0xFF, -0x05, +0x01, // draw, y, x
@@ -286,7 +286,7 @@ static const signed char hyperspace_1[]=
 	(signed char) 0xFF, -0x08, +0x04, // draw, y, x
 	(signed char) 0x01 // endmarker 
 };
-static const signed char hyperspace_2[]=
+static const signed char player_hyperspace_1[]=
 {	(signed char) 0x00, +0x78, +0x4D, // sync and move to y, x
 	(signed char) 0xFF, -0x08, -0x05, // draw, y, x
 	(signed char) 0x00, -0x04, +0x32, // mode, y, x
@@ -321,8 +321,7 @@ static const signed char hyperspace_2[]=
 	(signed char) 0xFF, -0x03, +0x05, // draw, y, x
 	(signed char) 0xFF, -0x02, +0x08, // draw, y, x
 	(signed char) 0x00, +0x00, +0x50, // mode, y, x
-	(signed char) 0x00, +0x00, +0x51, // mode, y, x
-	(signed char) 0xFF, -0x01, +0x05, // draw, y, x
+	(signed char) 0x00, -0x01, +0x56, // mode, y, x
 	(signed char) 0xFF, +0x05, +0x04, // draw, y, x
 	(signed char) 0x00, -0x05, -0x4D, // mode, y, x
 	(signed char) 0xFF, -0x04, +0x00, // draw, y, x
@@ -410,7 +409,7 @@ static const signed char hyperspace_2[]=
 	(signed char) 0xFF, -0x06, +0x04, // draw, y, x
 	(signed char) 0x01 // endmarker 
 };
-static const signed char hyperspace_3[]=
+static const signed char player_hyperspace_2[]=
 {	(signed char) 0x00, +0x7A, +0x51, // sync and move to y, x
 	(signed char) 0xFF, -0x02, -0x03, // draw, y, x
 	(signed char) 0x00, +0x01, -0x41, // mode, y, x
@@ -545,12 +544,11 @@ static const signed char hyperspace_3[]=
 	(signed char) 0x00, -0x01, -0x1D, // mode, y, x
 	(signed char) 0xFF, +0x04, -0x03, // draw, y, x
 	(signed char) 0xFF, -0x04, +0x03, // draw, y, x
-	(signed char) 0x01, -0x74, +0x4C, // sync and move to y, x
-	(signed char) 0x00, -0x06, +0x01, // mode, y, x
+	(signed char) 0x00, -0x02, -0x02, // mode, y, x
 	(signed char) 0xFF, +0x04, +0x00, // draw, y, x
 	(signed char) 0x01 // endmarker 
 };
-static const signed char hyperspace_4[]=
+static const signed char player_hyperspace_3[]=
 {	(signed char) 0x00, +0x7D, +0x34, // sync and move to y, x
 	(signed char) 0xFF, -0x0D, -0x04, // draw, y, x
 	(signed char) 0x00, +0x0A, -0x12, // mode, y, x
@@ -596,19 +594,11 @@ static const signed char hyperspace_4[]=
 	(signed char) 0x00, -0x10, -0x5D, // mode, y, x
 	(signed char) 0xFF, -0x06, +0x02, // draw, y, x
 	(signed char) 0xFF, -0x04, +0x05, // draw, y, x
-	(signed char) 0x00, +0x00, +0x6B, // mode, y, x
-	(signed char) 0x00, +0x00, +0x6C, // mode, y, x
-	(signed char) 0xFF, -0x03, -0x04, // draw, y, x
-	(signed char) 0x00, +0x00, -0x04, // mode, y, x
-	(signed char) 0xFF, +0x00, +0x04, // draw, y, x
-	(signed char) 0x00, +0x00, -0x70, // mode, y, x
-	(signed char) 0x00, +0x01, -0x70, // mode, y, x
+	(signed char) 0x00, -0x02, -0x0D, // mode, y, x
 	(signed char) 0xFF, -0x02, +0x07, // draw, y, x
 	(signed char) 0xFF, -0x02, +0x04, // draw, y, x
 	(signed char) 0x00, +0x00, +0x67, // mode, y, x
-	(signed char) 0x00, +0x01, +0x67, // mode, y, x
-	(signed char) 0xFF, -0x04, -0x03, // draw, y, x
-	(signed char) 0x00, +0x00, -0x0B, // mode, y, x
+	(signed char) 0x00, -0x03, +0x59, // mode, y, x
 	(signed char) 0xFF, +0x03, +0x07, // draw, y, x
 	(signed char) 0x00, -0x09, -0x52, // mode, y, x
 	(signed char) 0x00, -0x08, -0x51, // mode, y, x
@@ -670,7 +660,7 @@ static const signed char hyperspace_4[]=
 	(signed char) 0xFF, +0x07, +0x09, // draw, y, x
 	(signed char) 0x01 // endmarker 
 };
-static const signed char hyperspace_5[]=
+static const signed char player_hyperspace_4[]=
 {	(signed char) 0x00, +0x75, +0x3B, // sync and move to y, x
 	(signed char) 0x00, +0x08, +0x00, // additional sync move to y, x
 	(signed char) 0xFF, -0x04, +0x00, // draw, y, x
@@ -776,7 +766,7 @@ static const signed char hyperspace_5[]=
 	(signed char) 0xFF, -0x03, +0x01, // draw, y, x
 	(signed char) 0x01 // endmarker 
 };
-static const signed char hyperspace_6[]=
+static const signed char player_hyperspace_5[]=
 {	(signed char) 0x00, +0x75, -0x22, // sync and move to y, x
 	(signed char) 0xFF, -0x05, +0x03, // draw, y, x
 	(signed char) 0x00, +0x01, -0x01, // mode, y, x
@@ -855,8 +845,7 @@ static const signed char hyperspace_6[]=
 	(signed char) 0x00, +0x00, +0x4E, // mode, y, x
 	(signed char) 0xFF, -0x03, +0x01, // draw, y, x
 	(signed char) 0xFF, +0x03, -0x01, // draw, y, x
-	(signed char) 0x01, -0x4C, +0x46, // sync and move to y, x
-	(signed char) 0x00, +0x02, +0x02, // mode, y, x
+	(signed char) 0x00, -0x01, +0x03, // mode, y, x
 	(signed char) 0xFF, -0x03, +0x02, // draw, y, x
 	(signed char) 0xFF, +0x01, -0x04, // draw, y, x
 	(signed char) 0x00, -0x01, -0x5A, // mode, y, x
@@ -874,7 +863,7 @@ static const signed char hyperspace_6[]=
 	(signed char) 0xFF, -0x04, +0x01, // draw, y, x
 	(signed char) 0x01 // endmarker 
 };
-static const signed char hyperspace_7[]=
+static const signed char player_hyperspace_6[]=
 {	(signed char) 0x00, +0x7C, +0x39, // sync and move to y, x
 	(signed char) 0xFF, -0x08, -0x03, // draw, y, x
 	(signed char) 0x00, -0x01, -0x5E, // mode, y, x
@@ -903,15 +892,9 @@ static const signed char hyperspace_7[]=
 	(signed char) 0xFF, -0x03, -0x03, // draw, y, x
 	(signed char) 0x00, +0x02, -0x0D, // mode, y, x
 	(signed char) 0xFF, -0x06, -0x01, // draw, y, x
-	(signed char) 0x00, +0x01, +0x42, // mode, y, x
-	(signed char) 0xFF, -0x05, +0x01, // draw, y, x
-	(signed char) 0x00, +0x03, -0x05, // mode, y, x
-	(signed char) 0xFF, -0x07, -0x02, // draw, y, x
-	(signed char) 0x00, +0x03, -0x03, // mode, y, x
-	(signed char) 0xFF, -0x04, +0x03, // draw, y, x
-	(signed char) 0x00, +0x02, -0x07, // mode, y, x
-	(signed char) 0xFF, -0x06, +0x00, // draw, y, x
-	(signed char) 0x00, +0x00, -0x55, // mode, y, x
+	(signed char) 0x00, -0x07, +0x35, // mode, y, x
+	(signed char) 0xFF, +0x03, +0x06, // draw, y, x
+	(signed char) 0x00, -0x09, -0x5B, // mode, y, x
 	(signed char) 0x00, +0x01, -0x55, // mode, y, x
 	(signed char) 0xFF, -0x01, +0x05, // draw, y, x
 	(signed char) 0x00, -0x01, +0x67, // mode, y, x
@@ -969,7 +952,7 @@ static const signed char hyperspace_7[]=
 	(signed char) 0xFF, -0x08, +0x05, // draw, y, x
 	(signed char) 0x01 // endmarker 
 };
-static const signed char hyperspace_8[]=
+static const signed char player_hyperspace_7[]=
 {	(signed char) 0x00, +0x78, +0x6D, // sync and move to y, x
 	(signed char) 0xFF, +0x04, +0x04, // draw, y, x
 	(signed char) 0x00, -0x01, -0x69, // mode, y, x
@@ -1053,29 +1036,19 @@ static const signed char hyperspace_8[]=
 	(signed char) 0x00, +0x00, -0x43, // mode, y, x
 	(signed char) 0xFF, +0x00, +0x04, // draw, y, x
 	(signed char) 0x00, -0x02, +0x69, // mode, y, x
-	(signed char) 0x00, -0x02, +0x69, // mode, y, x
-	(signed char) 0xFF, -0x01, +0x03, // draw, y, x
-	(signed char) 0xFF, -0x06, +0x01, // draw, y, x
-	(signed char) 0xFF, +0x04, -0x01, // draw, y, x
-	(signed char) 0x00, -0x03, -0x69, // mode, y, x
+	(signed char) 0x00, -0x06, +0x6A, // mode, y, x
+	(signed char) 0xFF, -0x02, +0x02, // draw, y, x
+	(signed char) 0x00, +0x01, -0x6A, // mode, y, x
 	(signed char) 0x00, -0x03, -0x6A, // mode, y, x
 	(signed char) 0xFF, +0x06, +0x07, // draw, y, x
 	(signed char) 0x00, -0x01, +0x5D, // mode, y, x
 	(signed char) 0x00, -0x02, +0x5D, // mode, y, x
 	(signed char) 0xFF, -0x06, +0x03, // draw, y, x
-	(signed char) 0x00, +0x02, +0x18, // mode, y, x
-	(signed char) 0xFF, +0x00, +0x05, // draw, y, x
-	(signed char) 0xFF, -0x03, -0x01, // draw, y, x
-	(signed char) 0xFF, -0x06, +0x02, // draw, y, x
-	(signed char) 0x00, +0x08, -0x09, // mode, y, x
-	(signed char) 0xFF, -0x03, -0x02, // draw, y, x
-	(signed char) 0x00, +0x02, +0x01, // mode, y, x
+	(signed char) 0x00, +0x00, +0x14, // mode, y, x
 	(signed char) 0xFF, -0x05, +0x02, // draw, y, x
-	(signed char) 0x00, +0x00, +0x0E, // mode, y, x
-	(signed char) 0xFF, -0x03, -0x02, // draw, y, x
 	(signed char) 0x01 // endmarker 
 };
-static const signed char hyperspace_9[]=
+static const signed char player_hyperspace_8[]=
 {	(signed char) 0x00, +0x71, +0x3A, // sync and move to y, x
 	(signed char) 0x00, +0x07, +0x00, // additional sync move to y, x
 	(signed char) 0xFF, -0x06, -0x02, // draw, y, x
@@ -1154,15 +1127,9 @@ static const signed char hyperspace_9[]=
 	(signed char) 0xFF, +0x02, +0x0A, // draw, y, x
 	(signed char) 0x00, -0x0A, +0x0B, // mode, y, x
 	(signed char) 0xFF, +0x02, +0x03, // draw, y, x
-	(signed char) 0x00, -0x04, -0x09, // mode, y, x
-	(signed char) 0xFF, +0x03, +0x02, // draw, y, x
-	(signed char) 0x00, -0x01, -0x05, // mode, y, x
-	(signed char) 0xFF, +0x00, +0x04, // draw, y, x
-	(signed char) 0x00, -0x02, -0x22, // mode, y, x
+	(signed char) 0x00, -0x04, -0x2A, // mode, y, x
 	(signed char) 0xFF, +0x02, +0x08, // draw, y, x
-	(signed char) 0x00, -0x02, +0x0F, // mode, y, x
-	(signed char) 0xFF, -0x01, +0x05, // draw, y, x
-	(signed char) 0x00, -0x05, +0x40, // mode, y, x
+	(signed char) 0x00, -0x08, +0x54, // mode, y, x
 	(signed char) 0x00, -0x06, +0x40, // mode, y, x
 	(signed char) 0xFF, -0x02, +0x03, // draw, y, x
 	(signed char) 0x00, -0x02, -0x4C, // mode, y, x
@@ -1202,23 +1169,20 @@ static const signed char hyperspace_9[]=
 	(signed char) 0x00, -0x01, -0x01, // mode, y, x
 	(signed char) 0xFF, -0x03, +0x02, // draw, y, x
 	(signed char) 0xFF, +0x03, -0x02, // draw, y, x
-	(signed char) 0x01, -0x71, -0x41, // sync and move to y, x
-	(signed char) 0x00, -0x02, +0x00, // additional sync move to y, x
-	(signed char) 0x00, +0x01, -0x01, // mode, y, x
+	(signed char) 0x00, -0x02, +0x01, // mode, y, x
 	(signed char) 0xFF, -0x05, -0x03, // draw, y, x
 	(signed char) 0x01 // endmarker 
 };
 const signed char* const player_hyperspace[]=
-{
-	 hyperspace_1,
-	 hyperspace_2,
-	 hyperspace_3,
-	 hyperspace_4,
-	 hyperspace_5,
-	 hyperspace_6,
-	 hyperspace_7,
-	 hyperspace_8,
-	 hyperspace_9
+{	 player_hyperspace_0, // list of all single vectorlists in this
+	 player_hyperspace_1,
+	 player_hyperspace_2,
+	 player_hyperspace_3,
+	 player_hyperspace_4,
+	 player_hyperspace_5,
+	 player_hyperspace_6,
+	 player_hyperspace_7,
+	 player_hyperspace_8,
 };
 // ***************************************************************************
 // end of file
