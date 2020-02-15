@@ -37,6 +37,7 @@
 #define GAME_HIT_FLASH_TRESHOLD		6
 
 extern const unsigned int bullet_snd_data[];
+extern const unsigned int hit_snd_data[];
 extern const unsigned int explosion_snd_data[];
 extern const unsigned int thrust_snd_data[];
 
@@ -152,6 +153,11 @@ int main(void)
 			if ((enemy_status & MINE_STATUS_EXPLODE) == MINE_STATUS_EXPLODE)
 			{
 				sfx_pointer_3 = (long unsigned int) (&explosion_snd_data);
+				sfx_status_3 = 1;
+			}
+			else if ((ship_status & SHIP_STATUS_HIT) == SHIP_STATUS_HIT)
+			{
+				sfx_pointer_3 = (long unsigned int) (&hit_snd_data);
 				sfx_status_3 = 1;
 			}
 			else if ((ship_status & SHIP_STATUS_EXPLODE) == SHIP_STATUS_EXPLODE)
