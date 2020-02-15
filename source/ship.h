@@ -11,7 +11,8 @@
 
 #define SHIP_EXPLODE_TRESHOLD	16
 
-#define SHIP_STATUS_EXPLODE		0x01
+#define SHIP_STATUS_HIT		0x01
+#define SHIP_STATUS_EXPLODE		0x02
 
 struct player;
 

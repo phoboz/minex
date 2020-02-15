@@ -27,11 +27,14 @@
 #include "wave.h"
 #include "text.h"
 
-#define GAME_ANIM_TRESHOLD		2
+#define GAME_STATE_NORMAL			0
+#define GAME_STATE_NEXT_LEVEL		1
+#define GAME_STATE_HYPERSPACE		2
 
-#define GAME_STATE_NORMAL		0
-#define GAME_STATE_NEXT_LEVEL	1
-#define GAME_STATE_HYPERSPACE	2
+#define GAME_FLAGS_FLASH_SHIP		0x01
+
+#define GAME_ANIM_TRESHOLD			2
+#define GAME_HIT_FLASH_TRESHOLD		6
 
 extern const unsigned int bullet_snd_data[];
 extern const unsigned int explosion_snd_data[];
@@ -43,6 +46,7 @@ static const char game_over_text[]	= "GAME OVER\x80";
 
 static unsigned int game_state;
 static unsigned long game_seed;
+static unsigned int game_flags;
 static unsigned int anim_counter;
 static unsigned int anim_frame;
 
@@ -79,6 +83,7 @@ int main(void)
 	player.extra_lives = 3;
 
 	game_state = GAME_STATE_NEXT_LEVEL;
+	game_flags = 0;
 	anim_counter = 0;
 	anim_frame = 0;
 
@@ -117,6 +122,20 @@ int main(void)
 			enemy_status = move_mines(&player);
 			ship_status = move_ships(&player);
 			move_bullets();
+
+			if ((game_flags & GAME_FLAGS_FLASH_SHIP) == GAME_FLAGS_FLASH_SHIP)
+			{
+				if (++anim_counter >= GAME_HIT_FLASH_TRESHOLD)
+				{
+					anim_counter = 0;
+					game_flags &= ~GAME_FLAGS_FLASH_SHIP;
+				}
+			}
+			else if ((ship_status & SHIP_STATUS_HIT) == SHIP_STATUS_HIT)
+			{
+				game_flags |= GAME_FLAGS_FLASH_SHIP;
+				anim_counter = 0;
+			}
 
 			if ((player_status & PLAYER_STATUS_THRUST) == PLAYER_STATUS_THRUST)
 			{
@@ -185,7 +204,18 @@ int main(void)
 
 			draw_animation(&player.anim);
 			draw_mines();
-			draw_ships();
+
+			if ((game_flags & GAME_FLAGS_FLASH_SHIP) == GAME_FLAGS_FLASH_SHIP)
+			{
+				Intensity_3F();
+				draw_ships();
+				Intensity_7F();
+			}
+			else
+			{
+				draw_ships();
+			}
+
 			draw_bullets();
 
 //#define DEBUG_DRAW

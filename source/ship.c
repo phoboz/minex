@@ -121,6 +121,10 @@ unsigned int move_ships(
 						ship->state_counter = 0;
 						status |= SHIP_STATUS_EXPLODE;
 					}
+					else
+					{
+						status |= SHIP_STATUS_HIT;
+					}
 
 					rem_bullet = bullet;
 				}
