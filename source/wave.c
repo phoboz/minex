@@ -6,6 +6,7 @@
 #include "imath.h"
 #include "random.h"
 #include "ship_data.h"
+#include "text.h"
 #include "wave.h"
 
 #define MAX_MINE_TYPES	12
@@ -23,6 +24,9 @@
 #define WAVE_SHIP_SPEED			3
 #define WAVE_SHIP_MAX_HITS			5
 #define WAVE_SHIP_STILL_TRESHOLD	24
+
+#define WAVE_TEXT_X 		18
+#define WAVE_TEXT_Y 		32
 
 // ---------------------------------------------------------------------------
 
@@ -72,6 +76,8 @@ static const unsigned int idle_times[MAX_IDLE_TIMES] =
 {
 	240, 220, 200, 180, 160, 140, 120, 100, 80
 };
+
+static const char wave_heading_text[]	= "WAVE \x80";
 
 struct mine mines[MAX_MINES];
 struct ship ships[MAX_SHIPS];
@@ -210,6 +216,11 @@ void init_wave(void)
 	{
 		give_element(&bullets[i].elmnt, &bullet_free_list);
 	}
+}
+
+void reset_level_wave(void)
+{
+	level = 0;
 }
 
 void close_wave(void)
@@ -380,6 +391,13 @@ unsigned long get_points_wave(
 	}
 
 	return result;
+}
+
+void announce_current_wave(void)
+{
+	reset_text();
+	Print_Str_d(WAVE_TEXT_Y, -WAVE_TEXT_X, (char *) wave_heading_text);
+	print_2digit_number(WAVE_TEXT_Y, 6, (unsigned long) level);
 }
 
 // ***************************************************************************

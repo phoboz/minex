@@ -30,10 +30,15 @@
 #define GAME_STATE_NORMAL			0
 #define GAME_STATE_NEXT_LEVEL		1
 #define GAME_STATE_HYPERSPACE		2
+#define GAME_STATE_OVER			3
 
-#define GAME_FLAGS_FLASH_SHIP		0x01
+#define PLAYER_NUM_EXTRA_LIVES		3
+
+#define GAME_FLAGS_ANNOUNCE_WAVE	0x01
+#define GAME_FLAGS_FLASH_SHIP		0x02
 
 #define GAME_ANIM_TRESHOLD			2
+#define GAME_ANNOUNCE_WAVE_TRESHOLD	50
 #define GAME_HIT_FLASH_TRESHOLD		6
 
 extern const unsigned int bullet_snd_data[];
@@ -48,7 +53,7 @@ static const char game_over_text[]	= "GAME OVER\x80";
 static unsigned int game_state;
 static unsigned long game_seed;
 static unsigned int game_flags;
-static unsigned int anim_counter;
+static unsigned int game_counter;
 static unsigned int anim_frame;
 
 // ---------------------------------------------------------------------------
@@ -81,11 +86,11 @@ int main(void)
 
 	init_player(&player, 0, 0, PLAYER_HEIGHT, PLAYER_WIDTH, 0, PLAYER_DRAW_SCALE, player_anim);
 	player.score = 0;
-	player.extra_lives = 3;
+	player.extra_lives = PLAYER_NUM_EXTRA_LIVES;
 
 	game_state = GAME_STATE_NEXT_LEVEL;
-	game_flags = 0;
-	anim_counter = 0;
+	game_flags = GAME_FLAGS_ANNOUNCE_WAVE;
+	game_counter = 0;
 	anim_frame = 0;
 
 	while(1)
@@ -97,8 +102,9 @@ int main(void)
 				if (sfx_status_1 == 0 && sfx_status_2 == 0 && sfx_status_3 == 0)
 				{
 					game_state = GAME_STATE_HYPERSPACE;
-					anim_counter = 0;
+					game_counter = 0;
 					anim_frame = 0;
+					Vec_Music_Flag = 1;
 				}
 			}
 			else if (player.state == PLAYER_STATE_REMOVED)
@@ -112,6 +118,10 @@ int main(void)
 						init_player(&player, 0, 0, PLAYER_HEIGHT, PLAYER_WIDTH, 0, PLAYER_DRAW_SCALE, player_anim);
 						generate_wave(0);
 					}
+					else
+					{
+						game_state = GAME_STATE_OVER;
+					}
 				}
 			}
 			else
@@ -124,18 +134,27 @@ int main(void)
 			ship_status = move_ships(&player);
 			move_bullets();
 
+			if ((game_flags & GAME_FLAGS_ANNOUNCE_WAVE) == GAME_FLAGS_ANNOUNCE_WAVE)
+			{
+				if (++game_counter >= GAME_ANNOUNCE_WAVE_TRESHOLD)
+				{
+					game_counter = 0;
+					game_flags &= ~GAME_FLAGS_ANNOUNCE_WAVE;
+				}
+			}
+
 			if ((game_flags & GAME_FLAGS_FLASH_SHIP) == GAME_FLAGS_FLASH_SHIP)
 			{
-				if (++anim_counter >= GAME_HIT_FLASH_TRESHOLD)
+				if (++game_counter >= GAME_HIT_FLASH_TRESHOLD)
 				{
-					anim_counter = 0;
+					game_counter = 0;
 					game_flags &= ~GAME_FLAGS_FLASH_SHIP;
 				}
 			}
 			else if ((ship_status & SHIP_STATUS_HIT) == SHIP_STATUS_HIT)
 			{
 				game_flags |= GAME_FLAGS_FLASH_SHIP;
-				anim_counter = 0;
+				game_counter = 0;
 			}
 
 			if ((player_status & PLAYER_STATUS_THRUST) == PLAYER_STATUS_THRUST)
@@ -192,18 +211,15 @@ int main(void)
 			reset_text();
 			print_ulong(127, -12, player.score);
 
-			if (player.state == PLAYER_STATE_REMOVED && player.extra_lives <= 0)
+			if ((game_flags & GAME_FLAGS_ANNOUNCE_WAVE) == GAME_FLAGS_ANNOUNCE_WAVE)
 			{
-				reset_text();
-				Print_Str_d(0, -24, (char *) game_over_text);
+				announce_current_wave();
 			}
-			else
+
+			Moveto_d(-127, -127);
+			for (unsigned int i = 0; i < player.extra_lives; i++)
 			{
-				Moveto_d(-127, -127);
-				for (unsigned int i = 0; i < player.extra_lives; i++)
-				{
-					Dot_d(0, 4);
-				}
+				Dot_d(0, 4);
 			}
 
 			Intensity_7F();
@@ -255,28 +271,41 @@ int main(void)
 		{
 			game_seed += random();
 
-			if (++anim_counter >= GAME_ANIM_TRESHOLD)
+			if (++game_counter >= GAME_ANIM_TRESHOLD)
 			{
-				anim_counter = 0;
+				game_counter = 0;
 				if (++anim_frame > PLAYER_HYPERSPACE_NUM_FRAMES)
 				{
 					anim_frame = 0;
 				}
 			}
 
-			check_buttons();
-			if (button_1_4_pressed())
+			if (Vec_Music_Flag)
 			{
-				anim_counter = 0;
-				anim_frame = 0;
-				game_state = GAME_STATE_NEXT_LEVEL;
-				random_long_seed(game_seed);
+				DP_to_C8();
+				Init_Music_chk(&Vec_Music_0);
+			}
+			else
+			{
+				check_buttons();
+				if (button_1_4_pressed())
+				{
+					game_counter = 0;
+					anim_frame = 0;
+					game_state = GAME_STATE_NEXT_LEVEL;
+					game_flags |= GAME_FLAGS_ANNOUNCE_WAVE;
+					random_long_seed(game_seed);
+				}
 			}
 
 			Wait_Recal();
 			Moveto_d(0, 0);
 
-			Intensity_5F();
+			if (Vec_Music_Flag)
+			{
+				Do_Sound();
+			}
+
 			dp_VIA_t1_cnt_lo = 0x80;
 			Draw_VLp((signed char *) player_hyperspace[anim_frame]);
 
@@ -286,6 +315,38 @@ int main(void)
 			Intensity_7F();
 			dp_VIA_t1_cnt_lo = 0x20;
 			Draw_VLp((signed char *) player_behind);
+		}
+		else if (game_state == GAME_STATE_OVER)
+		{
+			check_buttons();
+			if (button_1_4_pressed())
+			{
+				close_wave();
+				player.score = 0;
+				player.extra_lives = PLAYER_NUM_EXTRA_LIVES;
+				reset_level_wave();
+				game_state = GAME_STATE_NEXT_LEVEL;
+				game_flags = GAME_FLAGS_ANNOUNCE_WAVE;
+				game_counter = 0;
+				anim_frame = 0;
+			}
+
+			move_mines(&player);
+			move_ships(&player);
+
+			Wait_Recal();
+			Moveto_d(0, 0);
+
+			Intensity_5F();
+			reset_text();
+			print_ulong(127, -12, player.score);
+
+			reset_text();
+			Print_Str_d(0, -24, (char *) game_over_text);
+
+			Intensity_7F();
+			draw_mines();
+			draw_ships();
 		}
 	};
 	

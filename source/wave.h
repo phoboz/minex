@@ -15,6 +15,7 @@ extern struct bullet bullets[];
 
 void init_wave();
 void close_wave(void);
+void reset_level_wave(void);
 
 void generate_wave(
 	unsigned int advance_level
@@ -25,5 +26,7 @@ void move_wave(void);
 unsigned long get_points_wave(
 	struct mine *mine
 	);
+
+void announce_current_wave(void);
 
 #endif
