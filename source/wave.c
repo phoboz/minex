@@ -24,7 +24,7 @@
 #define WAVE_SHIP_START_X			-100
 #define WAVE_SHIP_SPEED			3
 #define WAVE_SHIP_MAX_HITS			5
-#define WAVE_SHIP_STILL_TRESHOLD	12
+#define WAVE_SHIP_STILL_TRESHOLD	24
 
 // ---------------------------------------------------------------------------
 
@@ -301,7 +301,7 @@ void move_wave(void)
 					}
 
 					ship_treshold = 15 + (random() % 20);
-					ship_angle = 8 * (random () % 8);
+					ship_angle = 16 - (8 * (random () % 4));
 				}
 				else
 				{
@@ -317,15 +317,6 @@ void move_wave(void)
 			}
 			else if (ship->state == SHIP_STATE_NORMAL)
 			{
-				if (ship->obj_angle < ship_angle)
-				{
-					ship->obj_angle++;
-				}
-				else if (ship->obj_angle > ship_angle)
-				{
-					ship->obj_angle--;
-				}
-
 				if (++ship_counter >= WAVE_SHIP_STILL_TRESHOLD)
 				{
 					ship_counter = 0;
