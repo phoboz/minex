@@ -301,10 +301,7 @@ int main(void)
 			Wait_Recal();
 			Moveto_d(0, 0);
 
-			if (Vec_Music_Flag)
-			{
-				Do_Sound();
-			}
+			Do_Sound();
 
 			dp_VIA_t1_cnt_lo = 0x80;
 			Draw_VLp((signed char *) player_hyperspace[anim_frame]);
