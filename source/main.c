@@ -115,6 +115,7 @@ int main(void)
 					{
 						player.extra_lives--;
 						close_wave();
+						game_flags |= GAME_FLAGS_ANNOUNCE_WAVE;
 						init_player(&player, 0, 0, PLAYER_HEIGHT, PLAYER_WIDTH, 0, PLAYER_DRAW_SCALE, player_anim);
 						generate_wave(0);
 					}
