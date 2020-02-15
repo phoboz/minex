@@ -240,8 +240,8 @@ int main(void)
 		}
 		if (game_state == GAME_STATE_NEXT_LEVEL)
 		{
-			player.speed = 0;
-			player.obj_pos[0] = player.obj_pos[1] = 0;
+			/* Regenerate player to avoid strange velocity vector */
+			init_player(&player, 0, 0, PLAYER_HEIGHT, PLAYER_WIDTH, 0, PLAYER_DRAW_SCALE, player_anim);
 			generate_wave(1);
 			game_state = GAME_STATE_NORMAL;
 		}

@@ -44,7 +44,7 @@ void init_ship(
 	ship->rel_pos[1] = x;
 
 	ship->state_counter	= 0;
-	ship->state			= SHIP_STATE_NORMAL;
+	ship->state			= SHIP_STATE_ACTIVATE;
 	ship->num_hits		= num_hits;
 
 	ship->obj_angle		= obj_angle;
@@ -93,10 +93,18 @@ unsigned int move_ships(
 			update_view = 1;
 		}
 
-		if (ship->speed)
+		if (ship->state == SHIP_STATE_ACTIVE)
 		{
-			wrap_translate(ship->obj_pos, ship->obj_pos, ship->speed * ship->front_vec[0], ship->speed * ship->front_vec[1]);
-			update_view = 1;
+			if (ship->speed)
+			{
+				wrap_translate(
+					ship->obj_pos,
+					ship->obj_pos,
+					ship->speed * ship->front_vec[0],
+					ship->speed * ship->front_vec[1]
+					);
+				update_view = 1;
+			}
 		}
 
 		if (update_view || player->update_view)
@@ -107,7 +115,15 @@ unsigned int move_ships(
 			Rot_VL_Mode(ship->world_angle, ship->obj_vlist, ship->world_vlist);
 		}
 
-		if (ship->state == SHIP_STATE_NORMAL)
+		if (ship->state == SHIP_STATE_ACTIVATE)
+		{
+			if (++ship->state_counter == SHIP_ACTIVATE_TRESHOLD)
+			{
+				ship->state_counter = 0;
+				ship->state = SHIP_STATE_ACTIVE;
+			}
+		}
+		else if (ship->state == SHIP_STATE_ACTIVE)
 		{
 			bullet = (struct bullet *) bullet_list;
 			while (bullet)
@@ -212,7 +228,18 @@ void draw_ships(void)
 			Moveto_d(ship->obj.dim_2[0], ship->obj.dim_2[1]);
 #endif
 
-			if (ship->state == SHIP_STATE_NORMAL)
+			if (ship->state == SHIP_STATE_IDLE)
+			{
+				Dot_here();
+			}
+			else if (ship->state == SHIP_STATE_ACTIVATE)
+			{
+				Intensity_3F();
+				dp_VIA_t1_cnt_lo = (SHIP_DRAW_SCALE - SHIP_ACTIVATE_TRESHOLD) + ship->state_counter;
+				Draw_VLp(ship->world_vlist);
+				Intensity_7F();
+			}
+			else if (ship->state == SHIP_STATE_ACTIVE)
 			{
 				dp_VIA_t1_cnt_lo = ship->scale;
 				Draw_VLp(ship->world_vlist);

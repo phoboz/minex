@@ -448,8 +448,10 @@ void draw_mines(void)
 			}
 			else if (mine->state == MINE_STATE_ACTIVATE)
 			{
+				Intensity_3F();
 				dp_VIA_t1_cnt_lo = (MINE_DRAW_SCALE - MINE_ACTIVATE_TRESHOLD) + mine->hi_counter;
 				Draw_VLp(mine->world_vlist);
+				Intensity_7F();
 			}
 			else if (mine->state == MINE_STATE_ACTIVE)
 			{

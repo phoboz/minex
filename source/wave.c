@@ -20,8 +20,6 @@
 #define MAX_IDLE_TIMES		9
 
 #define WAVE_SHIP_APPEAR_MINE_LIMIT	3
-#define WAVE_SHIP_START_Y			-100
-#define WAVE_SHIP_START_X			-100
 #define WAVE_SHIP_SPEED			3
 #define WAVE_SHIP_MAX_HITS			5
 #define WAVE_SHIP_STILL_TRESHOLD	24
@@ -268,6 +266,7 @@ void move_wave(void)
 	static unsigned int ship_treshold;
 	static unsigned int ship_angle;
 
+	unsigned int pos_y, pos_x;
 	struct ship *ship;
 	struct mine *mine;
 	unsigned int mine_type;
@@ -277,7 +276,7 @@ void move_wave(void)
 		ship = (struct ship *) ship_list;
 		if (ship)
 		{
-			if (ship->speed && ship->state == SHIP_STATE_NORMAL)
+			if (ship->speed && ship->state == SHIP_STATE_ACTIVE)
 			{
 				if (++ship_counter >= ship_treshold)
 				{
@@ -315,7 +314,7 @@ void move_wave(void)
 					}
 				}
 			}
-			else if (ship->state == SHIP_STATE_NORMAL)
+			else if (ship->state == SHIP_STATE_ACTIVE)
 			{
 				if (++ship_counter >= WAVE_SHIP_STILL_TRESHOLD)
 				{
@@ -332,11 +331,16 @@ void move_wave(void)
 			ship = (struct ship *) ship_free_list;
 			if (ship)
 			{
+
+				pos_y = random() % 2;
+				pos_x = random() % 2;
+
 				init_ship(
 					ship,
-					WAVE_SHIP_START_Y,
-					WAVE_SHIP_START_X,
-					SHIP_SIZE, SHIP_SIZE,
+					(pos_y) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U),
+					(pos_x) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U),
+					SHIP_SIZE,
+					SHIP_SIZE,
 					0,
 					get_ship_num_hits(),
 					&player,
