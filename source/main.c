@@ -15,6 +15,7 @@
 
 #include <vectrex.h>
 #include "ayfxPlayer.h"
+#include "draw.h"
 #include "controller.h"
 #include "player.h"
 #include "player_data.h"
@@ -29,13 +30,18 @@
 
 #define GAME_STATE_NORMAL			0
 #define GAME_STATE_NEXT_LEVEL		1
-#define GAME_STATE_HYPERSPACE		2
-#define GAME_STATE_OVER			3
+#define GAME_STATE_TITLE			2
+#define GAME_STATE_HYPERSPACE		3
+#define GAME_STATE_OVER			4
 
 #define PLAYER_NUM_EXTRA_LIVES		3
 
 #define GAME_FLAGS_ANNOUNCE_WAVE	0x01
 #define GAME_FLAGS_FLASH_SHIP		0x02
+
+#define GAME_START_INTENSITY		0x3F
+#define GAME_MAX_INTENSITY			0xFF
+#define GAME_DELTA_INTENSITY		0x0F
 
 #define GAME_ANIM_TRESHOLD			2
 #define GAME_ANNOUNCE_WAVE_TRESHOLD	50
@@ -49,6 +55,7 @@ extern const unsigned int thrust_snd_data[];
 struct player player;
 
 static const char game_over_text[]	= "GAME OVER\x80";
+static const char title_text[]	= "PRESS FIRE TO START\x80";
 
 static unsigned int game_state;
 static unsigned long game_seed;
@@ -88,7 +95,7 @@ int main(void)
 	player.score = 0;
 	player.extra_lives = PLAYER_NUM_EXTRA_LIVES;
 
-	game_state = GAME_STATE_NEXT_LEVEL;
+	game_state = GAME_STATE_TITLE;
 	game_flags = GAME_FLAGS_ANNOUNCE_WAVE;
 	game_counter = 0;
 	anim_frame = 0;
@@ -268,14 +275,15 @@ int main(void)
 			generate_wave(1);
 			game_state = GAME_STATE_NORMAL;
 		}
-		else if (game_state == GAME_STATE_HYPERSPACE)
+		else if (game_state == GAME_STATE_TITLE)
 		{
 			game_seed += random();
 
 			if (++game_counter >= GAME_ANIM_TRESHOLD)
 			{
 				game_counter = 0;
-				if (++anim_frame > PLAYER_HYPERSPACE_NUM_FRAMES)
+				anim_frame += GAME_DELTA_INTENSITY;
+				if (anim_frame >= (GAME_MAX_INTENSITY - GAME_START_INTENSITY))
 				{
 					anim_frame = 0;
 				}
@@ -300,10 +308,45 @@ int main(void)
 			}
 
 			Wait_Recal();
+
+			Do_Sound();
+
+			Intensity_5F();
+			draw_synced_list_c((signed char *) minex_logo, 24, 0, 0x80, 0x40);
+
+			Intensity_a(GAME_START_INTENSITY + anim_frame);
+			reset_text();
+			Print_Str_d(-24, -56, (char *) title_text);
+
+		}
+		else if (game_state == GAME_STATE_HYPERSPACE)
+		{
+			if (++game_counter >= GAME_ANIM_TRESHOLD)
+			{
+				game_counter = 0;
+				if (++anim_frame > PLAYER_HYPERSPACE_NUM_FRAMES)
+				{
+					anim_frame = 0;
+				}
+			}
+
+			if (Vec_Music_Flag)
+			{
+				DP_to_C8();
+				Init_Music_chk(&Vec_Music_0);
+			}
+			else
+			{
+				game_state = GAME_STATE_NEXT_LEVEL;
+				game_flags |= GAME_FLAGS_ANNOUNCE_WAVE;
+			}
+
+			Wait_Recal();
 			Moveto_d(0, 0);
 
 			Do_Sound();
 
+			Intensity_5F();
 			dp_VIA_t1_cnt_lo = 0x80;
 			Draw_VLp((signed char *) player_hyperspace[anim_frame]);
 
@@ -323,8 +366,7 @@ int main(void)
 				player.score = 0;
 				player.extra_lives = PLAYER_NUM_EXTRA_LIVES;
 				reset_level_wave();
-				game_state = GAME_STATE_NEXT_LEVEL;
-				game_flags = GAME_FLAGS_ANNOUNCE_WAVE;
+				game_state = GAME_STATE_TITLE;
 				game_counter = 0;
 				anim_frame = 0;
 			}

@@ -8,6 +8,7 @@
 
 extern const signed char * const player_anim[];
 extern const signed char player_behind[];
+extern const signed char minex_logo[];
 extern const signed char* const player_hyperspace[];
 
 #endif

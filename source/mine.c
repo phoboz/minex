@@ -47,6 +47,11 @@ void init_mine(
 		init_object(&mine->obj, y, x, mine_2_sizes[size], mine_2_sizes[size], &mine_list);
 		mine->shape = mine_2[size];
 	}
+	else if (type & MINE_TYPE_CIRCELING)
+	{
+		init_object(&mine->obj, y, x, mine_4_sizes[size], mine_4_sizes[size], &mine_list);
+		mine->shape = mine_4[size];
+	}
 	else
 	{
 		init_object(&mine->obj, y, x, mine_0_sizes[size], mine_0_sizes[size], &mine_list);
