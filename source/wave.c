@@ -9,7 +9,7 @@
 #include "text.h"
 #include "wave.h"
 
-#define MAX_MINE_TYPES	15
+#define MAX_MINE_TYPES		15
 
 #define MINE_UNIQUE		 0L
 #define MINE_VERY_RARE		 1L
@@ -63,9 +63,9 @@ static const struct mine_data md[MAX_MINE_TYPES]=
 	{	MINE_TYPE_MAGNETIC | MINE_TYPE_FIREBALL,							0,	450,		MINE_RARE			},
 
 	// fifth level
-	{	MINE_TYPE_DIRECTIONAL | MINE_TYPE_FIREBALL | MINE_TYPE_CIRCELING,	2,	500,		MINE_COMMON		},
-	{	MINE_TYPE_DIRECTIONAL | MINE_TYPE_FIREBALL | MINE_TYPE_CIRCELING,	1,	520,		MINE_UNCOMMON		},
-	{	MINE_TYPE_DIRECTIONAL | MINE_TYPE_FIREBALL | MINE_TYPE_CIRCELING,	0,	550,		MINE_RARE			}
+	{	MINE_TYPE_DIRECTIONAL | MINE_TYPE_CIRCELING,						2,	250,		MINE_COMMON		},
+	{	MINE_TYPE_DIRECTIONAL | MINE_TYPE_CIRCELING,						1,	280,		MINE_UNCOMMON		},
+	{	MINE_TYPE_DIRECTIONAL | MINE_TYPE_CIRCELING,						0,	300,		MINE_RARE			}
 
 };
 
@@ -261,7 +261,10 @@ void generate_wave(
 
 	if (level_advance)
 	{
-		level += level_advance;
+		if (++level >= 99)
+		{
+			level = 1;
+		}
 	}
 
 	ship_activated = 0;

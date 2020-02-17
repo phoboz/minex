@@ -116,30 +116,59 @@ void rand_dir_mine(
 	}
 }
 
-void target_player_mine(
+unsigned int target_player_mine(
 	struct mine *mine,
 	struct player *player,
-	signed int speed
+	signed int speed,
+	unsigned int range
 	)
 {
 	signed int v[2];
 	signed int p[2];
 	unsigned long len;
+	unsigned int result;
 
 	p[0] = player->obj_pos[0];
 	p[1] = -player->obj_pos[1];
 
 	wrap_translate(v, p, -mine->obj_pos[0], -mine->obj_pos[1]);
 	len = isqrt16((unsigned long) v[0] * (unsigned long) v[0] + (unsigned long) v[1] * (unsigned long) v[1]);
-	if (len >= MINE_TARGET_MIN_RANGE)
+	if (len >= (unsigned long) range)
 	{
 		mine->velocity[0] = (signed int) (v[0] * 	(signed long) speed / (signed long) len);
 		mine->velocity[1] = (signed int) (v[1] * (signed long) speed / (signed long) len);
+		result = 0;
 	}
 	else
 	{
 		mine->velocity[0] = 0;
 		mine->velocity[1] = 0;
+		result = 1;
+	}
+
+	return 1;
+}
+
+void circle_position_mine(
+	struct mine *mine
+	)
+{
+	signed int v[2];
+
+	v[0] = mine->velocity[0];	
+	v[1] = mine->velocity[1];
+
+	if ((mine->type_size & MINE_SIZE_MASK) == 0)
+	{
+		Rot_VL_ab(4, 0, v, mine->velocity);
+	}
+	else if ((mine->type_size & MINE_SIZE_MASK) == 1)
+	{
+		Rot_VL_ab(5, 0, v, mine->velocity);
+	}
+	else if ((mine->type_size & MINE_SIZE_MASK) == 2)
+	{
+		Rot_VL_ab(6, 0, v, mine->velocity);
 	}
 }
 
@@ -169,12 +198,19 @@ unsigned int move_mines(
 			{
 				if (mine->state == MINE_STATE_ACTIVE || mine->state == MINE_STATE_FIREBALL_IDLE || mine->state == MINE_STATE_FIREBALL)
 				{
-					if (mine->state == MINE_STATE_ACTIVE && (mine->type_size & MINE_TYPE_MAGNETIC))
+					if (mine->state == MINE_STATE_ACTIVE)
 					{
-						if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
+						if (mine->type_size & MINE_TYPE_MAGNETIC)
 						{
-							mine->hi_counter = 0;
-							target_player_mine(mine, player, 4 - (signed int) (mine->type_size & MINE_SIZE_MASK));
+							if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
+							{
+								mine->hi_counter = 0;
+								target_player_mine(mine, player, 4 - (signed int) (mine->type_size & MINE_SIZE_MASK), MINE_TARGET_RANGE);
+							}
+						}
+						else if (mine->type_size & MINE_TYPE_CIRCELING)
+						{
+							circle_position_mine(mine);
 						}
 					}
 
@@ -205,12 +241,19 @@ unsigned int move_mines(
 			{
 				if (mine->state == MINE_STATE_ACTIVE || mine->state == MINE_STATE_FIREBALL_IDLE || mine->state == MINE_STATE_FIREBALL)
 				{
-					if (mine->state == MINE_STATE_ACTIVE && (mine->type_size & MINE_TYPE_MAGNETIC))
+					if (mine->state == MINE_STATE_ACTIVE)
 					{
-						if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
+						if (mine->type_size & MINE_TYPE_MAGNETIC)
 						{
-							mine->hi_counter = 0;
-							target_player_mine(mine, player, 4 - (signed int) (mine->type_size & MINE_SIZE_MASK));
+							if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
+							{
+								mine->hi_counter = 0;
+								target_player_mine(mine, player, 4 - (signed int) (mine->type_size & MINE_SIZE_MASK), MINE_TARGET_RANGE);
+							}
+						}
+						else if (mine->type_size & MINE_TYPE_CIRCELING)
+						{
+							circle_position_mine(mine);
 						}
 					}
 
@@ -248,7 +291,7 @@ unsigned int move_mines(
 					mine->state = MINE_STATE_ACTIVATE;
 					if (mine->type_size & MINE_TYPE_MAGNETIC)
 					{
-						target_player_mine(mine, player, 4 - (signed int) (mine->type_size & MINE_SIZE_MASK));
+						target_player_mine(mine, player, 4 - (signed int) (mine->type_size & MINE_SIZE_MASK), MINE_TARGET_RANGE);
 					}
 					else
 					{
@@ -272,7 +315,7 @@ unsigned int move_mines(
 					mine->hi_counter = 0;
 					if (mine->type_size & MINE_TYPE_FIREBALL)
 					{
-						target_player_mine(mine, player, MINE_FIREBALL_SPEED);
+						target_player_mine(mine, player, MINE_FIREBALL_SPEED, MINE_TARGET_RANGE);
 						mine->state = MINE_STATE_FIREBALL_IDLE;
 					}
 					else
@@ -294,12 +337,19 @@ unsigned int move_mines(
 			{
 				if (mine->state == MINE_STATE_ACTIVE || mine->state == MINE_STATE_FIREBALL_IDLE || mine->state == MINE_STATE_FIREBALL)
 				{
-					if (mine->state == MINE_STATE_ACTIVE && (mine->type_size & MINE_TYPE_MAGNETIC))
+					if (mine->state == MINE_STATE_ACTIVE)
 					{
-						if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
+						if (mine->type_size & MINE_TYPE_MAGNETIC)
 						{
-							mine->hi_counter = 0;
-							target_player_mine(mine, player, 4 - (signed int) (mine->type_size & MINE_SIZE_MASK));
+							if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
+							{
+								mine->hi_counter = 0;
+								target_player_mine(mine, player, 4 - (signed int) (mine->type_size & MINE_SIZE_MASK), MINE_TARGET_RANGE);
+							}
+						}
+						else if (mine->type_size & MINE_TYPE_CIRCELING)
+						{
+							circle_position_mine(mine);
 						}
 					}
 
