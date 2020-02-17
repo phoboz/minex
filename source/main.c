@@ -289,24 +289,37 @@ int main(void)
 				}
 			}
 
-			check_buttons();
-			if (button_1_4_pressed())
+			if (Vec_Music_Flag)
 			{
-				game_counter = 0;
-				anim_frame = 0;
-				game_state = GAME_STATE_NEXT_LEVEL;
-				game_flags |= GAME_FLAGS_ANNOUNCE_WAVE;
-				random_long_seed(game_seed);
+				DP_to_C8();
+				Init_Music_chk(&Vec_Music_0);
+			}
+			else
+			{
+				check_buttons();
+				if (button_1_4_pressed())
+				{
+					game_counter = 0;
+					anim_frame = 0;
+					game_state = GAME_STATE_NEXT_LEVEL;
+					game_flags |= GAME_FLAGS_ANNOUNCE_WAVE;
+					random_long_seed(game_seed);
+				}
 			}
 
 			Wait_Recal();
 
+			Do_Sound();
+
 			Intensity_5F();
 			draw_synced_list_c((signed char *) minex_logo, 24, 0, 0x80, 0x40);
 
-			Intensity_a(GAME_START_INTENSITY + anim_frame);
-			reset_text();
-			Print_Str_d(-24, -56, (char *) title_text);
+			if (!Vec_Music_Flag)
+			{
+				Intensity_a(GAME_START_INTENSITY + anim_frame);
+				reset_text();
+				Print_Str_d(-24, -56, (char *) title_text);
+			}
 
 		}
 		else if (game_state == GAME_STATE_HYPERSPACE)
@@ -359,6 +372,7 @@ int main(void)
 				game_state = GAME_STATE_TITLE;
 				game_counter = 0;
 				anim_frame = 0;
+				Vec_Music_Flag = 1;
 			}
 
 			move_mines(&player);

@@ -102,7 +102,11 @@ unsigned int move_player(
 
 			if (button_1_3_held())
 			{
-				if (++player->speed_counter >= PLAYER_ACCELERATE_TRESHOLD)
+				if (player->speed == 0)
+				{
+					player->speed = 1;
+				}
+				else if (++player->speed_counter >= PLAYER_ACCELERATE_TRESHOLD)
 				{
 					player->speed_counter = 0;
 					if (player->speed < PLAYER_MAX_SPEED)
