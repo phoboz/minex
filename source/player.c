@@ -7,6 +7,7 @@
 #include "bullet.h"
 #include "wrap.h"
 #include "imath.h"
+#include "player_data.h"
 #include "player.h"
 
 //#define PLAYER_NO_HIT
@@ -102,11 +103,7 @@ unsigned int move_player(
 
 			if (button_1_3_held())
 			{
-				if (player->speed == 0)
-				{
-					player->speed = 1;
-				}
-				else if (++player->speed_counter >= PLAYER_ACCELERATE_TRESHOLD)
+				if (++player->speed_counter >= PLAYER_ACCELERATE_TRESHOLD)
 				{
 					player->speed_counter = 0;
 					if (player->speed < PLAYER_MAX_SPEED)
@@ -115,7 +112,7 @@ unsigned int move_player(
 					}
 				}
 
-				player->anim.base_frame = (unsigned int) abs(player->speed);
+				player->anim.base_frame = PLAYER_THRUST_FRAME + (unsigned int) abs(player->speed);
 				if (player->speed == PLAYER_MAX_SPEED)
 				{
 					if (++player->anim_counter >= PLAYER_FLAME_ANIM_TRESHOLD)
