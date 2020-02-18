@@ -258,7 +258,7 @@ static const signed char mine_5_1[]=
 	(signed char) 0xFF, -0x01*BLOW_UP, -0x03*BLOW_UP, // draw, y, x
 	(signed char) 0xFF, +0x01*BLOW_UP, -0x03*BLOW_UP, // draw, y, x
 	(signed char) 0xFF, +0x03*BLOW_UP, -0x01*BLOW_UP, // draw, y, x
-	(signed char) 0x02 // endmarker 
+	(signed char) 0x01 // endmarker 
 };
 static const signed char mine_5_2[]=
 {	(signed char) 0x00, +0x00*BLOW_UP/2, -0x04*BLOW_UP/2, // move, y, x
@@ -270,7 +270,7 @@ static const signed char mine_5_2[]=
 	(signed char) 0xFF, -0x01*BLOW_UP/2, -0x03*BLOW_UP/2, // draw, y, x
 	(signed char) 0xFF, +0x01*BLOW_UP/2, -0x03*BLOW_UP/2, // draw, y, x
 	(signed char) 0xFF, +0x03*BLOW_UP/2, -0x01*BLOW_UP/2, // draw, y, x
-	(signed char) 0x02 // endmarker 
+	(signed char) 0x01 // endmarker 
 };
 static const signed char mine_5_3[]=
 {	(signed char) 0x00, +0x00*BLOW_UP/3, -0x04*BLOW_UP/3, // move, y, x
@@ -282,7 +282,7 @@ static const signed char mine_5_3[]=
 	(signed char) 0xFF, -0x01*BLOW_UP/3, -0x03*BLOW_UP/3, // draw, y, x
 	(signed char) 0xFF, +0x01*BLOW_UP/3, -0x03*BLOW_UP/3, // draw, y, x
 	(signed char) 0xFF, +0x03*BLOW_UP/3, -0x01*BLOW_UP/3, // draw, y, x
-	(signed char) 0x02 // endmarker 
+	(signed char) 0x01 // endmarker 
 };
 const signed char * const mine_5[]=
 {
@@ -295,6 +295,55 @@ const signed int mine_5_sizes[]=
 	8,
 	10,
 	18
+};
+
+static const signed char mine_6_1[]=
+{	(signed char) 0x00, +0x01*BLOW_UP, -0x02*BLOW_UP, // move, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP, +0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x04*BLOW_UP, -0x01*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP, -0x01*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP, +0x04*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP, -0x02*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x04*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP, +0x01*BLOW_UP, // draw, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP, -0x04*BLOW_UP, // draw, y, x
+	(signed char) 0x01 // endmarker 
+};
+static const signed char mine_6_2[]=
+{	(signed char) 0x00, +0x01*BLOW_UP/2, -0x02*BLOW_UP/2, // move, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP/2, +0x02*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x04*BLOW_UP/2, -0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP/2, -0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP/2, +0x04*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP/2, -0x02*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x04*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP/2, +0x01*BLOW_UP/2, // draw, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP/2, -0x04*BLOW_UP/2, // draw, y, x
+	(signed char) 0x01 // endmarker 
+};
+static const signed char mine_6_3[]=
+{	(signed char) 0x00, +0x01*BLOW_UP/3, -0x02*BLOW_UP/3, // move, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP/3, +0x02*BLOW_UP/3, // draw, y, x
+	(signed char) 0xFF, -0x04*BLOW_UP/3, -0x01*BLOW_UP/3, // draw, y, x
+	(signed char) 0xFF, +0x02*BLOW_UP/3, -0x01*BLOW_UP/3, // draw, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP/3, +0x04*BLOW_UP/3, // draw, y, x
+	(signed char) 0xFF, -0x01*BLOW_UP/3, -0x02*BLOW_UP/3, // draw, y, x
+	(signed char) 0xFF, +0x04*BLOW_UP/3, +0x01*BLOW_UP/3, // draw, y, x
+	(signed char) 0xFF, -0x02*BLOW_UP/3, +0x01*BLOW_UP/3, // draw, y, x
+	(signed char) 0xFF, +0x01*BLOW_UP/3, -0x04*BLOW_UP/3, // draw, y, x
+	(signed char) 0x01 // endmarker 
+};
+const signed char * const mine_6[]=
+{
+	mine_6_3,
+	mine_6_2,
+	mine_6_1
+};
+const signed int mine_6_sizes[]=
+{
+	6,
+	8,
+	10
 };
 
 static const signed char mine_explode_1[]=

@@ -31,8 +31,12 @@ void init_mine(
 	)
 {
 	take_element(&mine->obj.elmnt, &mine_free_list);
-
-	if ((type & MINE_TYPE_MAGNETIC) && (type & MINE_TYPE_FIREBALL))
+	if ((type & MINE_TYPE_MAGNETIC) && (type & MINE_TYPE_FIREBALL) && (type & MINE_TYPE_HOMING))
+	{
+		init_object(&mine->obj, y, x, mine_6_sizes[size], mine_6_sizes[size], &mine_list);
+		mine->shape = mine_6[size];
+	}
+	else if ((type & MINE_TYPE_MAGNETIC) && (type & MINE_TYPE_FIREBALL))
 	{
 		init_object(&mine->obj, y, x, mine_3_sizes[size], mine_3_sizes[size], &mine_list);
 		mine->shape = mine_3[size];
@@ -225,7 +229,7 @@ unsigned int move_mines(
 							if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
 							{
 								mine->hi_counter = 0;
-								target_player_mine(mine, player, MINE_FIREBALL_SPEED, 0);
+								target_player_mine(mine, player, MINE_FIREBALL_SPEED, MINE_FIREBALL_TARGET_RANGE);
 							}
 						}
 					}
@@ -279,7 +283,7 @@ unsigned int move_mines(
 							if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
 							{
 								mine->hi_counter = 0;
-								target_player_mine(mine, player, MINE_FIREBALL_SPEED, 0);
+								target_player_mine(mine, player, MINE_FIREBALL_SPEED, MINE_FIREBALL_TARGET_RANGE);
 							}
 						}
 					}
@@ -342,7 +346,7 @@ unsigned int move_mines(
 					mine->hi_counter = 0;
 					if (mine->type_size & MINE_TYPE_FIREBALL)
 					{
-						target_player_mine(mine, player, MINE_FIREBALL_SPEED, 0);
+						target_player_mine(mine, player, MINE_FIREBALL_SPEED, MINE_FIREBALL_TARGET_RANGE);
 						mine->state = MINE_STATE_FIREBALL_IDLE;
 					}
 					else
@@ -386,7 +390,7 @@ unsigned int move_mines(
 							if (++mine->hi_counter == MINE_TARGET_TRESHOLD)
 							{
 								mine->hi_counter = 0;
-								target_player_mine(mine, player, MINE_FIREBALL_SPEED, 0);
+								target_player_mine(mine, player, MINE_FIREBALL_SPEED, MINE_FIREBALL_TARGET_RANGE);
 							}
 						}
 					}
