@@ -22,6 +22,9 @@ extern const signed int mine_3_sizes[];
 extern const signed char * const mine_4[];
 extern const signed int mine_4_sizes[];
 
+extern const signed char * const mine_5[];
+extern const signed int mine_5_sizes[];
+
 extern const signed char * const mine_explode[];
 
 extern const signed char fireball[];

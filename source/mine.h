@@ -9,6 +9,7 @@
 #define MINE_TYPE_MAGNETIC			0x10
 #define MINE_TYPE_FIREBALL			0x20
 #define MINE_TYPE_CIRCELING			0x40
+#define MINE_TYPE_HOMING			0x80
 
 #define MINE_SIZE_MASK				0x0f
 #define MINE_TYPE_MASK				0xf0
