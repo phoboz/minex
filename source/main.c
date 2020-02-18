@@ -30,9 +30,10 @@
 
 #define GAME_STATE_NORMAL			0
 #define GAME_STATE_NEXT_LEVEL		1
-#define GAME_STATE_TITLE			2
-#define GAME_STATE_HYPERSPACE		3
-#define GAME_STATE_OVER			4
+#define GAME_STATE_TITLE_ANIMATION	2
+#define GAME_STATE_TITLE			3
+#define GAME_STATE_HYPERSPACE		4
+#define GAME_STATE_OVER			5
 
 #define PLAYER_NUM_EXTRA_LIVES		3
 
@@ -95,8 +96,8 @@ int main(void)
 	player.score = 0;
 	player.extra_lives = PLAYER_NUM_EXTRA_LIVES;
 
-	game_state = GAME_STATE_TITLE;
-	game_flags = GAME_FLAGS_ANNOUNCE_WAVE;
+	game_state = GAME_STATE_TITLE_ANIMATION;
+	game_flags = 0;
 	game_counter = 0;
 	anim_frame = 0;
 
@@ -280,6 +281,34 @@ int main(void)
 			generate_wave(1);
 			game_state = GAME_STATE_NORMAL;
 		}
+		else if (game_state == GAME_STATE_TITLE_ANIMATION)
+		{
+			if (++game_counter >= GAME_ANIM_TRESHOLD)
+			{
+				game_counter = 0;
+				if (++anim_frame >= MINEX_LOGO_NUM_FRAMES)
+				{
+					anim_frame = 0;
+					game_counter = 0;
+					game_state = GAME_STATE_TITLE;
+
+				}
+			}
+
+			if (Vec_Music_Flag)
+			{
+				DP_to_C8();
+				Init_Music_chk(&Vec_Music_0);
+			}
+
+			Wait_Recal();
+
+			Do_Sound();
+
+			Intensity_5F();
+			draw_synced_list_c((signed char *) minex_logo[anim_frame], 24, 0, 0x80, 0x10 + (anim_frame << 1));
+
+		}
 		else if (game_state == GAME_STATE_TITLE)
 		{
 			game_seed += random();
@@ -317,7 +346,7 @@ int main(void)
 			Do_Sound();
 
 			Intensity_5F();
-			draw_synced_list_c((signed char *) minex_logo, 24, 0, 0x80, 0x40);
+			draw_synced_list_c((signed char *) minex_logo[0], 24, 0, 0x80, 0x40);
 
 			if (!Vec_Music_Flag)
 			{
@@ -374,7 +403,7 @@ int main(void)
 				player.score = 0;
 				player.extra_lives = PLAYER_NUM_EXTRA_LIVES;
 				reset_level_wave();
-				game_state = GAME_STATE_TITLE;
+				game_state = GAME_STATE_TITLE_ANIMATION;
 				game_counter = 0;
 				anim_frame = 0;
 				Vec_Music_Flag = 1;
