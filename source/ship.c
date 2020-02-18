@@ -166,6 +166,7 @@ unsigned int move_ships(
 					))
 				{
 					hit_player(player);
+					status |= SHIP_STATUS_HIT_PLAYER;
 				}
 			}
 #endif

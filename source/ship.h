@@ -16,6 +16,7 @@
 
 #define SHIP_STATUS_HIT		0x01
 #define SHIP_STATUS_EXPLODE		0x02
+#define SHIP_STATUS_HIT_PLAYER	0x04
 
 struct player;
 

@@ -192,6 +192,11 @@ int main(void)
 				sfx_pointer_3 = (long unsigned int) (&explosion_snd_data);
 				sfx_status_3 = 1;
 			}
+			else if ((ship_status & SHIP_STATUS_HIT_PLAYER) == SHIP_STATUS_HIT_PLAYER)
+			{
+				sfx_pointer_3 = (long unsigned int) (&hit_snd_data);
+				sfx_status_3 = 1;
+			}
 
 			Wait_Recal();
 
