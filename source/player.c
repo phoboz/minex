@@ -155,6 +155,10 @@ unsigned int move_player(
 					}
 				}
 			}
+			else if (player->anim.base_frame != 0)
+			{
+				player->anim.base_frame = 0;
+			}
 
 			if (player->speed)
 			{
