@@ -12,6 +12,9 @@
 #define PLAYER_FIRE_TRESHOLD		8
 #define PLAYER_BULLET_SPEED			4
 
+#define PLAYER_NUM_EXTRA_LIVES		3
+#define PLAYER_SCORE_EXTRA_LIFE		10000
+
 #define PLAYER_FLAME_ANIM_TRESHOLD	4
 
 #define PLAYER_EXPLODE_ANIM_TRESHOLD	8
@@ -38,8 +41,13 @@ struct player
 	unsigned int scale;
 
 	unsigned long score;
+	unsigned long score_extra_life;
 	unsigned int extra_lives;
 };
+
+void clear_player(
+	struct player *player
+	);
 
 void init_player(
 	struct player *player,
@@ -60,7 +68,7 @@ void hit_player(
 	struct player *player
 	);
 
-void collect_points_player(
+unsigned int collect_points_player(
 	struct player *player,
 	unsigned long points
 	);

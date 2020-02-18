@@ -135,6 +135,10 @@ unsigned int move_ships(
 						ship->state = SHIP_STATE_EXPLODE;
 						ship->speed = 0;
 						ship->state_counter = 0;
+						if (collect_points_player(player, SHIP_DEFEAT_POINTS))
+						{
+							status |= SHIP_STATUS_PLAYER_EXTRA_LIFE;
+						}
 						status |= SHIP_STATUS_EXPLODE;
 					}
 					else
@@ -155,7 +159,7 @@ unsigned int move_ships(
 			}
 
 #ifndef SHIP_NO_HIT
-			if (player->anim.obj.active)
+			if (player->state == PLAYER_STATE_NORMAL)
 			{
 				if (check_box_object(
 					&ship->obj,

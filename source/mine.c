@@ -429,7 +429,10 @@ unsigned int move_mines(
 						mine->state = MINE_STATE_EXPLODE;
 						mine->velocity[0] = mine->velocity[1] = 0;
 						rem_bullet = bullet;
-						collect_points_player(player, get_points_wave(mine));
+						if (collect_points_player(player, get_points_wave(mine)))
+						{
+							status |= MINE_STATUS_PLAYER_EXTRA_LIFE;
+						}
 						status |= MINE_STATUS_EXPLODE;
 					}
 				}
@@ -440,6 +443,10 @@ unsigned int move_mines(
 						mine->state = MINE_STATE_REMOVE;
 						mine->velocity[0] = mine->velocity[1] = 0;
 						rem_bullet = bullet;
+						if (collect_points_player(player, MINE_FIREBALL_POINTS))
+						{
+							status |= MINE_STATUS_PLAYER_EXTRA_LIFE;
+						}
 					}
 				}
 
@@ -453,7 +460,7 @@ unsigned int move_mines(
 			}
 
 #ifndef MINE_NO_HIT
-			if (player->anim.obj.active)
+			if (player->state == PLAYER_STATE_NORMAL)
 			{
 				if (mine->state == MINE_STATE_ACTIVE)
 				{

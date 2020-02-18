@@ -19,6 +19,15 @@ static const signed char player_up_vec[]=
 	1,	0
 };
 
+void clear_player(
+	struct player *player
+	)
+{
+	player->score				= 0;
+	player->extra_lives		= PLAYER_NUM_EXTRA_LIVES;
+	player->score_extra_life	= PLAYER_SCORE_EXTRA_LIFE;
+}
+
 void init_player(
 	struct player *player,
 	signed int y,
@@ -190,12 +199,23 @@ void hit_player(
 	}
 }
 
-void collect_points_player(
+unsigned int collect_points_player(
 	struct player *player,
 	unsigned long points
 	)
 {
+	unsigned int result = 0;
+
 	player->score += points;
+
+	if (player->score >= player->score_extra_life)
+	{
+		player->extra_lives++;
+		player->score_extra_life += PLAYER_SCORE_EXTRA_LIFE;
+		result = 1;
+	}
+
+	return result;
 }
 
 // ***************************************************************************

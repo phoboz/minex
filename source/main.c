@@ -35,8 +35,6 @@
 #define GAME_STATE_HYPERSPACE		4
 #define GAME_STATE_OVER			5
 
-#define PLAYER_NUM_EXTRA_LIVES		3
-
 #define GAME_FLAGS_ANNOUNCE_WAVE	0x01
 #define GAME_FLAGS_FLASH_SHIP		0x02
 
@@ -52,6 +50,7 @@ extern const unsigned int bullet_snd_data[];
 extern const unsigned int hit_snd_data[];
 extern const unsigned int explosion_snd_data[];
 extern const unsigned int thrust_snd_data[];
+extern const unsigned int xlife_snd_data[];
 
 struct player player;
 
@@ -77,7 +76,7 @@ static unsigned int anim_frame;
 int main(void)
 {
 	unsigned int player_status;
-	unsigned int enemy_status;
+	unsigned int mine_status;
 	unsigned int ship_status;
 
 	enable_controller_1_x();
@@ -93,8 +92,7 @@ int main(void)
 	init_wave();
 
 	init_player(&player, 0, 0, PLAYER_HEIGHT, PLAYER_WIDTH, 0, PLAYER_DRAW_SCALE, player_anim);
-	player.score = 0;
-	player.extra_lives = PLAYER_NUM_EXTRA_LIVES;
+	clear_player(&player);
 
 	game_state = GAME_STATE_TITLE_ANIMATION;
 	game_flags = 0;
@@ -139,7 +137,7 @@ int main(void)
 			}
 
 			player_status = move_player(&player);
-			enemy_status = move_mines(&player);
+			mine_status = move_mines(&player);
 			ship_status = move_ships(&player);
 			move_bullets();
 
@@ -178,7 +176,17 @@ int main(void)
 				sfx_status_2 = 1;
 			}
 
-			if ((enemy_status & MINE_STATUS_EXPLODE) == MINE_STATUS_EXPLODE)
+			if ((mine_status & MINE_STATUS_PLAYER_EXTRA_LIFE) == MINE_STATUS_PLAYER_EXTRA_LIFE)
+			{
+				sfx_pointer_3 = (long unsigned int) (&xlife_snd_data);
+				sfx_status_3 = 1;
+			}
+			else if ((ship_status & SHIP_STATUS_PLAYER_EXTRA_LIFE) == SHIP_STATUS_PLAYER_EXTRA_LIFE)
+			{
+				sfx_pointer_3 = (long unsigned int) (&xlife_snd_data);
+				sfx_status_3 = 1;
+			}
+			else if ((mine_status & MINE_STATUS_EXPLODE) == MINE_STATUS_EXPLODE)
 			{
 				sfx_pointer_3 = (long unsigned int) (&explosion_snd_data);
 				sfx_status_3 = 1;
@@ -400,8 +408,7 @@ int main(void)
 			if (button_1_4_pressed())
 			{
 				close_wave();
-				player.score = 0;
-				player.extra_lives = PLAYER_NUM_EXTRA_LIVES;
+				clear_player(&player);
 				reset_level_wave();
 				game_state = GAME_STATE_TITLE_ANIMATION;
 				game_counter = 0;
