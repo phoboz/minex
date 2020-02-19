@@ -258,12 +258,11 @@ unsigned int collect_points_player(
 	if (player->score >= player->score_extra_life)
 	{
 		player->extra_lives++;
-		player->score_extra_life = player_score_table[player->score_index];
 		if (player->score_index < PLAYER_NUM_SCORES_EXTRA_LIFE - 1)
 		{
 			player->score_index++;
 		}
-
+		player->score_extra_life = player_score_table[player->score_index];
 		result = 1;
 	}
 

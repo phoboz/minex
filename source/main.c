@@ -108,7 +108,7 @@ int main(void)
 	{
 		if (game_state == GAME_STATE_NORMAL)
 		{
-			if (mine_list == 0)
+			if (mine_list == 0 && player.state == PLAYER_STATE_NORMAL)
 			{
 				if (sfx_status_1 == 0 && sfx_status_2 == 0 && sfx_status_3 == 0)
 				{
@@ -440,7 +440,7 @@ int main(void)
 			print_5digit0_number(127, GAME_SCORE_POSITION_X, player.score);
 
 			reset_text();
-			Print_Str_d(0, -24, (char *) game_over_text);
+			Print_Str_d(0, -20, (char *) game_over_text);
 
 			Intensity_7F();
 			draw_mines();
