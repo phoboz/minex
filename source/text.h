@@ -12,7 +12,13 @@ void print_2digit_number(
 	unsigned long number
 	);
 
-void print_ulong(
+void print_5digit_number(
+	signed int y,
+	signed int x,
+	unsigned long number
+	);
+
+void print_5digit0_number(
 	signed int y,
 	signed int x,
 	unsigned long number

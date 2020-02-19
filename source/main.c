@@ -47,6 +47,8 @@
 #define GAME_ANNOUNCE_WAVE_TRESHOLD	50
 #define GAME_HIT_FLASH_TRESHOLD		6
 
+#define GAME_SCORE_POSITION_X		-18
+
 extern const unsigned int bullet_snd_data[];
 extern const unsigned int hit_snd_data[];
 extern const unsigned int explosion_snd_data[];
@@ -232,7 +234,7 @@ int main(void)
 
 			Intensity_5F();
 			reset_text();
-			print_ulong(127, -12, player.score);
+			print_5digit0_number(127, GAME_SCORE_POSITION_X, player.score);
 
 			if ((game_flags & GAME_FLAGS_ANNOUNCE_WAVE) == GAME_FLAGS_ANNOUNCE_WAVE)
 			{
@@ -425,7 +427,7 @@ int main(void)
 
 			Intensity_5F();
 			reset_text();
-			print_ulong(127, -12, player.score);
+			print_5digit0_number(127, GAME_SCORE_POSITION_X, player.score);
 
 			reset_text();
 			Print_Str_d(0, -24, (char *) game_over_text);

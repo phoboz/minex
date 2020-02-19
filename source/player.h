@@ -13,7 +13,7 @@
 #define PLAYER_BULLET_SPEED			4
 
 #define PLAYER_NUM_EXTRA_LIVES		3
-#define PLAYER_SCORE_EXTRA_LIFE		10000
+#define PLAYER_SCORE_EXTRA_LIFE		1000
 
 #define PLAYER_FLAME_ANIM_TRESHOLD		4
 #define PLAYER_TELEPORT_ANIM_TRESHOLD	6
@@ -42,6 +42,7 @@ struct player
 	unsigned int scale;
 
 	unsigned long score;
+	unsigned int score_index;
 	unsigned long score_extra_life;
 	unsigned int extra_lives;
 };
