@@ -25,6 +25,7 @@
 
 #define PLAYER_STATUS_FIRE			0x01
 #define PLAYER_STATUS_THRUST		0x02
+#define PLAYER_STATUS_TELEPORT		0x04
 
 struct player
 {

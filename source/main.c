@@ -50,9 +50,10 @@
 #define GAME_SCORE_POSITION_X		-16
 
 extern const unsigned int bullet_snd_data[];
-extern const unsigned int hit_snd_data[];
 extern const unsigned int explosion_snd_data[];
+extern const unsigned int hit_snd_data[];
 extern const unsigned int thrust_snd_data[];
+extern const unsigned int teleport_snd_data[];
 extern const unsigned int xlife_snd_data[];
 
 struct player player;
@@ -167,7 +168,12 @@ int main(void)
 				game_counter = 0;
 			}
 
-			if ((player_status & PLAYER_STATUS_THRUST) == PLAYER_STATUS_THRUST)
+			if ((player_status & PLAYER_STATUS_TELEPORT) == PLAYER_STATUS_TELEPORT)
+			{
+				sfx_pointer_1 = (long unsigned int) (&teleport_snd_data);
+				sfx_status_1 = 1;
+			}
+			else if ((player_status & PLAYER_STATUS_THRUST) == PLAYER_STATUS_THRUST)
 			{
 				sfx_pointer_1 = (long unsigned int) (&thrust_snd_data);
 				sfx_status_1 = 1;

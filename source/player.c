@@ -177,7 +177,6 @@ unsigned int move_player(
 
 					player->obj_pos[0] = (pos_y) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U);
 					player->obj_pos[1] = (pos_x) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U);
-					player->update_view = 1;
 
 					player->speed = 0;
 					player->speed_counter = 0;
@@ -185,6 +184,7 @@ unsigned int move_player(
 					player->anim.frame = 0;
 					player->anim_counter = 0;
 					player->state = PLAYER_STATE_TELEPORT;
+					status |= PLAYER_STATUS_TELEPORT;
 				}
 			}
 
@@ -211,6 +211,8 @@ unsigned int move_player(
 					player->state = PLAYER_STATE_NORMAL;
 				}
 			}
+
+			player->update_view = 1;
 		}
 		else if (player->state == PLAYER_STATE_EXPLODE)
 		{
