@@ -33,7 +33,7 @@ void clear_player(
 	player->score				= 0;
 	player->score_index		= 0;
 	player->extra_lives		= PLAYER_NUM_EXTRA_LIVES;
-	player->score_extra_life	= PLAYER_SCORE_EXTRA_LIFE;
+	player->score_extra_life	= player_score_table[0];
 }
 
 void init_player(
