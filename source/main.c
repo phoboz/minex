@@ -47,7 +47,7 @@
 #define GAME_ANNOUNCE_WAVE_TRESHOLD	50
 #define GAME_HIT_FLASH_TRESHOLD		6
 
-#define GAME_SCORE_POSITION_X		-18
+#define GAME_SCORE_POSITION_X		-16
 
 extern const unsigned int bullet_snd_data[];
 extern const unsigned int hit_snd_data[];

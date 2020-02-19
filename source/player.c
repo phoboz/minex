@@ -15,10 +15,10 @@
 
 // ---------------------------------------------------------------------------
 
-#define PLAYER_NUM_SCORES_EXTRA_LIFE		10
+#define PLAYER_NUM_SCORES_EXTRA_LIFE		6
 static unsigned long player_score_table[PLAYER_NUM_SCORES_EXTRA_LIFE] =
 {
-	1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000
+	1000, 2000, 4000, 6000, 8000, 10000
 };
 
 static const signed char player_up_vec[]=
@@ -256,7 +256,7 @@ unsigned int collect_points_player(
 	if (player->score >= player->score_extra_life)
 	{
 		player->extra_lives++;
-		player->score_extra_life += player_score_table[player->score_index];
+		player->score_extra_life = player_score_table[player->score_index];
 		if (player->score_index < PLAYER_NUM_SCORES_EXTRA_LIFE - 1)
 		{
 			player->score_index++;
