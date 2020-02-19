@@ -52,6 +52,7 @@
 extern const unsigned int bullet_snd_data[];
 extern const unsigned int explosion_snd_data[];
 extern const unsigned int hit_snd_data[];
+extern const unsigned int select_snd_data[];
 extern const unsigned int thrust_snd_data[];
 extern const unsigned int teleport_snd_data[];
 extern const unsigned int xlife_snd_data[];
@@ -355,6 +356,9 @@ int main(void)
 					game_state = GAME_STATE_NEXT_LEVEL;
 					game_flags |= GAME_FLAGS_ANNOUNCE_WAVE;
 					random_long_seed(game_seed);
+
+					sfx_pointer_1 = (long unsigned int) (&select_snd_data);
+					sfx_status_1 = 1;
 				}
 			}
 

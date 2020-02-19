@@ -329,6 +329,7 @@ unsigned int move_mines(
 						rand_dir_mine(mine);
 					}
 					update_view = 1;
+					status |= MINE_STATE_ACTIVATE;
 				}
 			}
 			else if (mine->state == MINE_STATE_ACTIVATE)
