@@ -11,13 +11,13 @@
 #define PLAYER_EXPLODE_FRAME			6
 #define PLAYER_EXPLODE_NUM_FRAMES		4
 
-#define PLAYER_HYPERSPACE_NUM_FRAMES		8
+#define PLAYER_TELEPORT_FRAME			10
+#define PLAYER_TELEPORT_NUM_FRAMES		5
 
-#define MINEX_LOGO_NUM_FRAMES			24
+#define PLAYER_HYPERSPACE_NUM_FRAMES		8
 
 extern const signed char * const player_anim[];
 extern const signed char player_behind[];
 extern const signed char* const player_hyperspace[];
-extern const signed char* const minex_logo[];
 
 #endif

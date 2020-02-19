@@ -7,6 +7,7 @@
 #include "bullet.h"
 #include "wrap.h"
 #include "imath.h"
+#include "random.h"
 #include "player_data.h"
 #include "player.h"
 
@@ -160,6 +161,26 @@ unsigned int move_player(
 				player->anim.base_frame = 0;
 			}
 
+			if (button_1_2_pressed())
+			{
+				if (player->state == PLAYER_STATE_NORMAL)
+				{
+					unsigned int pos_y = random() % 2;
+					unsigned int pos_x = random() % 2;
+
+					player->obj_pos[0] = (pos_y) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U);
+					player->obj_pos[1] = (pos_x) ? (signed int) (random() % 100U) : -(signed int) (random() % 100U);
+					player->update_view = 1;
+
+					player->speed = 0;
+					player->speed_counter = 0;
+					player->anim.base_frame = PLAYER_TELEPORT_FRAME;
+					player->anim.frame = 0;
+					player->anim_counter = 0;
+					player->state = PLAYER_STATE_TELEPORT;
+				}
+			}
+
 			if (player->speed)
 			{
 				wrap_translate(
@@ -169,6 +190,19 @@ unsigned int move_player(
 					player->up_vec[1] * player->speed
 					);
 				player->update_view = 1;
+			}
+		}
+		else if (player->state == PLAYER_STATE_TELEPORT)
+		{
+			if (++player->anim_counter >= PLAYER_TELEPORT_ANIM_TRESHOLD)
+			{
+				player->anim_counter = 0;
+				if (++player->anim.frame >= PLAYER_TELEPORT_NUM_FRAMES)
+				{
+					player->anim.base_frame = 0;
+					player->anim.frame = 0;
+					player->state = PLAYER_STATE_NORMAL;
+				}
 			}
 		}
 		else if (player->state == PLAYER_STATE_EXPLODE)

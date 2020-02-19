@@ -27,6 +27,7 @@
 #include "random.h"
 #include "wave.h"
 #include "text.h"
+#include "logo_data.h"
 
 #define GAME_STATE_NORMAL			0
 #define GAME_STATE_NEXT_LEVEL		1
