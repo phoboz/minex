@@ -46,6 +46,7 @@
 #define GAME_ANIM_TRESHOLD			2
 #define GAME_ANNOUNCE_WAVE_TRESHOLD	50
 #define GAME_HIT_FLASH_TRESHOLD		6
+#define GAME_HYPERSPACE_TRESHOLD	50
 
 #define GAME_SCORE_POSITION_X		-16
 
@@ -61,6 +62,7 @@ struct player player;
 
 static const char game_over_text[]	= "GAME OVER\x80";
 static const char title_text[]	= "PRESS FIRE TO START\x80";
+static const char warp_text[]	= "HOLD ON FOR WARP DRIVE\x80";
 
 static unsigned int game_state;
 static unsigned long game_seed;
@@ -108,14 +110,21 @@ int main(void)
 	{
 		if (game_state == GAME_STATE_NORMAL)
 		{
-			if (mine_list == 0 && player.state == PLAYER_STATE_NORMAL)
+			if (mine_list == 0 && ship_list == 0 && player.state != PLAYER_STATE_REMOVED)
 			{
-				if (sfx_status_1 == 0 && sfx_status_2 == 0 && sfx_status_3 == 0)
+				if (++game_counter >= GAME_HYPERSPACE_TRESHOLD)
 				{
-					game_state = GAME_STATE_HYPERSPACE;
-					game_counter = 0;
-					anim_frame = 0;
-					Vec_Music_Flag = 1;
+					if (sfx_status_1 == 0 && sfx_status_2 == 0 && sfx_status_3 == 0)
+					{
+						game_counter = 0;
+						game_state = GAME_STATE_HYPERSPACE;
+						anim_frame = 0;
+						Vec_Music_Flag = 1;
+					}
+					else
+					{
+						game_counter = GAME_HYPERSPACE_TRESHOLD - 1;
+					}
 				}
 			}
 			else if (player.state == PLAYER_STATE_REMOVED)
@@ -247,6 +256,11 @@ int main(void)
 			{
 				announce_current_wave();
 			}
+			else if (game_counter && (player.state != PLAYER_STATE_REMOVED))
+			{
+				reset_text();
+				Print_Str_d(32, -48, (char *) warp_text);
+			}
 
 			Moveto_d(-127, -127);
 			for (unsigned int i = 0; i < player.extra_lives; i++)
@@ -294,10 +308,33 @@ int main(void)
 		}
 		if (game_state == GAME_STATE_NEXT_LEVEL)
 		{
-			/* Regenerate player to avoid strange velocity vector */
-			init_player(&player, 0, 0, PLAYER_HEIGHT, PLAYER_WIDTH, 0, PLAYER_DRAW_SCALE, player_anim);
-			generate_wave(1);
-			game_state = GAME_STATE_NORMAL;
+			if (sfx_status_1 == 0 && sfx_status_2 == 0 && sfx_status_3 == 0)
+			{
+				init_player(&player, 0, 0, PLAYER_HEIGHT, PLAYER_WIDTH, 0, PLAYER_DRAW_SCALE, player_anim);
+				generate_wave(1);
+				game_state = GAME_STATE_NORMAL;
+			}
+			else
+			{
+				Wait_Recal();
+
+				if (sfx_status_1 == 1)
+				{
+					ayfx_sound1();
+				}
+
+				if (sfx_status_2 == 1)
+				{
+					ayfx_sound2();
+				}
+
+				if (sfx_status_3 == 1)
+				{
+					ayfx_sound3();
+				}
+
+				Do_Sound();
+			}
 		}
 		else if (game_state == GAME_STATE_TITLE_ANIMATION)
 		{
@@ -320,6 +357,21 @@ int main(void)
 			}
 
 			Wait_Recal();
+
+			if (sfx_status_1 == 1)
+			{
+				ayfx_sound1();
+			}
+
+			if (sfx_status_2 == 1)
+			{
+				ayfx_sound2();
+			}
+
+			if (sfx_status_3 == 1)
+			{
+				ayfx_sound3();
+			}
 
 			Do_Sound();
 
@@ -364,6 +416,21 @@ int main(void)
 
 			Wait_Recal();
 
+			if (sfx_status_1 == 1)
+			{
+				ayfx_sound1();
+			}
+
+			if (sfx_status_2 == 1)
+			{
+				ayfx_sound2();
+			}
+
+			if (sfx_status_3 == 1)
+			{
+				ayfx_sound3();
+			}
+
 			Do_Sound();
 
 			Intensity_5F();
@@ -402,6 +469,21 @@ int main(void)
 			Wait_Recal();
 			Moveto_d(0, 0);
 
+			if (sfx_status_1 == 1)
+			{
+				ayfx_sound1();
+			}
+
+			if (sfx_status_2 == 1)
+			{
+				ayfx_sound2();
+			}
+
+			if (sfx_status_3 == 1)
+			{
+				ayfx_sound3();
+			}
+
 			Do_Sound();
 
 			Intensity_5F();
@@ -434,6 +516,23 @@ int main(void)
 
 			Wait_Recal();
 			Moveto_d(0, 0);
+
+			if (sfx_status_1 == 1)
+			{
+				ayfx_sound1();
+			}
+
+			if (sfx_status_2 == 1)
+			{
+				ayfx_sound2();
+			}
+
+			if (sfx_status_3 == 1)
+			{
+				ayfx_sound3();
+			}
+
+			Do_Sound();
 
 			Intensity_5F();
 			reset_text();
