@@ -178,52 +178,55 @@ int main(void)
 				game_counter = 0;
 			}
 
-			if ((player_status & PLAYER_STATUS_TELEPORT) == PLAYER_STATUS_TELEPORT)
+			if (game_state == GAME_STATE_NORMAL)
 			{
-				sfx_pointer_1 = (long unsigned int) (&teleport_snd_data);
-				sfx_status_1 = 1;
-			}
-			else if ((player_status & PLAYER_STATUS_THRUST) == PLAYER_STATUS_THRUST)
-			{
-				sfx_pointer_1 = (long unsigned int) (&thrust_snd_data);
-				sfx_status_1 = 1;
-			}
+				if ((player_status & PLAYER_STATUS_TELEPORT) == PLAYER_STATUS_TELEPORT)
+				{
+					sfx_pointer_1 = (long unsigned int) (&teleport_snd_data);
+					sfx_status_1 = 1;
+				}
+				else if ((player_status & PLAYER_STATUS_THRUST) == PLAYER_STATUS_THRUST)
+				{
+					sfx_pointer_1 = (long unsigned int) (&thrust_snd_data);
+					sfx_status_1 = 1;
+				}
 
-			if ((player_status & PLAYER_STATUS_FIRE) == PLAYER_STATUS_FIRE)
-			{
-				sfx_pointer_2 = (long unsigned int) (&bullet_snd_data);
-				sfx_status_2 = 1;
-			}
+				if ((player_status & PLAYER_STATUS_FIRE) == PLAYER_STATUS_FIRE)
+				{
+					sfx_pointer_2 = (long unsigned int) (&bullet_snd_data);
+					sfx_status_2 = 1;
+				}
 
-			if ((mine_status & MINE_STATUS_PLAYER_EXTRA_LIFE) == MINE_STATUS_PLAYER_EXTRA_LIFE)
-			{
-				sfx_pointer_3 = (long unsigned int) (&xlife_snd_data);
-				sfx_status_3 = 1;
-			}
-			else if ((ship_status & SHIP_STATUS_PLAYER_EXTRA_LIFE) == SHIP_STATUS_PLAYER_EXTRA_LIFE)
-			{
-				sfx_pointer_3 = (long unsigned int) (&xlife_snd_data);
-				sfx_status_3 = 1;
-			}
-			else if ((mine_status & MINE_STATUS_EXPLODE) == MINE_STATUS_EXPLODE)
-			{
-				sfx_pointer_3 = (long unsigned int) (&explosion_snd_data);
-				sfx_status_3 = 1;
-			}
-			else if ((ship_status & SHIP_STATUS_HIT) == SHIP_STATUS_HIT)
-			{
-				sfx_pointer_3 = (long unsigned int) (&hit_snd_data);
-				sfx_status_3 = 1;
-			}
-			else if ((ship_status & SHIP_STATUS_EXPLODE) == SHIP_STATUS_EXPLODE)
-			{
-				sfx_pointer_3 = (long unsigned int) (&explosion_snd_data);
-				sfx_status_3 = 1;
-			}
-			else if ((ship_status & SHIP_STATUS_HIT_PLAYER) == SHIP_STATUS_HIT_PLAYER)
-			{
-				sfx_pointer_3 = (long unsigned int) (&hit_snd_data);
-				sfx_status_3 = 1;
+				if ((mine_status & MINE_STATUS_PLAYER_EXTRA_LIFE) == MINE_STATUS_PLAYER_EXTRA_LIFE)
+				{
+					sfx_pointer_3 = (long unsigned int) (&xlife_snd_data);
+					sfx_status_3 = 1;
+				}
+				else if ((ship_status & SHIP_STATUS_PLAYER_EXTRA_LIFE) == SHIP_STATUS_PLAYER_EXTRA_LIFE)
+				{
+					sfx_pointer_3 = (long unsigned int) (&xlife_snd_data);
+					sfx_status_3 = 1;
+				}
+				else if ((mine_status & MINE_STATUS_EXPLODE) == MINE_STATUS_EXPLODE)
+				{
+					sfx_pointer_3 = (long unsigned int) (&explosion_snd_data);
+					sfx_status_3 = 1;
+				}
+				else if ((ship_status & SHIP_STATUS_HIT) == SHIP_STATUS_HIT)
+				{
+					sfx_pointer_3 = (long unsigned int) (&hit_snd_data);
+					sfx_status_3 = 1;
+				}
+				else if ((ship_status & SHIP_STATUS_EXPLODE) == SHIP_STATUS_EXPLODE)
+				{
+					sfx_pointer_3 = (long unsigned int) (&explosion_snd_data);
+					sfx_status_3 = 1;
+				}
+				else if ((ship_status & SHIP_STATUS_HIT_PLAYER) == SHIP_STATUS_HIT_PLAYER)
+				{
+					sfx_pointer_3 = (long unsigned int) (&hit_snd_data);
+					sfx_status_3 = 1;
+				}
 			}
 
 			Wait_Recal();
