@@ -364,6 +364,14 @@ unsigned int move_mines(
 					mine->state = MINE_STATE_FIREBALL;
 				}
 			}
+			else if (mine->state == MINE_STATE_FIREBALL_REMOVE)
+			{
+				if (++mine->hi_counter == MINE_FIREBALL_REMOVE_TRESHOLD)
+				{
+					mine->hi_counter = 0;
+					mine->state = MINE_STATE_REMOVE;
+				}
+			}
 
 			if (mine_index == 2 || mine_index == 5 || mine_index == 8 || mine_index == 11)
 			{
@@ -441,7 +449,7 @@ unsigned int move_mines(
 				{
 					if (hit_dim_object_bullet(bullet, &mine->obj, -FIREBALL_SIZE, FIREBALL_SIZE))
 					{
-						mine->state = MINE_STATE_REMOVE;
+						mine->state = MINE_STATE_FIREBALL_REMOVE;
 						mine->velocity[0] = mine->velocity[1] = 0;
 						rem_bullet = bullet;
 						if (collect_points_player(player, MINE_FIREBALL_POINTS))
@@ -598,6 +606,11 @@ void draw_mines(void)
 #endif
 
 				dp_VIA_t1_cnt_lo = FIREBALL_DRAW_SCALE;
+				Draw_VLp((signed char *) fireball);
+			}
+			else if (mine->state == MINE_STATE_FIREBALL_REMOVE)
+			{
+				dp_VIA_t1_cnt_lo = FIREBALL_DRAW_SCALE - mine->hi_counter;
 				Draw_VLp((signed char *) fireball);
 			}
 		}
